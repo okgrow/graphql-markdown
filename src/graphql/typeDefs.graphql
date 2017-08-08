@@ -1,0 +1,54 @@
+enum OrderBy {
+  ASCENDING
+  DESCENDING
+}
+
+# Sort and order results by a specific field and order.
+# e.g - { sortBy: "date", orderBy: "DESCENDING" }
+input Sort {
+  # Field to sort by. e.g - "date"
+  sortBy: String!
+  # ASCENDING or DESCENDING order. e.g - "DESCENDING"
+  orderBy: OrderBy!
+}
+
+input Pagination {
+  # Sort and order objects by a specific field in a specific order.
+  sort: Sort
+  # Do not return the first x objects.
+  skip: Int
+  # Limit the number of objects to return.
+  limit: Int
+}
+
+input FieldMatch {
+  name: String!
+  value: String!
+}
+
+input FieldMatcher {
+  fields: [FieldMatch!]!
+}
+
+input ContentItemsQuery {
+  ids: [ID!]
+  groupIds: [ID!]
+  fieldMatcher: FieldMatcher
+}
+
+type MetaDataField {
+  name: String!
+  value: String!
+}
+
+type ContentItem {
+  id: ID!
+  groupId: ID!
+  metaData: [MetaDataField!]!
+  content: String!
+}
+
+type Query {
+  contentItem(id: ID!): ContentItem
+  contentItems(query: ContentItemsQuery!, pagination: Pagination): [ContentItem!]
+}
