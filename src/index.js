@@ -3,7 +3,7 @@ import 'core-js/modules/es7.object.entries'; // eslint-disable-line
 
 import contentItemResolvers from './graphql/resolvers';
 import contentItemTypeDefs from './graphql/typeDefs.graphql';
-import startGraphqlMdServer from './markdown-content/startGraphqlMdServer';
+import loadMarkdownIntoDb from './markdown-content/loadMarkdownIntoDb';
 import { dataStore, insert, find, findOne } from './database/in-memory-storage';
 
-export { contentItemResolvers, contentItemTypeDefs, startGraphqlMdServer, dataStore, insert, find, findOne };
+export { contentItemResolvers, contentItemTypeDefs, loadMarkdownIntoDb, dataStore, insert, find, findOne };

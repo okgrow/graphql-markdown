@@ -2,7 +2,7 @@ import loadContentItems from './loadContentItems';
 import { createBase64Image } from '../server-helpers';
 import { dataStore, insert } from '../database/in-memory-storage';
 
-const startGraphqlMdServer = async ({ contentRoot, imageFunc }) => {
+const loadMarkdownIntoDb = async ({ contentRoot, imageFunc }) => {
   if (!contentRoot) {
     throw new Error('You must provide rooth path to your content!');
   }
@@ -22,4 +22,4 @@ const startGraphqlMdServer = async ({ contentRoot, imageFunc }) => {
   return itemsInserted.length;
 };
 
-export default startGraphqlMdServer;
+export default loadMarkdownIntoDb;
