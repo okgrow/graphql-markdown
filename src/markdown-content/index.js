@@ -4,7 +4,7 @@ import { dataStore, insert } from '../database/in-memory-storage';
 
 const loadMarkdownIntoDb = async ({ contentRoot, imageFunc }) => {
   if (!contentRoot) {
-    throw new Error('You must provide rooth path to your content!');
+    throw new Error('You must provide the full path to root of you content!');
   }
 
   const isFunction = imageFunc && typeof imageFunc === 'function';
