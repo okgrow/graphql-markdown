@@ -8,7 +8,7 @@ import {
   dataStore,
   find,
   findOne,
-} from '../database/in-memory-storage';
+} from '../database';
 
 export const getContentItem = async id => {
   // Don't even bother if we didn't get an ID

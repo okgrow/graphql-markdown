@@ -1,10 +1,10 @@
 import loadContentItems from './loadContentItems';
 import { createBase64Image } from '../server-helpers';
-import { dataStore, insert } from '../database/in-memory-storage';
+import { dataStore, insert } from '../database';
 
 const loadMarkdownIntoDb = async ({ contentRoot, imageFunc }) => {
   if (!contentRoot) {
-    throw new Error('You must provide the full path to root of you content!');
+    throw new Error('You must provide the full path to root of your content!');
   }
 
   const isFunction = imageFunc && typeof imageFunc === 'function';
