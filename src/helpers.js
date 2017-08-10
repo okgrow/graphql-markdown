@@ -1,3 +1,6 @@
+export const getRelativeFilename = fullPathName =>
+  fullPathName.slice(fullPathName.lastIndexOf('/') + 1);
+
 // NOTE: converting object into array of objects to match the gql
 // MetaDataField type. We are using es7 Object.entries.
 export const metaDataToArray = metaData =>
@@ -6,9 +9,6 @@ export const metaDataToArray = metaData =>
 // Mapping metaData from it's array format back to an object with key: value pairs.
 export const metaDataToObject = metaData =>
   metaData.reduce((sum, { name, value }) => ({ ...sum, [name]: value }), {});
-
-export const getRelativeFilename = fullPathName =>
-  fullPathName.slice(fullPathName.lastIndexOf('/') + 1);
 
 // TODO: Decide if we will keep the getGroupId function
 // NOTE: This is an early prototype, more thought should go into best approach,
@@ -34,7 +34,6 @@ export const mapContentItems = ({
   groupId: metaData.groupId,
   // TODO: look into unions or interface, currently can't query for
   // specific metaData. Would be nice to return an object instead of array.
-  // NOTE: this returns all data field as an array of Objects
   metaData: metaDataToArray(metaData),
   content: html,
 });

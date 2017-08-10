@@ -30,23 +30,18 @@ const getMarkdownObject = async ({ filename, contentRoot, imageMap }) => {
   }
 
   const newHtml = replaceHtmlImageSrc({ images, imageMap, html });
-  // console.log(newHtml);
-  const result = {
+
+  return {
     html: newHtml,
     groupId: defaultGroupId, // NOTE: Must be before ...data, so default can be overwritten
     ...data,
     assetDir,
     markdown: content,
-    // TODO: This shouldn't be part of the package
-    // In the package we could provide a way to pass functions that add this functionality?
-    // NOTE: Ensure that tags field always exists for blogPosts even if writer forgets
-    ...(((data && data.groupId) || defaultGroupId) === 'posts'
+    ...((data && data.groupId)
       ? { tags: tagsToArray(data.tags) }
       : null),
     images,
   };
-
-  return result;
 };
 
 export default getMarkdownObject;

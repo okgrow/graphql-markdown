@@ -5,9 +5,7 @@ import getMarkdownObject from './getMarkdownObject';
 import { getListOfMdFiles } from '../server-helpers';
 
 const loadContentItems = async ({ contentRoot, imageFunc }) => {
-  // TODO: Remove console logs or refactor to only print when debugging
-  console.log('Loading content...');
-  // TODO: Allow default settings to be modified by passing the options at startup?
+  // TODO: Discuss if we allow default settings to be modified by passing the options at startup?
   Marked.setOptions({
     gfm: true,
     tables: true,
@@ -40,8 +38,6 @@ const loadContentItems = async ({ contentRoot, imageFunc }) => {
       }),
     );
 
-    // TODO: Remove console logs or refactor to only print when debugging
-    console.log('Finished loading content.', contentItems.length);
     return contentItems;
   } catch (error) {
     console.error('[loadContentItems] - Parsing error:', error);

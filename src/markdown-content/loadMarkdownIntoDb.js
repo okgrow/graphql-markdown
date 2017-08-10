@@ -6,10 +6,12 @@ const loadMarkdownIntoDb = async ({ contentRoot, imageFunc }) => {
   if (!contentRoot) {
     throw new Error('You must provide rooth path to your content!');
   }
-  // TODO: add a check that ensures imageFunc is a function else null
+
+  const isFunction = imageFunc && typeof imageFunc === 'function';
+
   const defaultOptions = {
     contentRoot,
-    ...(imageFunc ? { imageFunc } : { imageFunc: createBase64Image }),
+    ...(isFunction ? { imageFunc } : { imageFunc: createBase64Image }),
   };
 
   // Create all contentItems by reading all .md files and their images.
@@ -18,7 +20,7 @@ const loadMarkdownIntoDb = async ({ contentRoot, imageFunc }) => {
   // Insert all ContentItems into the in-memory nedb instance.
   const itemsInserted = await insert({ db: dataStore, docToInsert: contentItems });
 
-  // TODO: Determine if we should return true or return number of docs inserted?
+  // Return the number of files inserted
   return itemsInserted.length;
 };
 

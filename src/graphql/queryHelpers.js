@@ -10,7 +10,6 @@ import {
   findOne,
 } from '../database/in-memory-storage';
 
-// TODO: Convert to using rawCollection, copy work done on blogPosts
 export const getContentItem = async id => {
   // Don't even bother if we didn't get an ID
   if (id) {
@@ -25,7 +24,6 @@ export const getContentItem = async id => {
   return null;
 };
 
-// TODO: Convert to using rawCollection, copy work done on blogPosts
 export const getContentItems = async ({
   ids = [],
   groupIds = [],
