@@ -37,9 +37,7 @@ const getMarkdownObject = async ({ filename, contentRoot, imageMap }) => {
     ...data,
     assetDir,
     markdown: content,
-    ...((data && data.groupId)
-      ? { tags: tagsToArray(data.tags) }
-      : null),
+    ...(data && data.groupId ? { tags: tagsToArray(data.tags) } : null),
     images,
   };
 };

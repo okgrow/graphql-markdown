@@ -18,7 +18,10 @@ const loadMarkdownIntoDb = async ({ contentRoot, imageFunc }) => {
   const contentItems = await loadContentItems(defaultOptions);
 
   // Insert all ContentItems into the in-memory nedb instance.
-  const itemsInserted = await insert({ db: dataStore, docToInsert: contentItems });
+  const itemsInserted = await insert({
+    db: dataStore,
+    docToInsert: contentItems,
+  });
 
   // Return the number of files inserted
   return itemsInserted.length;

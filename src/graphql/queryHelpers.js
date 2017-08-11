@@ -1,14 +1,6 @@
-import {
-  convertOrderBy,
-  metaDataToObject,
-  isMultiArgsQuery,
-} from '../helpers';
+import { convertOrderBy, metaDataToObject, isMultiArgsQuery } from '../helpers';
 
-import {
-  dataStore,
-  find,
-  findOne,
-} from '../database';
+import { find, findOne, dataStore } from '../database';
 
 export const getContentItem = async id => {
   // Don't even bother if we didn't get an ID
@@ -58,7 +50,13 @@ export const getContentItems = async ({
         ? { [sort.sortBy]: convertOrderBy(sort.orderBy) }
         : null;
 
-      const contentItems = await find({ db: dataStore, query, sortOptions, skip, limit });
+      const contentItems = await find({
+        db: dataStore,
+        query,
+        sortOptions,
+        skip,
+        limit,
+      });
       return contentItems;
     } catch (error) {
       console.error('[getContentItems]', error); // eslint-disable-line no-console
