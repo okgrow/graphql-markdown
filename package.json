@@ -5,10 +5,7 @@
   "description": "Bleeding Edge",
   "author": "OK GROW! <hello@okgrow.com> (https://www.okgrow.com)",
   "homepage": "https://github.com/okgrow/guides",
-  "keywords": [
-    "graphql",
-    "markdown"
-  ],
+  "keywords": ["graphql", "markdown"],
   "repository": {
     "type": "git",
     "url": "https://github.com/okgrow/guides.git"
@@ -19,10 +16,11 @@
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "scripts": {
-    "rollup:build": "BABEL_ENV=build rollup -c",
-    "rollup:watch": "BABEL_ENV=build rollup -c -w",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "npm run rollup:build"
+    "format": "prettier-eslint --write \"src/**/*.js\"",
+    "prepare": "npm run rollup:build",
+    "rollup:build": "BABEL_ENV=build rollup -c",
+    "rollup:watch": "BABEL_ENV=build rollup -c -w"
   },
   "dependencies": {
     "es6-promisify": "^5.0.0",
@@ -47,10 +45,15 @@
     "core-js": "^2.5.0",
     "eslint": "^4.3.0",
     "eslint-config-airbnb": "^15.1.0",
+    "eslint-config-prettier": "^2.3.0",
+    "eslint-plugin-graphql": "^1.3.0",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-prettier": "^2.1.2",
     "eslint-plugin-react": "^7.1.0",
     "graphql": "^0.10.5",
+    "prettier": "^1.5.3",
+    "prettier-eslint-cli": "^4.1.1",
     "rollup": "^0.45.2",
     "rollup-plugin-babel": "3.0.0",
     "rollup-plugin-commonjs": "^8.1.0",
@@ -59,7 +62,5 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-watch": "^4.3.1"
   },
-  "files": [
-    "dist"
-  ]
+  "files": ["dist"]
 }
