@@ -6,7 +6,7 @@ const createImagesMap = async ({ contentRoot, imageFunc }) => {
   await Promise.all(
     imageList.map(async imgPath => {
       const newImage = imageFunc
-        ? await imageFunc(imgPath)
+        ? await imageFunc({ imgPath, contentRoot })
         : await createBase64Image(imgPath);
       imagesMap[imgPath] = newImage;
     }),
