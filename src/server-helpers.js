@@ -29,16 +29,25 @@ export const getListOfAllImageFiles = contentRoot =>
 export const getListOfMdFiles = contentRoot =>
   Glob.glob.sync(`${contentRoot}/**/*.+(md|markdown)`);
 
+/**
+ * Returns the file's relative path from the contentRoot.
+ * @param {string} contentRoot - Path to where all markdown files are stored.
+ * @param {string} filename - Full path to file.
+ * @returns {string} Relative path. e.g - "/pages/graphql/graphql.md"
+ */
 export const getAssetDir = ({ contentRoot, filename }) =>
   dirname(filename).slice(contentRoot.length);
 
-// Reads an image file & converts it into the correct base64 format for the web
+/**
+ * Reads an image file & converts it into the correct base64 format for html
+ * @param {string} fullPathName - Path to where image is located.
+ * @returns {string} base64 string formatted as a data:image string.
+ */
 export const createBase64Image = fullPathName => {
-  // read binary data
   const bitmap = fs.readFileSync(fullPathName);
-  // convert binary data to base64 encoded string
+  // Convert binary data to base64 encoded string
   const base64Str = new Buffer(bitmap).toString('base64');
   const fileType = fullPathName.slice(fullPathName.lastIndexOf('.') + 1);
-  // create the base64 image format
+  // Create the base64 image string format
   return `data:image/${fileType};base64,${base64Str}`;
 };

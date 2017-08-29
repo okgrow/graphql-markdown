@@ -8,6 +8,14 @@ import { getGroupId, tagsToArray, replaceHtmlImageSrc } from '../helpers';
 const readFilePromise = promisify(require('fs').readFile);
 const markedPromise = promisify(require('marked'));
 
+/**
+ * Create a markdown object from parsing a .md file and any image files that it references.
+ * @param {Object} param
+ * @param {string} param.filename - Full path to file.
+ * @param {string} param.contentRoot - Path to where all markdown files are stored.
+ * @param {Object} param.imageMap - key/value pairs where `key` is the `fullPathName` and `value` is the new path for the image. e.g - { fullPathName: "cdn.com/foo.png", ... }
+ * @returns {Object} Created from the contents of the .md file that has been processed.
+ */
 const getMarkdownObject = async ({ filename, contentRoot, imageMap }) => {
   const assetDir = getAssetDir({ filename, contentRoot });
 

@@ -2,6 +2,11 @@ import { convertOrderBy, metaDataToObject, isMultiArgsQuery } from '../helpers';
 
 import { find, findOne, dataStore } from '../database';
 
+/**
+ * Retrieves the specified ContentItem by it's id.
+ * @param {string} id - The id of the ContentItem
+ * @returns {Object|null} returns the ContentItem or null on error.
+ */
 export const getContentItem = async id => {
   // Don't even bother if we didn't get an ID
   if (id) {
@@ -16,6 +21,15 @@ export const getContentItem = async id => {
   return null;
 };
 
+/**
+ * Creates an object that maps the local fullPath of an image to it's desired path. e.g - { fullPathName: "cdn.com/foo.png", ... }
+ * @param {Object} param
+ * @param {string[]} param.ids - ContentItem's ids
+ * @param {string[]} param.groupIds - ContentItem's groupIds
+ * @param {Object} param.fieldMatcher - Refer to FieldMatcher in `src/graphql/typeDefs.graphql`
+ * @param {Object} param.pagination - Refer to Pagination in `src/graphql/typeDefs.graphql`
+ * @returns {Object[]} returns an array of ContentItems.
+ */
 export const getContentItems = async ({
   ids = [],
   groupIds = [],

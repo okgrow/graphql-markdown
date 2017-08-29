@@ -4,6 +4,13 @@ import createImagesMap from './createImagesMap';
 import getMarkdownObject from './getMarkdownObject';
 import { getListOfMdFiles } from '../server-helpers';
 
+/**
+ * Read all .md files and process them into contentItems ready to be stored.
+ * @param {Object} param
+ * @param {string} param.contentRoot - Path to where all markdown files are stored.
+ * @param {Function} param.imageFunc - function provided by user to create imgPaths.
+ * @returns {Object[]} ContentItems
+ */
 const loadContentItems = async ({ contentRoot, imageFunc }) => {
   // TODO: Discuss if we allow default settings to be modified by passing the options at startup?
   Marked.setOptions({
