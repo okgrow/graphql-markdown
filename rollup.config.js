@@ -6,6 +6,7 @@ import nodeResolve from 'rollup-plugin-node-resolve';
 
 import pkg from './package.json';
 
+// prettier-ignore
 export default [
   {
     entry: 'src/index.js',

@@ -5,7 +5,8 @@ test('inserts document into our nedb dataStore', async () => {
   const docToInsert = {
     _id: 'insert_test',
     test: 'hello world!',
-    metaData: [{ name: 'Happy', isFun: true }],
+    name: 'Happy',
+    isFun: true,
   };
   const testInsert = await insert({ db: dataStore, docToInsert });
   expect(testInsert).toEqual(docToInsert);
