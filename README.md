@@ -10,6 +10,7 @@
 > Write markdown, converted to html, query via Graphql. 🔥
 
 ## Quick Start
+TODO: replace xx-xx-xx with package name once determined. Determine with team for package name.
 ```sh
 # With npm
 npm install --save xx-xx-xx
@@ -123,6 +124,17 @@ date: 2017-12-25
 # Welcome to this wonderful website!
 
 Hello world! Thanks for dropping by to say hello.
+```
+
+## Testing
+
+```sh
+# clone the repo
+git clone git@github.com:okgrow/markdown-graphql.git
+# Don't forget to install
+npm install
+# Run all tests
+npm run test
 ```
 
 ## Maintainers
