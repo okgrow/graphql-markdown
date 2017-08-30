@@ -1,0 +1,21 @@
+{
+  "name": "simple-example",
+  "private": true,
+  "author": "OK GROW! <hello@okgrow.com> (https://www.okgrow.com)",
+  "license": "MIT",
+  "scripts": {
+    "start": "node -r @std/esm index.js"
+  },
+  "dependencies": {
+    "@std/esm": "0.4.0",
+    "express": "^4.15.4",
+    "express-graphql": "^0.6.11",
+    "graphql": "^0.11.2",
+    "graphql-tools": "^1.2.2"
+  },
+  "devDependencies": {},
+  "@std/esm": {
+    "esm": "all",
+    "cjs": true
+  }
+}
