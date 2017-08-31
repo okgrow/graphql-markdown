@@ -131,7 +131,7 @@ groupId: homePage
 type: pageContent
 title: Wonder Website
 description: Wonder Website - Home Page
-date: 2017-12-25
+date: "2017-12-25"
 ---
 
 # Welcome to this wonderful website!
@@ -152,9 +152,9 @@ npm run test
 
 ## Examples
 
-Check out the examples folder to see how it all works.
-- The examples expect you to be using Node version 8 or above.
-- Don't forget to run `npm install` before trying the examples.
+Check out the examples folder to see how it all works. Please note:
+- Node version 8+ is required.
+- You must run `npm install` on the main package first as the examples import the `/dist` files.
 
 ## Maintainers
 

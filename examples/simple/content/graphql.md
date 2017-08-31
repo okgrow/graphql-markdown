@@ -1,11 +1,12 @@
 ---
 id: graphqlIntro
-groupId: simple
+groupId: simple-example
 type: page
 title: "GraphQL: The future of data!"
 description: GraphQL is now!
 date: "2017-09-20"
 tags: GraphQL, Basic
+order: 1
 ---
 
 ## GraphQL
