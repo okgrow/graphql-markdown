@@ -9,6 +9,19 @@
 
 > Write markdown, converted to html, query via Graphql. 🔥
 
+## Table of Contents
+
+- [Quick Start](#quick-start)
+- [Markdown Files](#markdown-files)
+  - [MetaData section](#metadata-section)
+  - [Markdown section](#markdown-section)
+  - [Putting it all together](#putting-it-all-together)
+- [Testing](#testing)
+- [Examples](#examples)
+- [Maintainers](#maintainers)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Quick Start
 TODO: replace xx-xx-xx with package name once determined. Determine with team for package name.
 ```sh
@@ -109,7 +122,7 @@ The Markdown section is placed after the MetaData section and contains your mark
 Hello World!
 ```
 
-##### Putting it all together
+#### Putting it all together
 
 ```md
 ---
