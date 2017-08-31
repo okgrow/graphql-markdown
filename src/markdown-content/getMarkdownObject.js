@@ -2,7 +2,7 @@ import matter from 'gray-matter';
 import promisify from 'es6-promisify';
 
 import { getAssetDir, getListOfRelativeImageFiles } from '../server-helpers';
-import { getGroupId, tagsToArray, replaceHtmlImageSrc } from '../helpers';
+import { getGroupId, replaceHtmlImageSrc } from '../helpers';
 
 // TODO: Revert to using this in our node.js package
 const readFilePromise = promisify(require('fs').readFile);
@@ -45,7 +45,6 @@ const getMarkdownObject = async ({ filename, contentRoot, imageMap }) => {
     ...data,
     assetDir,
     markdown: content,
-    ...(data && data.groupId ? { tags: tagsToArray(data.tags) } : null),
     images,
   };
 };
