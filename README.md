@@ -17,7 +17,7 @@ npm install --save xx-xx-xx
 # With Yarn
 yarn add xx-xx-xx
 ```
-Now you can import the `typeDefs` & `resolvers` to add to your graphql schema in order to query the markdown content.
+Now you can import the `typeDefs` & `resolvers` to add to your GraphQL schema in order to query the markdown content.
 ```js
 // gqlSchema.js
 import { makeExecutableSchema } from 'graphql-tools';
@@ -49,7 +49,7 @@ const options = {
   imageFunc: isProduction ? serveImagesFromServer : null,
 };
 
-// Example 1 - Promise
+//*** Example 1 - Promise ***/
 
 // Find all markdown files, process and load them into memory.
 loadMarkdownIntoDb(options).then(itemCount => {
@@ -60,7 +60,7 @@ loadMarkdownIntoDb(options).then(itemCount => {
   console.error('[loadMarkdownIntoDb]', error);
 });
 
-// EXAMPLE 2 - async/await
+/*** Example 2 - Async/Await ***/
 (async () => {
   try {
     // Find all markdown files, process and load them into memory.
@@ -136,6 +136,10 @@ npm install
 # Run all tests
 npm run test
 ```
+
+## Examples
+
+Check out the examples folder to see how it all works. The examples expect you to be using Node version 8 or above. Don't forget to run `npm install` before trying the examples.
 
 ## Maintainers
 
