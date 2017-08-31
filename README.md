@@ -152,7 +152,9 @@ npm run test
 
 ## Examples
 
-Check out the examples folder to see how it all works. The examples expect you to be using Node version 8 or above. Don't forget to run `npm install` before trying the examples.
+Check out the examples folder to see how it all works.
+- The examples expect you to be using Node version 8 or above.
+- Don't forget to run `npm install` before trying the examples.
 
 ## Maintainers
 
