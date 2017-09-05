@@ -1,5 +1,6 @@
 import fs from 'fs';
 import Glob from 'glob';
+import marked from 'marked';
 import { dirname } from 'path';
 
 const SUPPORTED_IMAGE_TYPES = '(png|jpg|jpeg|svg)';
@@ -51,3 +52,20 @@ export const createBase64Image = fullPathName => {
   // Create the base64 image string format
   return `data:image/${fileType};base64,${base64Str}`;
 };
+
+/**
+ * Promisifys the 'marked' function which converts the provided markdown
+ * string into a valid html string.
+ * @param {string} mdContent - markdown content to convert to html.
+ * @returns {string} Returns a html string.
+ */
+export const markedPromise = mdContent =>
+  new Promise((resolve, reject) => {
+    marked(mdContent, (error, html) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(html);
+      }
+    });
+  });

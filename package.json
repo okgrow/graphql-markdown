@@ -5,7 +5,10 @@
   "description": "Bleeding Edge",
   "author": "OK GROW! <hello@okgrow.com> (https://www.okgrow.com)",
   "homepage": "https://github.com/okgrow/guides",
-  "keywords": ["graphql", "markdown"],
+  "keywords": [
+    "graphql",
+    "markdown"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/okgrow/guides.git"
@@ -23,7 +26,6 @@
     "rollup:watch": "BABEL_ENV=build rollup -c -w"
   },
   "dependencies": {
-    "es6-promisify": "^5.0.0",
     "glob": "^7.1.2",
     "gray-matter": "^3.0.3",
     "marked": "^0.3.6",
@@ -64,5 +66,7 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-watch": "^4.3.1"
   },
-  "files": ["dist"]
+  "files": [
+    "dist"
+  ]
 }

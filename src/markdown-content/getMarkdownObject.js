@@ -1,12 +1,12 @@
+import fs from 'fs';
 import matter from 'gray-matter';
-import promisify from 'es6-promisify';
 
-import { getAssetDir, getListOfRelativeImageFiles } from '../server-helpers';
+import {
+  getAssetDir,
+  markedPromise,
+  getListOfRelativeImageFiles,
+} from '../server-helpers';
 import { getGroupId, replaceHtmlImageSrc } from '../helpers';
-
-// TODO: Revert to using this in our node.js package
-const readFilePromise = promisify(require('fs').readFile);
-const markedPromise = promisify(require('marked'));
 
 /**
  * Create a markdown object from parsing a .md file and any image files that it references.
@@ -19,7 +19,7 @@ const markedPromise = promisify(require('marked'));
 const getMarkdownObject = async ({ filename, contentRoot, imageMap }) => {
   const assetDir = getAssetDir({ filename, contentRoot });
 
-  const fileContents = await readFilePromise(filename, 'utf8');
+  const fileContents = await fs.readFileSync(filename, 'utf8');
 
   const { content, data } = matter(fileContents);
   const html = await markedPromise(content);
