@@ -1,4 +1,4 @@
-# Markdown Graphql Server
+# GraphQL Markdown
 
 [![Build Status](ADD_SHIELDS.IO_URL)](ADD_URL)
 [![Coverage Status](ADD_SHIELDS.IO_URL)](ADD_URL)
@@ -7,7 +7,7 @@
 [![Dependencies](ADD_SHIELDS.IO_URL)]()
 [![Dev Dependencies](ADD_SHIELDS.IO_URL)]()
 
-> Write markdown, converted to html, query via Graphql. 🔥
+> Write markdown, serve as html, query via GraphQL.🔥
 
 ## Table of Contents
 
@@ -23,12 +23,13 @@
 - [License](#license)
 
 ## Quick Start
-TODO: replace xx-xx-xx with package name once determined. Determine with team for package name.
+**NOTE:** This package is still in development and is not yet published to the npm repository.
+
 ```sh
 # With npm
-npm install --save xx-xx-xx
+npm install --save https://github.com/okgrow/graphql-markdown
 # With Yarn
-yarn add xx-xx-xx
+yarn add https://github.com/okgrow/graphql-markdown
 ```
 Now you can import the `typeDefs` & `resolvers` to add to your GraphQL schema in order to query the markdown content.
 ```js
