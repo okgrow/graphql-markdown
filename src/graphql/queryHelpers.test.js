@@ -1,78 +1,19 @@
 import { dataStore, insert } from '../database';
 import { getContentItem, getContentItems } from './queryHelpers';
 
-const EXPECTED_RESULT_1 = {
-  id: 'home_section',
-  groupId: 'contentItems_test',
-  content: undefined,
-  metaData: [
-    {
-      name: 'id',
-      value: 'home_section',
-    },
-    {
-      name: 'groupId',
-      value: 'contentItems_test',
-    },
-    {
-      name: 'test',
-      value: 'I am a ContentItem!',
-    },
-    {
-      name: 'isContentItem',
-      value: true,
-    },
-    {
-      name: 'order',
-      value: 1,
-    },
-  ],
-};
-
-const EXPECTED_RESULT_2 = {
-  id: 'main_section',
-  groupId: 'contentItems_test',
-  content: undefined,
-  metaData: [
-    {
-      name: 'id',
-      value: 'main_section',
-    },
-    {
-      name: 'groupId',
-      value: 'contentItems_test',
-    },
-    {
-      name: 'isContentItem',
-      value: false,
-    },
-    {
-      name: 'order',
-      value: 2,
-    },
-  ],
-};
+import {
+  CONTENT_ITEM_1,
+  CONTENT_ITEM_2,
+  EXPECTED_RESULT_1,
+  EXPECTED_RESULT_2,
+} from './__mocks__/mockData';
 
 beforeAll(async () => {
-  const doc1 = {
-    _id: 'contentItem_test_1',
-    id: 'home_section',
-    groupId: 'contentItems_test',
-    test: 'I am a ContentItem!',
-    isContentItem: true,
-    order: 1,
-  };
-  const doc2 = {
-    _id: 'contentItem_test_2',
-    id: 'main_section',
-    groupId: 'contentItems_test',
-    isContentItem: false,
-    order: 2,
-  };
-  await insert({ db: dataStore, docToInsert: doc1 });
-  await insert({ db: dataStore, docToInsert: doc2 });
+  await insert({ db: dataStore, docToInsert: CONTENT_ITEM_1 });
+  await insert({ db: dataStore, docToInsert: CONTENT_ITEM_2 });
 });
 
+// TODO: Wrap getContentItem in describes & add more tests
 test('getContentItem', async () => {
   expect.assertions(1);
   try {
@@ -83,12 +24,7 @@ test('getContentItem', async () => {
   }
 });
 
-// {
-//   ids = ['home_section'],
-//   groupIds = [],
-//   fieldMatcher: { fields = [] } = {},
-//   pagination: { sort = null, skip = 0, limit = 0 } = {},
-// }
+// TODO: Wrap getContentItems in describes
 test('getContentItems by ids', async () => {
   expect.assertions(2);
   try {
