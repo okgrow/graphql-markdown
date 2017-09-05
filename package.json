@@ -1,14 +1,11 @@
 {
-  "name": "markdown-graphql-server",
-  "version": "1.0.0",
+  "name": "graphql-markdown",
+  "version": "0.0.1",
   "license": "MIT",
-  "description": "Bleeding Edge",
+  "description": "Write markdown, serve as html, query via GraphQL.🔥",
   "author": "OK GROW! <hello@okgrow.com> (https://www.okgrow.com)",
   "homepage": "https://github.com/okgrow/guides",
-  "keywords": [
-    "graphql",
-    "markdown"
-  ],
+  "keywords": ["graphql", "markdown", "html"],
   "repository": {
     "type": "git",
     "url": "https://github.com/okgrow/guides.git"
@@ -68,7 +65,5 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-watch": "^4.3.1"
   },
-  "files": [
-    "dist"
-  ]
+  "files": ["dist"]
 }
