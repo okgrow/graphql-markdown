@@ -1,8 +1,7 @@
 import express from 'express';
 import graphqlHTTP from 'express-graphql';
-// import { buildSchema, buildASTSchema, printSchema } from 'graphql';
-
 import { makeExecutableSchema } from 'graphql-tools';
+
 import {
   loadMarkdownIntoDb,
   contentItemTypeDefs,
@@ -22,10 +21,10 @@ const schema = makeExecutableSchema({
 
 const app = express();
 
-app.use('/graphql',
+app.use(
+  '/graphql',
   graphqlHTTP({
-    schema, // : buildSchema(printSchema(buildASTSchema(contentItemTypeDefs))),
-    // rootValue: contentItemResolvers.Query,
+    schema,
     graphiql: true,
   }),
 );
@@ -33,7 +32,7 @@ app.use('/graphql',
 (async () => {
   try {
     const itemCount = await loadMarkdownIntoDb(options);
-    console.log(`Memory DB completed!\n${itemCount} ContentItems loaded! `);
+    console.log(`Memory DB completed!\n${itemCount} ContentItems loaded!`);
     // Start the server after all data has loaded.
     app.listen(4000);
     console.log('Server Started! http://localhost:4000/graphql');

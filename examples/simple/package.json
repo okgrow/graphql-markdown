@@ -4,7 +4,8 @@
   "author": "OK GROW! <hello@okgrow.com> (https://www.okgrow.com)",
   "license": "MIT",
   "scripts": {
-    "start": "node -r @std/esm index.js"
+    "start": "node -r @std/esm index.js",
+    "format": "prettier-eslint --write \"src/**/*.js\""
   },
   "dependencies": {
     "@std/esm": "0.4.0",
@@ -13,7 +14,10 @@
     "graphql": "^0.11.2",
     "graphql-tools": "^1.2.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "prettier": "^1.6.1",
+    "prettier-eslint-cli": "^4.3.0"
+  },
   "@std/esm": {
     "esm": "all",
     "cjs": true
