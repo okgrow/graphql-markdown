@@ -9,7 +9,7 @@ import pkg from './package.json';
 // prettier-ignore
 export default [
   {
-    entry: 'src/index.js',
+    input: 'src/index.js',
     external: [
       'fs',
       'path',
@@ -33,9 +33,9 @@ export default [
       }),
       filesize(), // Display the bundled file sizes
     ],
-    targets: [
-      { dest: pkg.main, format: 'cjs' },
-      { dest: pkg.module, format: 'es' },
+    output: [
+      { file: pkg.main, format: 'cjs' },
+      { file: pkg.module, format: 'es' },
     ],
   },
 ];
