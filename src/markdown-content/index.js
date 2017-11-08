@@ -9,7 +9,11 @@ import { dataStore, insert } from '../database';
  * @param {Function} param.imageFunc - function provided by user to create imgPaths.
  * @returns {number} number of ContentItems inserted into the db.
  */
-const loadMarkdownIntoDb = async ({ contentRoot, imageFunc }) => {
+const loadMarkdownIntoDb = async ({
+  contentRoot,
+  imageFunc,
+  replaceContents,
+}) => {
   if (!contentRoot) {
     throw new Error('You must provide the full path to root of your content!');
   }
@@ -19,6 +23,7 @@ const loadMarkdownIntoDb = async ({ contentRoot, imageFunc }) => {
   const defaultOptions = {
     contentRoot,
     ...(isFunction ? { imageFunc } : { imageFunc: createBase64Image }),
+    replaceContents,
   };
 
   // Create all contentItems by reading all .md files and their images.

@@ -17180,7 +17180,8 @@ var _this$2 = undefined;
 var loadMarkdownIntoDb = function () {
   var _ref2 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(_ref) {
     var contentRoot = _ref.contentRoot,
-        imageFunc = _ref.imageFunc;
+        imageFunc = _ref.imageFunc,
+        replaceContents = _ref.replaceContents;
     var isFunction, defaultOptions, contentItems, itemsInserted;
     return regenerator.wrap(function _callee$(_context) {
       while (1) {
@@ -17197,7 +17198,9 @@ var loadMarkdownIntoDb = function () {
             isFunction = imageFunc && typeof imageFunc === 'function';
             defaultOptions = _extends({
               contentRoot
-            }, isFunction ? { imageFunc } : { imageFunc: createBase64Image });
+            }, isFunction ? { imageFunc } : { imageFunc: createBase64Image }, {
+              replaceContents
+            });
 
             // Create all contentItems by reading all .md files and their images.
 
