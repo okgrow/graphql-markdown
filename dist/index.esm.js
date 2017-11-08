@@ -1456,13 +1456,6 @@ var mapContentItems = function mapContentItems(_ref4) {
   };
 };
 
-
-
-/**
- * Convert our gql OrderBy enum into a format that nedb can understand.
- * @param {string} orderBy - It can be "ASCENDING" or "DESCENDING".
- * @returns {number} Order to sort the results in our query for nedb.
- */
 var convertOrderBy = function convertOrderBy(orderBy) {
   if (orderBy === 'DESCENDING') {
     return -1;
@@ -17006,6 +16999,7 @@ var _this$5 = undefined;
  * @param {Object} param
  * @param {string} param.filename - Full path to file.
  * @param {string} param.contentRoot - Path to where all markdown files are stored.
+ * @param {function} param.replaceContents - Manipulate the contents of the .md file before processing.
  * @param {Object} param.imageMap - key/value pairs where `key` is the `fullPathName` and `value` is the new path for the image. e.g - { fullPathName: "cdn.com/foo.png", ... }
  * @returns {Object} Created from the contents of the .md file that has been processed.
  */
@@ -17013,9 +17007,10 @@ var getMarkdownObject = function () {
   var _ref2 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(_ref) {
     var filename = _ref.filename,
         contentRoot = _ref.contentRoot,
-        imageMap = _ref.imageMap;
+        imageMap = _ref.imageMap,
+        replaceContents = _ref.replaceContents;
 
-    var assetDir, fileContents, _matter, content, data, html, images, defaultGroupId, newHtml;
+    var assetDir, rawContents, fileContents, _matter, content, data, html, images, defaultGroupId, newHtml;
 
     return regenerator.wrap(function _callee$(_context) {
       while (1) {
@@ -17026,12 +17021,15 @@ var getMarkdownObject = function () {
             return fs.readFileSync(filename, 'utf8');
 
           case 3:
-            fileContents = _context.sent;
+            rawContents = _context.sent;
+
+            // Provide the ability to manipulate the contents of the .md file before processing
+            fileContents = replaceContents ? replaceContents({ contentRoot, rawContents }) : rawContents;
             _matter = grayMatter(fileContents), content = _matter.content, data = _matter.data;
-            _context.next = 7;
+            _context.next = 8;
             return markedPromise(content);
 
-          case 7:
+          case 8:
             html = _context.sent;
             images = getListOfRelativeImageFiles(contentRoot, assetDir);
 
@@ -17054,7 +17052,7 @@ var getMarkdownObject = function () {
               images
             }));
 
-          case 13:
+          case 14:
           case 'end':
             return _context.stop();
         }
@@ -17079,7 +17077,8 @@ var _this$3 = undefined;
 var loadContentItems = function () {
   var _ref2 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee2(_ref) {
     var contentRoot = _ref.contentRoot,
-        imageFunc = _ref.imageFunc;
+        imageFunc = _ref.imageFunc,
+        replaceContents = _ref.replaceContents;
     var imageMap, mdFiles, contentItems;
     return regenerator.wrap(function _callee2$(_context2) {
       while (1) {
@@ -17115,7 +17114,8 @@ var loadContentItems = function () {
                         markdownObject = getMarkdownObject({
                           filename,
                           contentRoot,
-                          imageMap
+                          imageMap,
+                          replaceContents
                         });
                         return _context.abrupt('return', new Promise(function (resolve, reject) {
                           if (markdownObject) {

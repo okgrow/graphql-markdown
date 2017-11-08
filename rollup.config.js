@@ -17,6 +17,7 @@ export default [
       'events',
       'assert',
       'crypto',
+      'graphql',
     ],
     plugins: [
       graphql(), // So Rollup can process .gql/.graphql files
