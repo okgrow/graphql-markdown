@@ -13,13 +13,23 @@ import { getGroupId, replaceHtmlImageSrc } from '../helpers';
  * @param {Object} param
  * @param {string} param.filename - Full path to file.
  * @param {string} param.contentRoot - Path to where all markdown files are stored.
+ * @param {function} param.replaceContents - Manipulate the contents of the .md file before processing.
  * @param {Object} param.imageMap - key/value pairs where `key` is the `fullPathName` and `value` is the new path for the image. e.g - { fullPathName: "cdn.com/foo.png", ... }
  * @returns {Object} Created from the contents of the .md file that has been processed.
  */
-const getMarkdownObject = async ({ filename, contentRoot, imageMap }) => {
+const getMarkdownObject = async ({
+  filename,
+  contentRoot,
+  imageMap,
+  replaceContents,
+}) => {
   const assetDir = getAssetDir({ filename, contentRoot });
 
-  const fileContents = await fs.readFileSync(filename, 'utf8');
+  const rawContents = await fs.readFileSync(filename, 'utf8');
+  // Provide the ability to manipulate the contents of the .md file before processing
+  const fileContents = replaceContents
+    ? replaceContents({ contentRoot, rawContents })
+    : rawContents;
 
   const { content, data } = matter(fileContents);
   const html = await markedPromise(content);

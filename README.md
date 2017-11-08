@@ -55,12 +55,16 @@ const isProduction = process.env.NODE_ENV === 'production';
 const serveImagesFromServer = ({ imgPath, contentRoot }) =>
   `/images${imgPath.slice(contentRoot.length)}`;
 
+const replaceWords = ({ contentRoot, rawContents }) =>
+  rawContents.replace(new RegExp('deployment-server', 'g'), `${isProduction ? 'production' : 'development'}`);
+
 // Create our options for loading the markdown into our in memory db.
 // NOTE: By default images are converted to base64 if no function is passed.
 // You shouldn't use base64 in production as it increases the size of images.
 const options = {
   contentRoot: `fullpath/to/root/of/content`,
   imageFunc: isProduction ? serveImagesFromServer : null,
+  replaceContents: replaceWords
 };
 
 //*** Example 1 - Promise ***/

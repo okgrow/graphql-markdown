@@ -11,7 +11,11 @@ import { getListOfMdFiles } from '../server-helpers';
  * @param {Function} param.imageFunc - function provided by user to create imgPaths.
  * @returns {Object[]} ContentItems
  */
-const loadContentItems = async ({ contentRoot, imageFunc }) => {
+const loadContentItems = async ({
+  contentRoot,
+  imageFunc,
+  replaceContents,
+}) => {
   // TODO: Discuss if we allow default settings to be modified by passing the options at startup?
   Marked.setOptions({
     gfm: true,
@@ -35,6 +39,7 @@ const loadContentItems = async ({ contentRoot, imageFunc }) => {
           filename,
           contentRoot,
           imageMap,
+          replaceContents,
         });
         return new Promise((resolve, reject) => {
           if (markdownObject) {
