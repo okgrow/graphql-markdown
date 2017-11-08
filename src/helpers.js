@@ -59,16 +59,6 @@ export const mapContentItems = ({
 });
 
 /**
- * Convert any comma delimited string into an array.
- * @param {string} tags - A string with words that are comma delimited.
- * @returns {string[]} An array of tags.
- */
-export const tagsToArray = tags => {
-  if (!tags || !tags.length) return [];
-  return tags.split(',').map(tag => tag.trim());
-};
-
-/**
  * Convert our gql OrderBy enum into a format that nedb can understand.
  * @param {string} orderBy - It can be "ASCENDING" or "DESCENDING".
  * @returns {number} Order to sort the results in our query for nedb.
