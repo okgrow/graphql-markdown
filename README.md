@@ -52,6 +52,7 @@ import { loadMarkdownIntoDb } from 'xx-xx-xx';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
+// Simple example of imageFunc.
 const serveImagesFromServer = ({ imgPath, contentRoot }) =>
   `/images${imgPath.slice(contentRoot.length)}`;
 
