@@ -3,24 +3,29 @@ import Glob from 'glob';
 import marked from 'marked';
 import { dirname } from 'path';
 
-const SUPPORTED_IMAGE_TYPES = '(png|jpg|jpeg|svg)';
-
 /**
  * Returns a list of paths for the images located in the current directory.
  * @param {string} contentRoot - Path to where all markdown files are stored.
  * @param {string} assetDir - Folder to search for relative image assets.
+ * @param {string} imageFormats - list of imageFormats to support and search for.
+ * Expected format is "(ext|ext|ext)" e.g - "(png|svg|jpg)"
  * @returns {Array} An array which contains the full paths to any image files.
  */
-export const getListOfRelativeImageFiles = (contentRoot, assetDir) =>
-  Glob.glob.sync(`${contentRoot}${assetDir}/*.+${SUPPORTED_IMAGE_TYPES}`);
+export const getListOfRelativeImageFiles = (
+  contentRoot,
+  assetDir,
+  imageFormats,
+) => Glob.glob.sync(`${contentRoot}${assetDir}/*.+${imageFormats}`);
 
 /**
  * Returns a list of paths of the images found in the contentRoot.
  * @param {string} contentRoot - Path to root of the content.
+ * @param {string} imageFormats - list of imageFormats to support and search for.
+ * Expected format is "(ext|ext|ext)" e.g - "(png|svg|jpg)"
  * @returns {Array} An array containing the paths to all image files.
  */
-export const getListOfAllImageFiles = contentRoot =>
-  Glob.glob.sync(`${contentRoot}/**/*.+${SUPPORTED_IMAGE_TYPES}`);
+export const getListOfAllImageFiles = (contentRoot, imageFormats) =>
+  Glob.glob.sync(`${contentRoot}/**/*.+${imageFormats}`);
 
 /**
  * Returns a list of paths for all markdown files found in the contentRoot

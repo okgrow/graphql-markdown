@@ -12,15 +12,19 @@ import { getGroupId, replaceHtmlImageSrc } from '../helpers';
  * Create a markdown object from parsing a .md file and any image files that it references.
  * @param {Object} param
  * @param {string} param.filename - Full path to file.
+ * @param {Object} param.imageMap - key/value pairs where `key` is the `fullPathName`
+ * and `value` is the new path for the image. e.g - { fullPathName: "cdn.com/foo.png", ... }
  * @param {string} param.contentRoot - Path to where all markdown files are stored.
+ * @param {string} param.imageFormats - list of imageFormats to support and search for.
+ * Expected format is "(ext|ext|ext)" e.g - "(png|svg|jpg)"
  * @param {function} param.replaceContents - Manipulate the contents of the .md file before processing.
- * @param {Object} param.imageMap - key/value pairs where `key` is the `fullPathName` and `value` is the new path for the image. e.g - { fullPathName: "cdn.com/foo.png", ... }
  * @returns {Object} Created from the contents of the .md file that has been processed.
- */
+*/
 const getMarkdownObject = async ({
   filename,
-  contentRoot,
   imageMap,
+  contentRoot,
+  imageFormats,
   replaceContents,
 }) => {
   const assetDir = getAssetDir({ filename, contentRoot });
@@ -34,7 +38,11 @@ const getMarkdownObject = async ({
   const { content, data } = matter(fileContents);
   const html = await markedPromise(content);
 
-  const images = getListOfRelativeImageFiles(contentRoot, assetDir);
+  const images = getListOfRelativeImageFiles(
+    contentRoot,
+    assetDir,
+    imageFormats,
+  );
 
   // TODO: Deprecate this in future ?
   // If we do then we must state every .md file must provide a groupId?
