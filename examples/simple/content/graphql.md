@@ -22,3 +22,5 @@ maintenance.
 * GraphQL allows mobile development teams to avoid the high maintenance cost of versioning APIs when evolving their API while still supporting older clients.
 
 Learn more at [graphql.org](http://graphql.org/).
+
+![](parallax-movement.gif)

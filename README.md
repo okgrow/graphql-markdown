@@ -60,12 +60,15 @@ const replaceWords = ({ contentRoot, rawContents }) =>
   rawContents.replace(new RegExp('deployment-server', 'g'), `${isProduction ? 'production' : 'development'}`);
 
 // Create our options for loading the markdown into our in memory db.
-// NOTE: By default images are converted to base64 if no function is passed.
-// You shouldn't use base64 in production as it increases the size of images.
+// NOTE: By default images are converted to base64 if no function is passed to imageFunc.
+// NOTE: You shouldn't use base64 in production as it increases the size of images significantly.
+// NOTE: imageFormats is optional, if not provided it will use the DEFAULT_SUPPORTED_IMAGE_FORMATS.
+// imageFormats expects a string in the following format '(ext|ext|ext|..etc)'
 const options = {
-  contentRoot: `fullpath/to/root/of/content`,
-  imageFunc: isProduction ? serveImagesFromServer : null,
-  replaceContents: replaceWords
+  contentRoot: `fullpath/to/root/of/content`,             // required
+  imageFunc: isProduction ? serveImagesFromServer : null, // optional
+  replaceContents: replaceWords,                          // optional
+  imageFormats: '(png|svg)',                              // optional
 };
 
 //*** Example 1 - Promise ***/
