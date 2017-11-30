@@ -12248,25 +12248,27 @@ Glob.prototype._stat2 = function (f, abs, er, stat, cb) {
   return cb(null, c, stat)
 };
 
-var SUPPORTED_IMAGE_TYPES = '(png|jpg|jpeg|svg)';
-
 /**
  * Returns a list of paths for the images located in the current directory.
  * @param {string} contentRoot - Path to where all markdown files are stored.
  * @param {string} assetDir - Folder to search for relative image assets.
+ * @param {string} imageFormats - list of imageFormats to support and search for.
+ * Expected format is "(ext|ext|ext)" e.g - "(png|svg|jpg)"
  * @returns {Array} An array which contains the full paths to any image files.
  */
-var getListOfRelativeImageFiles = function getListOfRelativeImageFiles(contentRoot, assetDir) {
-  return glob_1.glob.sync(`${contentRoot}${assetDir}/*.+${SUPPORTED_IMAGE_TYPES}`);
+var getListOfRelativeImageFiles = function getListOfRelativeImageFiles(contentRoot, assetDir, imageFormats) {
+  return glob_1.glob.sync(`${contentRoot}${assetDir}/*.+${imageFormats}`);
 };
 
 /**
  * Returns a list of paths of the images found in the contentRoot.
  * @param {string} contentRoot - Path to root of the content.
+ * @param {string} imageFormats - list of imageFormats to support and search for.
+ * Expected format is "(ext|ext|ext)" e.g - "(png|svg|jpg)"
  * @returns {Array} An array containing the paths to all image files.
  */
-var getListOfAllImageFiles = function getListOfAllImageFiles(contentRoot) {
-  return glob_1.glob.sync(`${contentRoot}/**/*.+${SUPPORTED_IMAGE_TYPES}`);
+var getListOfAllImageFiles = function getListOfAllImageFiles(contentRoot, imageFormats) {
+  return glob_1.glob.sync(`${contentRoot}/**/*.+${imageFormats}`);
 };
 
 /**
@@ -12325,23 +12327,27 @@ var markedPromise = function markedPromise(mdContent) {
 var _this$4 = undefined;
 
 /**
- * Creates an object that maps the local fullPath of an image to it's desired path. e.g - { fullPathName: "cdn.com/foo.png", ... }
+ * Creates an object that maps the local fullPath of an image to it's desired path.
+ * e.g - { fullPathName: "cdn.com/foo.png", ... }
  * @param {Object} param
  * @param {string} param.contentRoot - Path to where all markdown files are stored.
- * @param {Object} param.imageFunc - function provided by user to create imgPaths. 
+ * @param {Object} param.imageFunc - function provided by user to create imgPaths.
+ * @param {string} param.imageFormats - list of imageFormats to support and search for.
+ * Expected format is "(ext|ext|ext)" e.g - "(png|svg|jpg)"
  * @returns {Object} imageMap e.g - { fullPathName: "cdn.com/foo.png", ... }
  */
 var createImagesMap = function () {
   var _ref2 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee2(_ref) {
     var contentRoot = _ref.contentRoot,
-        imageFunc = _ref.imageFunc;
-    var imageList, imagesMap;
+        imageFunc = _ref.imageFunc,
+        imageFormats = _ref.imageFormats;
+    var imagesMap, imageList;
     return regenerator.wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            imageList = getListOfAllImageFiles(contentRoot);
             imagesMap = {};
+            imageList = getListOfAllImageFiles(contentRoot, imageFormats);
             _context2.next = 4;
             return Promise.all(imageList.map(function () {
               var _ref3 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(imgPath) {
@@ -17005,16 +17011,20 @@ var _this$5 = undefined;
  * Create a markdown object from parsing a .md file and any image files that it references.
  * @param {Object} param
  * @param {string} param.filename - Full path to file.
+ * @param {Object} param.imageMap - key/value pairs where `key` is the `fullPathName`
+ * and `value` is the new path for the image. e.g - { fullPathName: "cdn.com/foo.png", ... }
  * @param {string} param.contentRoot - Path to where all markdown files are stored.
+ * @param {string} param.imageFormats - list of imageFormats to support and search for.
+ * Expected format is "(ext|ext|ext)" e.g - "(png|svg|jpg)"
  * @param {function} param.replaceContents - Manipulate the contents of the .md file before processing.
- * @param {Object} param.imageMap - key/value pairs where `key` is the `fullPathName` and `value` is the new path for the image. e.g - { fullPathName: "cdn.com/foo.png", ... }
  * @returns {Object} Created from the contents of the .md file that has been processed.
- */
+*/
 var getMarkdownObject = function () {
   var _ref2 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(_ref) {
     var filename = _ref.filename,
-        contentRoot = _ref.contentRoot,
         imageMap = _ref.imageMap,
+        contentRoot = _ref.contentRoot,
+        imageFormats = _ref.imageFormats,
         replaceContents = _ref.replaceContents;
 
     var assetDir, rawContents, fileContents, _matter, content, data, html, images, defaultGroupId, newHtml;
@@ -17038,7 +17048,7 @@ var getMarkdownObject = function () {
 
           case 8:
             html = _context.sent;
-            images = getListOfRelativeImageFiles(contentRoot, assetDir);
+            images = getListOfRelativeImageFiles(contentRoot, assetDir, imageFormats);
 
             // TODO: Deprecate this in future ?
             // If we do then we must state every .md file must provide a groupId?
@@ -17079,12 +17089,17 @@ var _this$3 = undefined;
  * @param {Object} param
  * @param {string} param.contentRoot - Path to where all markdown files are stored.
  * @param {Function} param.imageFunc - function provided by user to create imgPaths.
+ * @param {string} param.imageFormats - list of imageFormats to support and search for.
+ * Expected format is "(ext|ext|ext)" e.g - "(png|svg|jpg)"
+ * @param {Function} param.replaceContents - function provided by user to manipulate
+ * the contents of the .md file before processing.
  * @returns {Object[]} ContentItems
  */
 var loadContentItems = function () {
   var _ref2 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee2(_ref) {
     var contentRoot = _ref.contentRoot,
         imageFunc = _ref.imageFunc,
+        imageFormats = _ref.imageFormats,
         replaceContents = _ref.replaceContents;
     var imageMap, mdFiles, contentItems;
     return regenerator.wrap(function _callee2$(_context2) {
@@ -17105,7 +17120,11 @@ var loadContentItems = function () {
 
             _context2.prev = 1;
             _context2.next = 4;
-            return createImagesMap({ contentRoot, imageFunc });
+            return createImagesMap({
+              contentRoot,
+              imageFunc,
+              imageFormats
+            });
 
           case 4:
             imageMap = _context2.sent;
@@ -17122,7 +17141,8 @@ var loadContentItems = function () {
                           filename,
                           contentRoot,
                           imageMap,
-                          replaceContents
+                          replaceContents,
+                          imageFormats
                         });
                         return _context.abrupt('return', new Promise(function (resolve, reject) {
                           if (markdownObject) {
@@ -17170,17 +17190,24 @@ var loadContentItems = function () {
 
 var _this$2 = undefined;
 
+var DEFAULT_SUPPORTED_IMAGE_FORMATS = '(png|jpg|jpeg|svg|gif|webp|bmp)';
+
 /**
  * Load markdown into nedb
  * @param {Object} param
- * @param {string} param.contentRoot - Path to where all markdown files are stored.
  * @param {Function} param.imageFunc - function provided by user to create imgPaths.
+ * @param {string} param.contentRoot - Path to where all markdown files are stored.
+ * @param {string} param.imageFormats - list of imageFormats to support and search for.
+ * Expected format is "(ext|ext|ext)" e.g - "(png|svg|jpg)"
+ * @param {Function} param.replaceContents - function provided by user to manipulate
+ * the contents of the .md file before processing.
  * @returns {number} number of ContentItems inserted into the db.
  */
 var loadMarkdownIntoDb = function () {
   var _ref2 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(_ref) {
-    var contentRoot = _ref.contentRoot,
-        imageFunc = _ref.imageFunc,
+    var imageFunc = _ref.imageFunc,
+        contentRoot = _ref.contentRoot,
+        imageFormats = _ref.imageFormats,
         replaceContents = _ref.replaceContents;
     var isFunction, defaultOptions, contentItems, itemsInserted;
     return regenerator.wrap(function _callee$(_context) {
@@ -17199,7 +17226,8 @@ var loadMarkdownIntoDb = function () {
             defaultOptions = _extends({
               contentRoot
             }, isFunction ? { imageFunc } : { imageFunc: createBase64Image }, {
-              replaceContents
+              replaceContents,
+              imageFormats: imageFormats || DEFAULT_SUPPORTED_IMAGE_FORMATS
             });
 
             // Create all contentItems by reading all .md files and their images.
