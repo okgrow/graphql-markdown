@@ -9,6 +9,8 @@
 
 > Write markdown, serve as html, query via GraphQL.🔥
 
+TODO: Replace me with a gif of the pkg in action.
+
 ## Table of Contents
 
 - [Quick Start](#quick-start)
@@ -31,24 +33,12 @@ npm install --save https://github.com/okgrow/graphql-markdown
 # With Yarn
 yarn add https://github.com/okgrow/graphql-markdown
 ```
-Now you can import the `typeDefs` & `resolvers` to add to your GraphQL schema in order to query the markdown content.
-```js
-// gqlSchema.js
-import { makeExecutableSchema } from 'graphql-tools';
-import { contentItemTypeDefs, contentItemResolvers } from 'xx-xx-xx';
-
-const schema = makeExecutableSchema({
-  typeDefs: contentItemTypeDefs,
-  resolvers: contentItemResolvers
-});
-
-export default schema;
-```
-
-Next you will need to setup the process to load the markdown so we can query it via GraphQL.
+Now lets follow the simple example below to get started quickly.
 ```js
 // server/index.js
-import { loadMarkdownIntoDb } from 'xx-xx-xx';
+import hljs from 'highlight.js'; // Only install/used if you want to highlight code.
+import { makeExecutableSchema } from 'graphql-tools';
+import { loadMarkdownIntoDb } from '@okgrow/graphql-markdown';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -58,6 +48,10 @@ const serveImagesFromServer = ({ imgPath, contentRoot }) =>
 
 const replaceWords = ({ contentRoot, rawContents }) =>
   rawContents.replace(new RegExp('deployment-server', 'g'), `${isProduction ? 'production' : 'development'}`);
+
+// NOTE: Simple example of highlighting code by using highlight.js. You can use
+// any highlighter you like that conforms to the below function signature.
+const yourCodeHighlighter = (code) => hljs.highlightAuto(code).value;
 
 // Create our options for loading the markdown into our in memory db.
 // NOTE: By default images are converted to base64 if no function is passed to imageFunc.
@@ -69,15 +63,30 @@ const options = {
   imageFunc: isProduction ? serveImagesFromServer : null, // optional
   replaceContents: replaceWords,                          // optional
   imageFormats: '(png|svg)',                              // optional
+  debugMode: true,                                        // optional
+  codeHighlighter: yourCodeHighlighter,                   // optional
+  },
 };
 
 //*** Example 1 - Promise ***/
 
-// Find all markdown files, process and load them into memory.
-loadMarkdownIntoDb(options).then(itemCount => {
-  console.log(`DB ready!\n${itemCount} ContentItems loaded!`);
-  // Import and start the rest of your app & GraphQL Server.
-  import('../startup/server');
+// Find all markdown files, process and load them into memory and
+// return the TypeDefs & Resolvers for the graphql-markdown pkg.
+loadMarkdownIntoDb(options).then({
+  graphqlMarkdownTypeDefs,
+  graphqlMarkdownResolvers,
+  numberOfFilesInserted,
+} => {
+  console.log(`DB ready!\n${numberOfFilesInserted} ContentItems loaded!`);
+  // Create our GraphQL Schema
+  const schema = makeExecutableSchema({
+    typeDefs: graphqlMarkdownTypeDefs,
+    resolvers: graphqlMarkdownResolvers,
+  });
+
+  // Now start your GraphQL Server using the schema you just created.
+  // If your unsure how to do this see check out our examples dir.
+
 }).catch(error => {
   console.error('[loadMarkdownIntoDb]', error);
 });
@@ -85,12 +94,22 @@ loadMarkdownIntoDb(options).then(itemCount => {
 /*** Example 2 - Async/Await ***/
 (async () => {
   try {
-    // Find all markdown files, process and load them into memory.
-    const itemCount = await loadMarkdownIntoDb(options);
-    console.log(`DB ready!\n${itemCount} ContentItems loaded!`);
+    // Find all markdown files, process and load them into memory and
+    // return the TypeDefs & Resolvers for the graphql-markdown pkg.
+    const {
+      graphqlMarkdownTypeDefs,
+      graphqlMarkdownResolvers,
+      numberOfFilesInserted,
+    } = await loadMarkdownIntoDb(options);
+    console.log(`DB ready!\n${numberOfFilesInserted} ContentItems loaded!`);
 
-    // Import and start the rest of your app & GraphQL Server.
-    import('../imports/startup/server');
+    const schema = makeExecutableSchema({
+      typeDefs: graphqlMarkdownTypeDefs,
+      resolvers: graphqlMarkdownResolvers,
+    });
+
+    // Now start your GraphQL Server using the schema you just created.
+    // If your unsure how to do this see check out our examples dir.
 
   } catch (error) {
     console.error('[loadMarkdownIntoDb]', error);
@@ -113,7 +132,7 @@ Markdown Section
 
 #### MetaData section
 
-The MetaData section contains `key`:`value` pairs. Every Markdown file is required to contain a MetaData section and must contain an `id` and an `groupId` key-value pair.
+The MetaData section contains `key`:`value` pairs. Every Markdown file is required to contain a MetaData section and must contain an `id` and an `groupId` key-value pair. You can add as many additional `key`:`value` pairs as you like, we will generate GraphQL Field Definitions from these additional `key`:`value` at runtime.
 
 ```md
 ---
@@ -141,6 +160,7 @@ type: pageContent
 title: Wonder Website
 description: Wonder Website - Home Page
 date: "2017-12-25"
+tags: [Happy, Learnings]
 ---
 
 # Welcome to this wonderful website!
@@ -152,7 +172,7 @@ Hello world! Thanks for dropping by to say hello.
 
 ```sh
 # clone the repo
-git clone git@github.com:okgrow/markdown-graphql.git
+git clone git@github.com:okgrow/graphql-markdown.git
 # Don't forget to install
 npm install
 # Run all tests
@@ -164,6 +184,7 @@ npm run test
 Check out the examples folder to see how it all works. Please note:
 - Node version 8+ is required.
 - You must run `npm install` on the main package first as the examples import the `/dist` files.
+- Examples contain detailed instructions & example queries to copy paste into Graphiql.
 
 ## Maintainers
 

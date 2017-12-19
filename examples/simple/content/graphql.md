@@ -5,7 +5,7 @@ type: page
 title: "GraphQL: The future of data!"
 description: GraphQL is now!
 date: "2017-09-20"
-tags: GraphQL, Basic
+tags: [GraphQL, Basic]
 order: 1
 ---
 

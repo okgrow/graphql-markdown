@@ -21,11 +21,9 @@ Below are some example queries demonstrating the packages capabilities. Give the
   contentItem(id: "graphqlIntro") {
     id
     groupId
-    content
-    metaData {
-      name
-      value
-    }
+    html
+    title
+    tags
   }
 }
 ```
@@ -67,6 +65,7 @@ The `contentItems` query also supports a basic form of pagination via the abilit
   {
     id
     groupId
+    type
   }
 }
 ```
@@ -93,11 +92,10 @@ Try changing the below example and see what happens. Here are a few hints:
   {
     id
     groupId
-    content
-    metaData {
-      name
-      value
-    }
+    html
+    title
+    description
+    tags
   }
 }
 ```
