@@ -1,4 +1,9 @@
-import { convertOrderBy, metaDataToObject, isMultiArgsQuery } from '../helpers';
+import {
+  convertOrderBy,
+  metaDataToObject,
+  isMultiArgsQuery,
+  mapContentItems,
+} from '../helpers';
 
 import { find, findOne, dataStore } from '../database';
 
@@ -11,7 +16,11 @@ export const getContentItem = async id => {
   // Don't even bother if we didn't get an ID
   if (id) {
     try {
-      const contentItem = await findOne({ db: dataStore, query: { id } });
+      const contentItem = await findOne({
+        db: dataStore,
+        query: { id },
+        mapFunc: mapContentItems,
+      });
 
       return contentItem;
     } catch (error) {
@@ -70,6 +79,7 @@ export const getContentItems = async ({
         sortOptions,
         skip,
         limit,
+        mapFunc: mapContentItems,
       });
       return contentItems;
     } catch (error) {

@@ -5,11 +5,7 @@
   "description": "Write markdown, serve as html, query via GraphQL.🔥",
   "author": "OK GROW! <hello@okgrow.com> (https://www.okgrow.com)",
   "homepage": "https://github.com/okgrow/guides",
-  "keywords": [
-    "graphql",
-    "markdown",
-    "html"
-  ],
+  "keywords": ["graphql", "markdown", "html"],
   "repository": {
     "type": "git",
     "url": "https://github.com/okgrow/guides.git"
@@ -19,6 +15,9 @@
   },
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
+  "engines": {
+    "node": ">=4.8.3"
+  },
   "scripts": {
     "test": "jest",
     "format": "prettier-eslint --write \"src/**/*.js\"",
@@ -29,6 +28,7 @@
   "dependencies": {
     "glob": "^7.1.2",
     "gray-matter": "^3.0.3",
+    "lodash.clonedeep": "^4.5.0",
     "marked": "^0.3.6",
     "nedb": "^1.8.0"
   },
@@ -69,7 +69,5 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-watch": "^4.3.1"
   },
-  "files": [
-    "dist"
-  ]
+  "files": ["dist"]
 }

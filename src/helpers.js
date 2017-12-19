@@ -44,19 +44,11 @@ export const getGroupId = assetDir => {
  */
 export const mapContentItems = ({
   _id,
-  html,
   markdown,
   assetDir,
   images,
-  ...metaData
-}) => ({
-  id: metaData.id,
-  groupId: metaData.groupId,
-  // TODO: look into unions or interface, currently can't query for
-  // specific metaData. Would be nice to return an object instead of an array.
-  metaData: metaDataToArray(metaData),
-  content: html,
-});
+  ...fields
+}) => fields;
 
 /**
  * Convert our gql OrderBy enum into a format that nedb can understand.

@@ -44,8 +44,7 @@ type MetaDataField {
 type ContentItem {
   id: ID!
   groupId: ID!
-  metaData: [MetaDataField!]!
-  content: String!
+  html: String
 }
 
 type Query {
