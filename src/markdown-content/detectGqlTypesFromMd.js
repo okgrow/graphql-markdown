@@ -8,7 +8,7 @@ import {
 // Infer the GraphQL Type from the js-yaml Type.
 // @returns {String} - The GraphQL Type e.g -> Float
 // example input -> { "kind": "scalar", "tag": "tag:yaml.org,2002:float" }
-const detectGraphQLType = ({ kind, tag }) => {
+const detectGraphQLType = ({ kind, tag, relativeFileName }) => {
   switch (kind) {
     case 'sequence':
       return 'List';
@@ -31,11 +31,7 @@ const detectGraphQLType = ({ kind, tag }) => {
         default: {
           // TODO: Refactor/DRY & add more details like filename, field
           throw new Error(
-            'Unsupported GraphQL Scalar Type detected in your .md files.',
-            {
-              kind,
-              tag,
-            },
+            `Unsupported GraphQL Scalar Type (kind: ${kind}, tag: ${tag}) detected in your .md file. -> ${relativeFileName}`,
           );
         }
       }
@@ -45,10 +41,9 @@ const detectGraphQLType = ({ kind, tag }) => {
     //   return 'Object';
     default: {
       // TODO: Refactor/DRY & add more details like filename, field
-      throw new Error('Unsupported GraphQL Type detected in your .md files.', {
-        kind,
-        tag,
-      });
+      throw new Error(
+        `Unsupported GraphQL Scalar Type (kind: ${kind}, tag: ${tag}) detected in your .md files. -> ${relativeFileName}`,
+      );
     }
   }
 };
@@ -107,6 +102,7 @@ export const gqlTypeListener = ({
   gqlTypesInMd,
   currKey,
   debugMode = false,
+  relativeFileName,
 }) => (eventType, { position, result, tag, kind, line, lineStart, length }) => {
   const isStart = position === 1 && typeof tag === 'undefined';
   const isEnd = length === position;
@@ -141,7 +137,7 @@ export const gqlTypeListener = ({
         return;
       }
 
-      let gqlType = detectGraphQLType({ kind, tag });
+      let gqlType = detectGraphQLType({ kind, tag, relativeFileName });
       let gqlScalarType = gqlType;
       const isList = gqlTypesInMd[currKey].listTypes.length;
       // When listTypes isn't empty we know we have a GQL List
@@ -166,7 +162,9 @@ export const gqlTypeListener = ({
         gqlScalarType,
       });
     } else {
-      gqlTypesInMd[currKey].listTypes.push(detectGraphQLType({ kind, tag }));
+      gqlTypesInMd[currKey].listTypes.push(
+        detectGraphQLType({ kind, tag, relativeFileName }),
+      );
     }
   }
 };

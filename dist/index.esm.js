@@ -12511,7 +12511,8 @@ var checkForGqlTypeMissmatchBetweenMdFiles = function checkForGqlTypeMissmatchBe
 // example input -> { "kind": "scalar", "tag": "tag:yaml.org,2002:float" }
 var detectGraphQLType = function detectGraphQLType(_ref) {
   var kind = _ref.kind,
-      tag = _ref.tag;
+      tag = _ref.tag,
+      relativeFileName = _ref.relativeFileName;
 
   switch (kind) {
     case 'sequence':
@@ -12536,10 +12537,7 @@ var detectGraphQLType = function detectGraphQLType(_ref) {
           default:
             {
               // TODO: Refactor/DRY & add more details like filename, field
-              throw new Error('Unsupported GraphQL Scalar Type detected in your .md files.', {
-                kind,
-                tag
-              });
+              throw new Error(`Unsupported GraphQL Scalar Type (kind: ${kind}, tag: ${tag}) detected in your .md file. -> ${relativeFileName}`);
             }
         }
       }
@@ -12549,10 +12547,7 @@ var detectGraphQLType = function detectGraphQLType(_ref) {
     default:
       {
         // TODO: Refactor/DRY & add more details like filename, field
-        throw new Error('Unsupported GraphQL Type detected in your .md files.', {
-          kind,
-          tag
-        });
+        throw new Error(`Unsupported GraphQL Scalar Type (kind: ${kind}, tag: ${tag}) detected in your .md files. -> ${relativeFileName}`);
       }
   }
 };
@@ -12615,7 +12610,8 @@ var gqlTypeListener = function gqlTypeListener(_ref4) {
       gqlTypesInMd = _ref4.gqlTypesInMd,
       currKey = _ref4.currKey,
       _ref4$debugMode = _ref4.debugMode,
-      debugMode = _ref4$debugMode === undefined ? false : _ref4$debugMode;
+      debugMode = _ref4$debugMode === undefined ? false : _ref4$debugMode,
+      relativeFileName = _ref4.relativeFileName;
   return function (eventType, _ref5) {
     var position = _ref5.position,
         result = _ref5.result,
@@ -12658,7 +12654,7 @@ var gqlTypeListener = function gqlTypeListener(_ref4) {
           return;
         }
 
-        var gqlType = detectGraphQLType({ kind, tag });
+        var gqlType = detectGraphQLType({ kind, tag, relativeFileName });
         var gqlScalarType = gqlType;
         var isList = gqlTypesInMd[currKey].listTypes.length;
         // When listTypes isn't empty we know we have a GQL List
@@ -12683,7 +12679,7 @@ var gqlTypeListener = function gqlTypeListener(_ref4) {
           gqlScalarType
         });
       } else {
-        gqlTypesInMd[currKey].listTypes.push(detectGraphQLType({ kind, tag }));
+        gqlTypesInMd[currKey].listTypes.push(detectGraphQLType({ kind, tag, relativeFileName }));
       }
     }
   };
@@ -12900,7 +12896,7 @@ var getMarkdownObject = function () {
         imageFormats = _ref.imageFormats,
         replaceContents = _ref.replaceContents;
 
-    var assetDir, rawContents, fileContents, currKey, stack, debug, gqlTypesInMd, _matter, content, data, html, images, defaultGroupId, newHtml, contentItem;
+    var assetDir, rawContents, relativeFileName, fileContents, currKey, stack, debug, gqlTypesInMd, _matter, content, data, html, images, defaultGroupId, newHtml, contentItem;
 
     return regenerator.wrap(function _callee$(_context) {
       while (1) {
@@ -12908,6 +12904,7 @@ var getMarkdownObject = function () {
           case 0:
             assetDir = getAssetDir({ filename, contentRoot });
             rawContents = fs.readFileSync(filename, 'utf8');
+            relativeFileName = filename.slice(contentRoot.length);
 
             // Provide the ability to manipulate the contents of the .md file before processing
 
@@ -12921,21 +12918,27 @@ var getMarkdownObject = function () {
             debug = [];
             gqlTypesInMd = {};
             _matter = grayMatter(fileContents, {
-              listener: gqlTypeListener({ stack, debug, currKey, gqlTypesInMd })
+              listener: gqlTypeListener({
+                stack,
+                debug,
+                currKey,
+                gqlTypesInMd,
+                relativeFileName
+              })
             }), content = _matter.content, data = _matter.data;
 
             if (!(!data || !data.id)) {
-              _context.next = 10;
+              _context.next = 11;
               break;
             }
 
             throw new Error(`[getMarkdownObject] id is missing from your .md file: ${assetDir}`);
 
-          case 10:
-            _context.next = 12;
+          case 11:
+            _context.next = 13;
             return markedPromise(content);
 
-          case 12:
+          case 13:
             html = _context.sent;
             images = getListOfRelativeImageFiles(contentRoot, assetDir, imageFormats);
 
@@ -12953,7 +12956,7 @@ var getMarkdownObject = function () {
               gqlTypesInMd // TODO: Think of a better name to describe the GQL fields/type
             });
 
-          case 18:
+          case 19:
           case 'end':
             return _context.stop();
         }

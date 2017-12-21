@@ -31,6 +31,7 @@ const getMarkdownObject = async ({
 }) => {
   const assetDir = getAssetDir({ filename, contentRoot });
   const rawContents = fs.readFileSync(filename, 'utf8');
+  const relativeFileName = filename.slice(contentRoot.length);
 
   // Provide the ability to manipulate the contents of the .md file before processing
   const fileContents = replaceContents
@@ -44,7 +45,13 @@ const getMarkdownObject = async ({
   const gqlTypesInMd = {};
 
   const { content, data /* , excerpt */ } = matter(fileContents, {
-    listener: gqlTypeListener({ stack, debug, currKey, gqlTypesInMd }),
+    listener: gqlTypeListener({
+      stack,
+      debug,
+      currKey,
+      gqlTypesInMd,
+      relativeFileName,
+    }),
   });
 
   if (!data || !data.id) {
