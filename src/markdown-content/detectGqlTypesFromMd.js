@@ -139,6 +139,8 @@ export const gqlTypeListener = ({
 
       let gqlType = detectGraphQLType({ kind, tag, relativeFileName });
       let gqlScalarType = gqlType;
+      // TODO: Decide if we allow an empty array as valid in front-matter.
+      // e.g - tags: []
       const isList = gqlTypesInMd[currKey].listTypes.length;
       // When listTypes isn't empty we know we have a GQL List
       if (isList) {
