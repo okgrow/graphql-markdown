@@ -32,17 +32,6 @@ test('findOne resolves & finds the correct data', async () => {
   const expectedResult = {
     id: 'findOne_test',
     groupId: 'tests',
-    content: undefined,
-    metaData: [
-      {
-        name: 'id',
-        value: 'findOne_test',
-      },
-      {
-        name: 'groupId',
-        value: 'tests',
-      },
-    ],
   };
 
   const testInsert = await insert({ db: dataStore, docToInsert });
@@ -74,17 +63,6 @@ test('find resolves & finds the correct data', async () => {
     {
       id: 'find_test',
       groupId: 'tests',
-      content: undefined,
-      metaData: [
-        {
-          name: 'id',
-          value: 'find_test',
-        },
-        {
-          name: 'groupId',
-          value: 'tests',
-        },
-      ],
     },
   ];
 

@@ -13,9 +13,11 @@
 1. Now you can query the markdown with GraphQL!
 
 ## Example Queries
+
 Below are some example queries demonstrating the packages capabilities. Give them a try in GraphiQL!
 
 ### contentItem
+
 ```
 {
   contentItem(id: "graphqlIntro") {
@@ -38,6 +40,7 @@ The `contentItems` query allows you to query by `ids`, `groupIds`, or `fieldMatc
 The `contentItems` query also supports a basic form of pagination via the ability to `sort`, `skip`, and `limit` the results returned from a query.
 
 #### Query by ids
+
 ```
 {
   contentItems(query: { ids: ["graphqlIntro", "homePage"] }) {
@@ -46,7 +49,9 @@ The `contentItems` query also supports a basic form of pagination via the abilit
   }
 }
 ```
+
 #### Query by groupIds
+
 ```
 {
   contentItems(query: { groupIds: ["simple-example"] }) {
@@ -71,12 +76,14 @@ The `contentItems` query also supports a basic form of pagination via the abilit
 ```
 
 #### Sort, skip or limit query results.
+
 Try changing the below example and see what happens. Here are a few hints:
 - Set `skip` to 1 and `limit` to 0.
 - Set `skip` to 0 and `limit` to 1.
 - Swap `DESCENDING` with `ASCENDING`.
 - Replace `groupIds` with `ids: ["graphqlIntro", "homePage"]`
 - Remove `skip` and `limit` all together.
+
 ```
 {
   contentItems(
