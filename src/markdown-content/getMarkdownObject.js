@@ -21,7 +21,7 @@ import { getGroupId, replaceHtmlImageSrc } from '../helpers';
  * Expected format is "(ext|ext|ext)" e.g - "(png|svg|jpg)"
  * @param {function} param.replaceContents - Manipulate the contents of the .md file before processing.
  * @returns {Object} Created from the contents of the .md file that has been processed.
-*/
+ */
 const getMarkdownObject = async ({
   filename,
   imageMap,
