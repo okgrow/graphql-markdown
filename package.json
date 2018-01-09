@@ -33,7 +33,7 @@
     "glob": "^7.1.2",
     "gray-matter": "^3.0.3",
     "lodash.clonedeep": "^4.5.0",
-    "marked": "^0.3.9",
+    "marked": "^0.3.12",
     "nedb": "^1.8.0"
   },
   "peerDependencies": {
