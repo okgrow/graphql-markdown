@@ -34,9 +34,11 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 });
 
 var _core = createCommonjsModule(function (module) {
-var core = module.exports = { version: '2.5.1' };
+var core = module.exports = { version: '2.5.3' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 });
+
+var _core_1 = _core.version;
 
 var _isObject = function (it) {
   return typeof it === 'object' ? it !== null : typeof it === 'function';
@@ -380,8 +382,6 @@ var runtime = createCommonjsModule(function (module) {
  */
 
 !(function(global) {
-  "use strict";
-
   var Op = Object.prototype;
   var hasOwn = Op.hasOwnProperty;
   var undefined; // More compressible than void 0.
@@ -1140,12 +1140,6 @@ var marked = createCommonjsModule(function (module, exports) {
  */
 
 (function() {
-'use strict';
-
-/**
- * Block-Level Grammar
- */
-
 var block = {
   newline: /^\n+/,
   code: /^( {4}[^\n]+\n*)+/,
@@ -2147,6 +2141,7 @@ Parser.prototype.tok = function() {
       // header
       cell = '';
       for (i = 0; i < this.token.header.length; i++) {
+        flags = { header: true, align: this.token.align[i] };
         cell += this.renderer.tablecell(
           this.inline.output(this.token.header[i]),
           { header: true, align: this.token.align[i] }
@@ -2518,6 +2513,8 @@ function maybeCallback(cb) {
   return typeof cb === 'function' ? cb : rethrow();
 }
 
+var normalize = path__default.normalize;
+
 // Regexp that finds the next partion of a (partial) path
 // result is [base_with_slash, base], e.g. ['somedir/', 'somedir']
 if (isWindows) {
@@ -2838,7 +2835,6 @@ var isArray = Array.isArray || function (xs) {
     return Object.prototype.toString.call(xs) === '[object Array]';
 };
 
-'use strict';
 var balancedMatch = balanced;
 function balanced(a, b, str) {
   if (a instanceof RegExp) a = maybeMatch(a, str);
@@ -4051,8 +4047,6 @@ try {
   module.exports = inherits_browser;
 }
 });
-
-'use strict';
 
 function posix(path$$1) {
 	return path$$1.charAt(0) === '/';
@@ -5795,126 +5789,6 @@ var markedPromise = function markedPromise(mdContent) {
   });
 };
 
-var babelHelpers = {};
-
-
-
-
-var asyncGenerator = function () {
-  function AwaitValue(value) {
-    this.value = value;
-  }
-
-  function AsyncGenerator(gen) {
-    var front, back;
-
-    function send(key, arg) {
-      return new Promise(function (resolve, reject) {
-        var request = {
-          key: key,
-          arg: arg,
-          resolve: resolve,
-          reject: reject,
-          next: null
-        };
-
-        if (back) {
-          back = back.next = request;
-        } else {
-          front = back = request;
-          resume(key, arg);
-        }
-      });
-    }
-
-    function resume(key, arg) {
-      try {
-        var result = gen[key](arg);
-        var value = result.value;
-
-        if (value instanceof AwaitValue) {
-          Promise.resolve(value.value).then(function (arg) {
-            resume("next", arg);
-          }, function (arg) {
-            resume("throw", arg);
-          });
-        } else {
-          settle(result.done ? "return" : "normal", result.value);
-        }
-      } catch (err) {
-        settle("throw", err);
-      }
-    }
-
-    function settle(type, value) {
-      switch (type) {
-        case "return":
-          front.resolve({
-            value: value,
-            done: true
-          });
-          break;
-
-        case "throw":
-          front.reject(value);
-          break;
-
-        default:
-          front.resolve({
-            value: value,
-            done: false
-          });
-          break;
-      }
-
-      front = front.next;
-
-      if (front) {
-        resume(front.key, front.arg);
-      } else {
-        back = null;
-      }
-    }
-
-    this._invoke = send;
-
-    if (typeof gen.return !== "function") {
-      this.return = undefined;
-    }
-  }
-
-  if (typeof Symbol === "function" && Symbol.asyncIterator) {
-    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
-      return this;
-    };
-  }
-
-  AsyncGenerator.prototype.next = function (arg) {
-    return this._invoke("next", arg);
-  };
-
-  AsyncGenerator.prototype.throw = function (arg) {
-    return this._invoke("throw", arg);
-  };
-
-  AsyncGenerator.prototype.return = function (arg) {
-    return this._invoke("return", arg);
-  };
-
-  return {
-    wrap: function (fn) {
-      return function () {
-        return new AsyncGenerator(fn.apply(this, arguments));
-      };
-    },
-    await: function (value) {
-      return new AwaitValue(value);
-    }
-  };
-}();
-
-
-
 var asyncToGenerator = function (fn) {
   return function () {
     var gen = fn.apply(this, arguments);
@@ -6058,8 +5932,6 @@ var toConsumableArray = function (arr) {
   }
 };
 
-babelHelpers;
-
 var _this$2 = undefined;
 
 /**
@@ -6146,12 +6018,52 @@ var createImagesMap = function () {
   };
 }();
 
-'use strict';
+/*!
+ * is-extendable <https://github.com/jonschlinkert/is-extendable>
+ *
+ * Copyright (c) 2015, Jon Schlinkert.
+ * Licensed under the MIT License.
+ */
+
+var isExtendable = function isExtendable(val) {
+  return typeof val !== 'undefined' && val !== null
+    && (typeof val === 'object' || typeof val === 'function');
+};
+
+var extendShallow = function extend(o/*, objects*/) {
+  if (!isExtendable(o)) { o = {}; }
+
+  var len = arguments.length;
+  for (var i = 1; i < len; i++) {
+    var obj = arguments[i];
+
+    if (isExtendable(obj)) {
+      assign(o, obj);
+    }
+  }
+  return o;
+};
+
+function assign(a, b) {
+  for (var key in b) {
+    if (hasOwn(b, key)) {
+      a[key] = b[key];
+    }
+  }
+}
+
+/**
+ * Returns true if the given `key` is an own property of `obj`.
+ */
+
+function hasOwn(obj, key) {
+  return Object.prototype.hasOwnProperty.call(obj, key);
+}
 
 var engine = function(name, options) {
-  let engine = options.engines[name] || options.engines[aliases(name)];
+  var engine = options.engines[name] || options.engines[aliase(name)];
   if (typeof engine === 'undefined') {
-    throw new Error(`gray-matter engine "${name}" is not registered`);
+    throw new Error('gray-matter engine "' + name + '" is not registered');
   }
   if (typeof engine === 'function') {
     engine = { parse: engine };
@@ -6159,7 +6071,7 @@ var engine = function(name, options) {
   return engine;
 };
 
-function aliases(name) {
+function aliase(name) {
   switch (name.toLowerCase()) {
     case 'js':
     case 'javascript':
@@ -6177,15 +6089,12 @@ function aliases(name) {
   }
 }
 
-'use strict';
-
-
 function isNothing(subject) {
   return (typeof subject === 'undefined') || (subject === null);
 }
 
 
-function isObject$1(subject) {
+function isObject$2(subject) {
   return (typeof subject === 'object') && (subject !== null);
 }
 
@@ -6231,7 +6140,7 @@ function isNegativeZero(number) {
 
 
 var isNothing_1      = isNothing;
-var isObject_1       = isObject$1;
+var isObject_1       = isObject$2;
 var toArray_1        = toArray$1;
 var repeat_1         = repeat;
 var isNegativeZero_1 = isNegativeZero;
@@ -6248,8 +6157,6 @@ var common$3 = {
 
 // YAML error class. http://stackoverflow.com/questions/8458984
 //
-'use strict';
-
 function YAMLException$1(reason, mark) {
   // Super constructor
   Error.call(this);
@@ -6289,12 +6196,6 @@ YAMLException$1.prototype.toString = function toString(compact) {
 
 
 var exception = YAMLException$1;
-
-'use strict';
-
-
-
-
 
 function Mark(name, buffer, position, line, column) {
   this.name     = name;
@@ -6367,10 +6268,6 @@ Mark.prototype.toString = function toString(compact) {
 
 var mark$1 = Mark;
 
-'use strict';
-
-
-
 var TYPE_CONSTRUCTOR_OPTIONS = [
   'kind',
   'resolve',
@@ -6428,8 +6325,6 @@ function Type$1(tag, options) {
 }
 
 var type = Type$1;
-
-'use strict';
 
 /*eslint-disable max-len*/
 
@@ -6538,42 +6433,20 @@ Schema$1.create = function createSchema() {
 
 var schema = Schema$1;
 
-'use strict';
-
-
-
 var str = new type('tag:yaml.org,2002:str', {
   kind: 'scalar',
   construct: function (data) { return data !== null ? data : ''; }
 });
-
-'use strict';
-
-
 
 var seq = new type('tag:yaml.org,2002:seq', {
   kind: 'sequence',
   construct: function (data) { return data !== null ? data : []; }
 });
 
-'use strict';
-
-
-
 var map = new type('tag:yaml.org,2002:map', {
   kind: 'mapping',
   construct: function (data) { return data !== null ? data : {}; }
 });
-
-// Standard YAML's Failsafe schema.
-// http://www.yaml.org/spec/1.2/spec.html#id2802346
-
-
-'use strict';
-
-
-
-
 
 var failsafe = new schema({
   explicit: [
@@ -6582,10 +6455,6 @@ var failsafe = new schema({
     map
   ]
 });
-
-'use strict';
-
-
 
 function resolveYamlNull(data) {
   if (data === null) return true;
@@ -6618,10 +6487,6 @@ var _null = new type('tag:yaml.org,2002:null', {
   defaultStyle: 'lowercase'
 });
 
-'use strict';
-
-
-
 function resolveYamlBoolean(data) {
   if (data === null) return false;
 
@@ -6653,11 +6518,6 @@ var bool = new type('tag:yaml.org,2002:bool', {
   },
   defaultStyle: 'lowercase'
 });
-
-'use strict';
-
-
-
 
 function isHexCode(c) {
   return ((0x30/* 0 */ <= c) && (c <= 0x39/* 9 */)) ||
@@ -6827,11 +6687,6 @@ var int_1 = new type('tag:yaml.org,2002:int', {
   }
 });
 
-'use strict';
-
-
-
-
 var YAML_FLOAT_PATTERN = new RegExp(
   // 2.5e4, 2.5 and integers
   '^(?:[-+]?(?:0|[1-9][0-9_]*)(?:\\.[0-9_]*)?(?:[eE][-+]?[0-9]+)?' +
@@ -6944,20 +6799,6 @@ var float_1 = new type('tag:yaml.org,2002:float', {
   defaultStyle: 'lowercase'
 });
 
-// Standard YAML's JSON schema.
-// http://www.yaml.org/spec/1.2/spec.html#id2803231
-//
-// NOTE: JS-YAML does not support schema-specific tag resolution restrictions.
-// So, this schema is not such strict as defined in the YAML specification.
-// It allows numbers in binary notaion, use `Null` and `NULL` as `null`, etc.
-
-
-'use strict';
-
-
-
-
-
 var json = new schema({
   include: [
     failsafe
@@ -6970,28 +6811,11 @@ var json = new schema({
   ]
 });
 
-// Standard YAML's Core schema.
-// http://www.yaml.org/spec/1.2/spec.html#id2804923
-//
-// NOTE: JS-YAML does not support schema-specific tag resolution restrictions.
-// So, Core schema has no distinctions from JSON schema is JS-YAML.
-
-
-'use strict';
-
-
-
-
-
 var core = new schema({
   include: [
     json
   ]
 });
-
-'use strict';
-
-
 
 var YAML_DATE_REGEXP = new RegExp(
   '^([0-9][0-9][0-9][0-9])'          + // [1] year
@@ -7078,10 +6902,6 @@ var timestamp = new type('tag:yaml.org,2002:timestamp', {
   represent: representYamlTimestamp
 });
 
-'use strict';
-
-
-
 function resolveYamlMerge(data) {
   return data === '<<' || data === null;
 }
@@ -7090,8 +6910,6 @@ var merge = new type('tag:yaml.org,2002:merge', {
   kind: 'scalar',
   resolve: resolveYamlMerge
 });
-
-'use strict';
 
 /*eslint-disable no-bitwise*/
 
@@ -7230,10 +7048,6 @@ var binary = new type('tag:yaml.org,2002:binary', {
   represent: representYamlBinary
 });
 
-'use strict';
-
-
-
 var _hasOwnProperty$1 = Object.prototype.hasOwnProperty;
 var _toString       = Object.prototype.toString;
 
@@ -7275,10 +7089,6 @@ var omap = new type('tag:yaml.org,2002:omap', {
   construct: constructYamlOmap
 });
 
-'use strict';
-
-
-
 var _toString$1 = Object.prototype.toString;
 
 function resolveYamlPairs(data) {
@@ -7286,6 +7096,8 @@ function resolveYamlPairs(data) {
 
   var index, length, pair, keys, result,
       object = data;
+
+  result = new Array(object.length);
 
   for (index = 0, length = object.length; index < length; index += 1) {
     pair = object[index];
@@ -7296,7 +7108,7 @@ function resolveYamlPairs(data) {
 
     if (keys.length !== 1) return false;
 
-    
+    result[index] = [ keys[0], pair[keys[0]] ];
   }
 
   return true;
@@ -7327,10 +7139,6 @@ var pairs = new type('tag:yaml.org,2002:pairs', {
   construct: constructYamlPairs
 });
 
-'use strict';
-
-
-
 var _hasOwnProperty$2 = Object.prototype.hasOwnProperty;
 
 function resolveYamlSet(data) {
@@ -7357,19 +7165,6 @@ var set$1 = new type('tag:yaml.org,2002:set', {
   construct: constructYamlSet
 });
 
-// JS-YAML's default schema for `safeLoad` function.
-// It is not described in the YAML specification.
-//
-// This schema is based on standard YAML's Core schema and includes most of
-// extra types described at YAML tag repository. (http://yaml.org/type/)
-
-
-'use strict';
-
-
-
-
-
 var default_safe = new schema({
   include: [
     core
@@ -7385,10 +7180,6 @@ var default_safe = new schema({
     set$1
   ]
 });
-
-'use strict';
-
-
 
 function resolveJavascriptUndefined() {
   return true;
@@ -7414,10 +7205,6 @@ var _undefined = new type('tag:yaml.org,2002:js/undefined', {
   predicate: isUndefined,
   represent: representJavascriptUndefined
 });
-
-'use strict';
-
-
 
 function resolveJavascriptRegExp(data) {
   if (data === null) return false;
@@ -7475,8 +7262,6 @@ var regexp = new type('tag:yaml.org,2002:js/regexp', {
   predicate: isRegExp,
   represent: representJavascriptRegExp
 });
-
-'use strict';
 
 var esprima;
 
@@ -7561,21 +7346,6 @@ var _function = new type('tag:yaml.org,2002:js/function', {
   represent: representJavascriptFunction
 });
 
-// JS-YAML's default schema for `load` function.
-// It is not described in the YAML specification.
-//
-// This schema is based on JS-YAML's default safe schema and includes
-// JavaScript-specific types: !!js/undefined, !!js/regexp and !!js/function.
-//
-// Also this schema is used as default base schema at `Schema.create` function.
-
-
-'use strict';
-
-
-
-
-
 var default_full = schema.DEFAULT = new schema({
   include: [
     default_safe
@@ -7586,8 +7356,6 @@ var default_full = schema.DEFAULT = new schema({
     _function
   ]
 });
-
-'use strict';
 
 /*eslint-disable max-len,no-use-before-define*/
 
@@ -8586,7 +8354,7 @@ function readBlockMapping(state, nodeIndent, flowIndent) {
         allowCompact = true;
 
       } else {
-        throwError(state, 'incomplete explicit mapping pair; a key node is missed');
+        throwError(state, 'incomplete explicit mapping pair; a key node is missed; or followed by a non-tabulated empty line');
       }
 
       state.position += 1;
@@ -9193,8 +8961,6 @@ var loader = {
 	safeLoad: safeLoad_1
 };
 
-'use strict';
-
 /*eslint-disable no-use-before-define*/
 
 
@@ -9656,11 +9422,21 @@ function foldLine(line, width) {
 // Escapes a double-quoted string.
 function escapeString(string) {
   var result = '';
-  var char;
+  var char, nextChar;
   var escapeSeq;
 
   for (var i = 0; i < string.length; i++) {
     char = string.charCodeAt(i);
+    // Check for surrogate pairs (reference Unicode 3.0 section "3.7 Surrogates").
+    if (char >= 0xD800 && char <= 0xDBFF/* high surrogate */) {
+      nextChar = string.charCodeAt(i + 1);
+      if (nextChar >= 0xDC00 && nextChar <= 0xDFFF/* low surrogate */) {
+        // Combine the surrogate pair and store it escaped.
+        result += encodeHex((char - 0xD800) * 0x400 + nextChar - 0xDC00 + 0x10000);
+        // Advance index one extra since we already used that char here.
+        i++; continue;
+      }
+    }
     escapeSeq = ESCAPE_SEQUENCES[char];
     result += !escapeSeq && isPrintable(char)
       ? string[i]
@@ -9726,7 +9502,7 @@ function writeFlowMapping(state, level, object) {
       pairBuffer;
 
   for (index = 0, length = objectKeyList.length; index < length; index += 1) {
-    pairBuffer = '';
+    pairBuffer = state.condenseFlow ? '"' : '';
 
     if (index !== 0) pairBuffer += ', ';
 
@@ -9739,7 +9515,7 @@ function writeFlowMapping(state, level, object) {
 
     if (state.dump.length > 1024) pairBuffer += '? ';
 
-    pairBuffer += state.dump + ':' + (state.condenseFlow ? '' : ' ');
+    pairBuffer += state.dump + (state.condenseFlow ? '"' : '') + ':' + (state.condenseFlow ? '' : ' ');
 
     if (!writeNode(state, level, objectValue, false, false)) {
       continue; // Skip this pair because of invalid value.
@@ -10008,13 +9784,6 @@ var dumper = {
 	safeDump: safeDump_1
 };
 
-'use strict';
-
-
-
-
-
-
 function deprecated(name) {
   return function () {
     throw new Error('Function ' + name + ' is deprecated and cannot be used.');
@@ -10072,19 +9841,10 @@ var jsYaml$2 = {
 	addConstructor: addConstructor
 };
 
-'use strict';
-
-
-
-
-
 var jsYaml = jsYaml$2;
 
 var engines_1 = createCommonjsModule(function (module, exports) {
-'use strict';
-
-
-const engines = exports = module.exports;
+var engines = exports = module.exports;
 
 /**
  * YAML
@@ -10102,7 +9862,7 @@ engines.yaml = {
 engines.json = {
   parse: JSON.parse.bind(JSON),
   stringify: function(obj, options) {
-    const opts = Object.assign({replacer: null, space: 2}, options);
+    var opts = extendShallow({replacer: null, space: 2}, options);
     return JSON.stringify(obj, opts.replacer, opts.space);
   }
 };
@@ -10138,8 +9898,6 @@ engines.javascript = {
  * Copyright (c) 2015, 2017, Jon Schlinkert.
  * Released under the MIT License.
  */
-
-'use strict';
 
 var stripBomString = function(str) {
   if (typeof str === 'string' && str.charAt(0) === '\ufeff') {
@@ -10238,13 +9996,20 @@ var kindOf = function kindOf(val) {
   if (type === '[object Symbol]') {
     return 'symbol';
   }
+  
   if (type === '[object Map Iterator]') {
     return 'mapiterator';
   }
   if (type === '[object Set Iterator]') {
     return 'setiterator';
   }
-
+  if (type === '[object String Iterator]') {
+    return 'stringiterator';
+  }
+  if (type === '[object Array Iterator]') {
+    return 'arrayiterator';
+  }
+  
   // typed arrays
   if (type === '[object Int8Array]') {
     return 'int8array';
@@ -10289,34 +10054,30 @@ function isBuffer(val) {
     && val.constructor.isBuffer(val);
 }
 
-var utils_1 = createCommonjsModule(function (module, exports) {
-'use strict';
-
-
-const utils = module.exports = exports;
-utils.typeOf = kindOf;
+var utils = createCommonjsModule(function (module, exports) {
+exports.typeOf = kindOf;
 
 /**
- * Cast `val` to an array.
+ * Returns true if `val` is a buffer
  */
 
-utils.isBuffer = function(val) {
-  return utils.typeOf(val) === 'buffer';
+exports.isBuffer = function(val) {
+  return exports.typeOf(val) === 'buffer';
 };
 
 /**
- * Cast `val` to an array.
+ * Returns true if `val` is an object
  */
 
-utils.isObject = function(val) {
-  return utils.typeOf(val) === 'object';
+exports.isObject = function(val) {
+  return exports.typeOf(val) === 'object';
 };
 
 /**
- * Cast `val` to an array.
+ * Cast `input` to a buffer
  */
 
-utils.toBuffer = function(input) {
+exports.toBuffer = function(input) {
   if (typeof input === 'string') {
     return new Buffer(input);
   }
@@ -10324,11 +10085,11 @@ utils.toBuffer = function(input) {
 };
 
 /**
- * Cast `val` to an array.
+ * Cast `val` to a string.
  */
 
-utils.toString = function(input) {
-  if (utils.isBuffer(input)) {
+exports.toString = function(input) {
+  if (exports.isBuffer(input)) {
     return stripBomString(String(input));
   }
   if (typeof input !== 'string') {
@@ -10341,58 +10102,49 @@ utils.toString = function(input) {
  * Cast `val` to an array.
  */
 
-utils.arrayify = function(val) {
+exports.arrayify = function(val) {
   return val ? (Array.isArray(val) ? val : [val]) : [];
 };
 
 /**
- * Return true if the givne string starts with the specified substring
+ * Returns true if `str` starts with `substr`.
  */
 
-utils.startsWith = function(str, substr, len) {
+exports.startsWith = function(str, substr, len) {
   if (typeof len !== 'number') len = substr.length;
   return str.slice(0, len) === substr;
 };
 });
 
-'use strict';
-
-
-
+var utils_1 = utils.typeOf;
+var utils_2 = utils.isBuffer;
+var utils_3 = utils.isObject;
+var utils_4 = utils.toBuffer;
+var utils_5 = utils.arrayify;
+var utils_6 = utils.startsWith;
 
 var defaults$1 = function(options) {
-  const opts = Object.assign({}, options);
+  var opts = extendShallow({}, options);
 
   // ensure that delimiters are an array
-  opts.delimiters = utils_1.arrayify(opts.delims || opts.delimiters || '---');
+  opts.delimiters = utils.arrayify(opts.delims || opts.delimiters || '---');
   if (opts.delimiters.length === 1) {
     opts.delimiters.push(opts.delimiters[0]);
   }
 
   opts.language = (opts.language || opts.lang || 'yaml').toLowerCase();
-  opts.engines = Object.assign({}, engines_1, opts.parsers, opts.engines);
+  opts.engines = extendShallow({}, engines_1, opts.parsers, opts.engines);
   return opts;
 };
 
-'use strict';
-
-
-
-
 var parse$1 = function(language, str, options) {
-  const opts = defaults$1(options);
-  const engine$$1 = engine(language, opts);
+  var opts = defaults$1(options);
+  var engine$$1 = engine(language, opts);
   if (typeof engine$$1.parse !== 'function') {
-    throw new TypeError(`expected "${language}.parse" to be a function`);
+    throw new TypeError('expected "' + language + '.parse" to be a function');
   }
   return engine$$1.parse(str, opts);
 };
-
-'use strict';
-
-
-
-
 
 var stringify = function(file, data, options) {
   if (data == null && options == null) {
@@ -10409,73 +10161,67 @@ var stringify = function(file, data, options) {
     }
   }
 
-  let str = file.content;
-  let opts = defaults$1(options);
+  var str = file.content;
+  var opts = defaults$1(options);
   if (data == null) {
-    if (opts.data) {
-      data = opts.data;
-    } else {
+    if (!opts.data) {
       return file;
     }
+    data = opts.data;
   }
 
-  const language = file.language || opts.language;
-  const engine$$2 = engine(language, opts);
+  var language = file.language || opts.language;
+  var engine$$2 = engine(language, opts);
   if (typeof engine$$2.stringify !== 'function') {
-    throw new TypeError(`expected "${language}.stringify" to be a function`);
+    throw new TypeError('expected "' + language + '.stringify" to be a function');
   }
 
-  data = Object.assign({}, file.data, data);
-  const open = opts.delimiters[0];
-  const close = opts.delimiters[1];
-  const matter = newline(engine$$2.stringify(data, options));
-  let buf = '';
+  data = extendShallow({}, file.data, data);
+  var open = opts.delimiters[0];
+  var close = opts.delimiters[1];
+  var matter = engine$$2.stringify(data, options).trim();
+  var buf = '';
 
-  if (matter.trim() !== '{}') {
-    buf += newline(open);
-    buf += matter;
-    buf += newline(close);
+  if (matter !== '{}') {
+    buf = newline(open) + newline(matter) + newline(close);
   }
 
   if (typeof file.excerpt === 'string' && file.excerpt !== '') {
     if (str.indexOf(file.excerpt.trim()) === -1) {
-      buf += newline(file.excerpt);
-      buf += newline(close);
+      buf += newline(file.excerpt) + newline(close);
     }
   }
 
-  buf += newline(str);
-  return buf;
+  return buf + newline(str);
 };
 
 function newline(str) {
   return str.slice(-1) !== '\n' ? str + '\n' : str;
 }
 
-'use strict';
-
-
-
 var excerpt = function(file, options) {
-  const opts = defaults$1(options);
-  file.data = file.data || {};
+  var opts = defaults$1(options);
+
+  if (file.data == null) {
+    file.data = {};
+  }
 
   if (typeof opts.excerpt === 'function') {
     return opts.excerpt(file, opts);
   }
 
-  const sep = file.data.excerpt_separator || opts.excerpt_separator;
-  if (!sep && (opts.excerpt === false || opts.excerpt == null)) {
+  var sep = file.data.excerpt_separator || opts.excerpt_separator;
+  if (sep == null && (opts.excerpt === false || opts.excerpt == null)) {
     return file;
   }
 
-  let delimiter = sep || opts.delimiters[0];
+  var delimiter = sep || opts.delimiters[0];
   if (typeof opts.excerpt === 'string') {
     delimiter = opts.excerpt;
   }
 
   // if enabled, get the excerpt defined after front-matter
-  const idx = file.content.indexOf(delimiter);
+  var idx = file.content.indexOf(delimiter);
   if (idx !== -1) {
     file.excerpt = file.content.slice(0, idx);
   }
@@ -10483,27 +10229,25 @@ var excerpt = function(file, options) {
   return file;
 };
 
-'use strict';
-
-
-
-
 /**
  * Normalize the given value to ensure an object is returned
  * with the expected properties.
  */
 
 var toFile = function(file) {
-  const isObject = utils_1.isObject(file);
-  if (!isObject) {
+  if (kindOf(file) !== 'object') {
     file = { content: file };
+  }
+
+  if (kindOf(file.data) !== 'object') {
+    file.data = {};
   }
 
   if (file.content == null) {
     file.content = file.contents;
   }
 
-  const orig = utils_1.toBuffer(file.content);
+  var orig = utils.toBuffer(file.content);
   Object.defineProperty(file, 'orig', {
     configurable: true,
     enumerable: false,
@@ -10537,26 +10281,12 @@ var toFile = function(file) {
     }
   });
 
-  file.content = utils_1.toString(file.content);
+  file.content = utils.toString(file.content);
   file.excerpt = '';
-
-  if (!utils_1.isObject(file.data)) {
-    file.data = {};
-  }
   return file;
 };
 
-'use strict';
-
-
-
-
-
-
-
-
-
-const cache = {};
+var cache = {};
 
 /**
  * Takes a string or object with `content` property, extracts
@@ -10575,37 +10305,49 @@ const cache = {};
  */
 
 function matter(input, options) {
-  const file = toFile(input);
-  let str = file.content;
+  var file = {data: {}, content: input, excerpt: '', orig: input};
+  if (input === '') return file;
 
-  if (str === '') return file;
-  if (typeof options === 'undefined') {
-    if (cache[str]) {
-      return cache[str];
+  file = toFile(input);
+  var cached = cache[file.content];
+
+  if (!options) {
+    if (cached) {
+      file = extendShallow({}, cached);
+      file.orig = cached.orig;
+      return file;
     }
-    cache[str] = file;
+    cache[file.content] = file;
   }
 
-  // support "options.delims" for backward compatibility
-  const opts = defaults$1(options);
-  const open = opts.delimiters[0];
-  const close = '\n' + opts.delimiters[1];
+  return parseMatter(file, options);
+}
+
+function parseMatter(file, options) {
+  var opts = defaults$1(options);
+  var open = opts.delimiters[0];
+  var close = '\n' + opts.delimiters[1];
+  var str = file.content;
 
   if (opts.language) {
     file.language = opts.language;
   }
 
-  const openLen = open.length;
-  if (!utils_1.startsWith(str, open, openLen)) {
+  // get the length of the opening delimiter
+  var openLen = open.length;
+  if (!utils.startsWith(str, open, openLen)) {
     excerpt(file, opts);
     return file;
   }
 
-  const nextChar = str.charAt(openLen);
-  if (nextChar === open.slice(-1)) {
+  // if the next character after the opening delimiter is
+  // a character from the delimiter, then it's not a front-
+  // matter delimiter
+  if (str.charAt(openLen) === open.slice(-1)) {
     return file;
   }
 
+  // strip the opening delimiter
   str = str.slice(openLen);
   var len = str.length;
 
@@ -10617,7 +10359,7 @@ function matter(input, options) {
   }
 
   // get the index of the closing delimiter
-  let closeIndex = str.indexOf(close);
+  var closeIndex = str.indexOf(close);
   if (closeIndex === -1) {
     closeIndex = len;
   }
@@ -10629,16 +10371,16 @@ function matter(input, options) {
   file.data = parse$1(file.language, file.matter, opts);
 
   // update file.content
-  if (closeIndex !== len) {
-    file.content = str.slice(closeIndex + close.length);
-    if (file.content.charAt(0) === '\r') {
-      file.content = file.content.slice(1);
-    }
-    if (file.content.charAt(0) === '\n') {
-      file.content = file.content.slice(1);
-    }
-  } else {
+  if (closeIndex === len) {
     file.content = '';
+  } else {
+    file.content = str.slice(closeIndex + close.length);
+    if (file.content[0] === '\r') {
+      file.content = file.content.slice(1);
+    }
+    if (file.content[0] === '\n') {
+      file.content = file.content.slice(1);
+    }
   }
 
   excerpt(file, opts);
@@ -10693,8 +10435,8 @@ matter.stringify = function(file, data, options) {
  */
 
 matter.read = function(filepath, options) {
-  const str = fs.readFileSync(filepath, 'utf8');
-  const file = matter(str, options);
+  var str = fs.readFileSync(filepath, 'utf8');
+  var file = matter(str, options);
   file.path = filepath;
   return file;
 };
@@ -10708,8 +10450,8 @@ matter.read = function(filepath, options) {
  */
 
 matter.test = function(str, options) {
-  const opts = defaults$1(options);
-  return utils_1.startsWith(str, opts.delimiters[0]);
+  var opts = defaults$1(options);
+  return utils.startsWith(str, opts.delimiters[0]);
 };
 
 /**
@@ -10721,14 +10463,14 @@ matter.test = function(str, options) {
  */
 
 matter.language = function(str, options) {
-  const opts = defaults$1(options);
-  const open = opts.delimiters[0];
+  var opts = defaults$1(options);
+  var open = opts.delimiters[0];
 
   if (matter.test(str)) {
     str = str.slice(open.length);
   }
 
-  const language = str.slice(0, str.search(/\r?\n/));
+  var language = str.slice(0, str.search(/\r?\n/));
   return {
     raw: language,
     name: language ? language.trim() : ''
@@ -10741,7 +10483,7 @@ matter.language = function(str, options) {
 
 var grayMatter = matter;
 
-var lodash_clonedeep$1 = createCommonjsModule(function (module, exports) {
+var lodash_clonedeep = createCommonjsModule(function (module, exports) {
 /**
  * lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -12785,7 +12527,7 @@ var createGraphqlMarkdownTypeDefs = function createGraphqlMarkdownTypeDefs(_ref8
   });
 
   var newFieldDefsStr = '';
-  var typeDefsAst = lodash_clonedeep$1(contentItemTypeDefs);
+  var typeDefsAst = lodash_clonedeep(contentItemTypeDefs);
 
   Object.keys(contentItemGqlFields).forEach(function (field) {
     var isID = field === 'id' || field === 'groupId';
@@ -14376,6 +14118,8 @@ var underscore = createCommonjsModule(function (module, exports) {
 
 }).call(commonjsGlobal);
 });
+
+var underscore_1 = underscore._;
 
 /**
  * Handle models (i.e. docs)
