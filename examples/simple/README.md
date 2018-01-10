@@ -33,6 +33,7 @@ Below are some example queries demonstrating the packages capabilities. Give the
 ### contentItems query
 
 The `contentItems` query allows you to query by `ids`, `groupIds`, or `fieldMatcher`.
+
 - `ids` will match against the `id` in your `.md` file. Every `.md` file must have an `id`.
 - `groupIds` will match against the `groupId` in your `.md` file. Every `.md` file must have an `groupId`.
 - `fieldMatcher` will match against any specific field that you have set in your `.md` file.
@@ -66,8 +67,8 @@ The `contentItems` query also supports a basic form of pagination via the abilit
 ```
 {
   contentItems(
-    query: { fieldMatcher: { fields: [{ name: "type", value: "page" }] } },
-  {
+    query: { fieldMatcher: { fields: [{ name: "type", value: "page" }] } }
+  ){
     id
     groupId
     type
@@ -78,6 +79,7 @@ The `contentItems` query also supports a basic form of pagination via the abilit
 #### Sort, skip or limit query results.
 
 Try changing the below example and see what happens. Here are a few hints:
+
 - Set `skip` to 1 and `limit` to 0.
 - Set `skip` to 0 and `limit` to 1.
 - Swap `DESCENDING` with `ASCENDING`.
