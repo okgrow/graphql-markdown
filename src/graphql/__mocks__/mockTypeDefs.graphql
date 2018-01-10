@@ -40,6 +40,10 @@ type ContentItem {
   id: ID!
   groupId: ID!
   html: String
+  test: String
+  order: Int
+  temperature: Float
+  isContentItem: Boolean
 }
 
 type Query {

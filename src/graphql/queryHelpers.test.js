@@ -6,7 +6,7 @@ import {
   CONTENT_ITEM_2,
   EXPECTED_RESULT_1,
   EXPECTED_RESULT_2,
-} from './__mocks__/mockData';
+} from './__mocks__/mockDbData';
 
 beforeAll(async () => {
   await insert({ db: dataStore, docToInsert: CONTENT_ITEM_1 });

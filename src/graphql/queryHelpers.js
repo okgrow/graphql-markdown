@@ -56,6 +56,8 @@ export const getContentItems = async ({
     try {
       const idsQuery = { id: { $in: ids } };
       const groupIdQuery = { groupId: { $in: groupIds } };
+      // TODO: Refactor to convert from string to correct type for the field
+      // or we need to modify the behaviour of fieldMatcher.
       const fieldsQuery = metaDataToObject(fields);
 
       const multiArgsQuery = { $or: [idsQuery, groupIdQuery, fieldsQuery] };
