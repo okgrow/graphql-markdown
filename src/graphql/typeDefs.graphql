@@ -21,28 +21,35 @@ input Pagination {
   limit: Int
 }
 
-input FieldMatch {
-  name: String!
-  value: String!
-}
-
-input FieldMatcher {
-  fields: [FieldMatch!]!
-}
-
-input ContentItemsQuery {
-  ids: [ID!]
-  groupIds: [ID!]
-  fieldMatcher: FieldMatcher
+input Fields {
+  id: ID
+  groupId: ID
+  html: String
+  # field defs generated from .md front-matter will be injected by pkg here.
 }
 
 type ContentItem {
+  # Mandatory - a unique id must exist for every .md file.
   id: ID!
+  # Mandatory - a non unique groupId must exist for every .md file. If you do not
+  # wish to manually set you can use the generateGroupIdByFolder option check pkg Readme.
   groupId: ID!
+  # The html generated from parsing the .md contents.
   html: String
+  # field defs generated from .md front-matter will be injected by pkg here.
+}
+
+input FilterFields {
+  # Query ContentItems by any fields using logical AND condition.
+  AND: Fields
+  # Query ContentItems by any fields using logical OR condition.
+  OR: [Fields!]
 }
 
 type Query {
-  contentItem(id: ID!): ContentItem
-  contentItems(query: ContentItemsQuery!, pagination: Pagination): [ContentItem!]
+  contentItemById(id: ID!): ContentItem
+  contentItemsByIds(ids: [ID!]!, pagination: Pagination): [ContentItem!]
+  contentItemsByGroupId(groupId: ID!, pagination: Pagination): [ContentItem!]
+  # Query for contentItems by any field
+  contentItems(filter: FilterFields!, pagination: Pagination): [ContentItem!]
 }
