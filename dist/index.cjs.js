@@ -5872,43 +5872,7 @@ var objectWithoutProperties = function (obj, keys) {
 
 
 
-var slicedToArray = function () {
-  function sliceIterator(arr, i) {
-    var _arr = [];
-    var _n = true;
-    var _d = false;
-    var _e = undefined;
 
-    try {
-      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-        _arr.push(_s.value);
-
-        if (i && _arr.length === i) break;
-      }
-    } catch (err) {
-      _d = true;
-      _e = err;
-    } finally {
-      try {
-        if (!_n && _i["return"]) _i["return"]();
-      } finally {
-        if (_d) throw _e;
-      }
-    }
-
-    return _arr;
-  }
-
-  return function (arr, i) {
-    if (Array.isArray(arr)) {
-      return arr;
-    } else if (Symbol.iterator in Object(arr)) {
-      return sliceIterator(arr, i);
-    } else {
-      throw new TypeError("Invalid attempt to destructure non-iterable instance");
-    }
-  };
-}();
 
 
 
@@ -12563,28 +12527,6 @@ var getRelativeFilename = function getRelativeFilename(fullPathName) {
   return fullPathName.slice(fullPathName.lastIndexOf('/') + 1);
 };
 
-/**
- * Convert metaData from it's Object format to an Array of Objects.
- * NOTE: We are using es7 Object.entries.
- * @param {Object} metaData - Extra key/value pairs from a .md file. e.g - { foo: "bar" }
- * @returns {Array} metaData matching the gql schema format. e.g - [{ name: "foo", value: "bar" }, ...]
- */
-
-
-/**
- * Convert metaData from it's gql schema format to it's Object format
- * with "key": "value" pairs.
- * @param {Array} metaData - [{ name: "", value: "foo" }, ...]
- * @returns {Object} metaData formatted as an object with it's "key": "value" pairs.
- */
-var metaDataToObject = function metaDataToObject(metaData) {
-  return metaData.reduce(function (sum, _ref3) {
-    var name = _ref3.name,
-        value = _ref3.value;
-    return _extends({}, sum, { [name]: value });
-  }, {});
-};
-
 // TODO: Decide if we will keep the getGroupId function
 /**
  * Returns the groupId from the file's path.
@@ -12603,12 +12545,12 @@ var getGroupId = function getGroupId(assetDir) {
  * @param {Object} params
  * @returns {Object} A ContentItem matching the gql schema typeDef/
  */
-var mapContentItems = function mapContentItems(_ref4) {
-  var _id = _ref4._id,
-      markdown = _ref4.markdown,
-      assetDir = _ref4.assetDir,
-      images = _ref4.images,
-      fields = objectWithoutProperties(_ref4, ['_id', 'markdown', 'assetDir', 'images']);
+var mapContentItems = function mapContentItems(_ref) {
+  var _id = _ref._id,
+      markdown = _ref.markdown,
+      assetDir = _ref.assetDir,
+      images = _ref.images,
+      fields = objectWithoutProperties(_ref, ['_id', 'markdown', 'assetDir', 'images']);
   return fields;
 };
 
@@ -12620,27 +12562,6 @@ var convertOrderBy = function convertOrderBy(orderBy) {
 };
 
 /**
- * Determine if a query has mulitple arguments
- * @param {Object} args - object containing all args provided by the client.
- * @returns {boolean}
- */
-// prettier-ignore
-var isMultiArgsQuery = function isMultiArgsQuery(args) {
-  var count = Object.entries(args).reduce(function (sum, _ref5) {
-    var _ref6 = slicedToArray(_ref5, 2),
-        key = _ref6[0],
-        value = _ref6[1];
-
-    // eslint-disable-line
-    if (value && value.length > 0) {
-      return sum + 1;
-    }
-    return sum;
-  }, 0);
-  return count > 1;
-};
-
-/**
  * Replace all relative image paths in our html e.g - <img src="path" ...> with a path that we prescribe like a cdn. e.g - "cdn.com/foo.png"
  * @param {Object} param
  * @param {string[]} obj.images - e.g - [".../foo.jpg", ...]
@@ -12648,10 +12569,10 @@ var isMultiArgsQuery = function isMultiArgsQuery(args) {
  * @param {string} obj.html - html that we will process
  * @returns {string} valid html with the <img src="" ...> correctly updated.
  */
-var replaceHtmlImageSrc = function replaceHtmlImageSrc(_ref7) {
-  var images = _ref7.images,
-      imageMap = _ref7.imageMap,
-      html = _ref7.html;
+var replaceHtmlImageSrc = function replaceHtmlImageSrc(_ref2) {
+  var images = _ref2.images,
+      imageMap = _ref2.imageMap,
+      html = _ref2.html;
   return images.reduce(function (sum, imageFileName) {
     var imageName = getRelativeFilename(imageFileName);
     return sum.replace(imageName, imageMap[imageFileName]);
@@ -12672,7 +12593,7 @@ var _this$3 = undefined;
  * Expected format is "(ext|ext|ext)" e.g - "(png|svg|jpg)"
  * @param {function} param.replaceContents - Manipulate the contents of the .md file before processing.
  * @returns {Object} Created from the contents of the .md file that has been processed.
-*/
+ */
 var getMarkdownObject = function () {
   var _ref2 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(_ref) {
     var filename = _ref.filename,
@@ -12695,6 +12616,7 @@ var getMarkdownObject = function () {
 
             fileContents = replaceContents ? replaceContents({ contentRoot, rawContents }) : rawContents;
 
+            // TODO: Abstract the below matter processing into its own function
             // WARNING: The 4 variables below are mutated directly by gqlTypeListener()
 
             currKey = ''; // eslint-disable-line
@@ -12727,8 +12649,10 @@ var getMarkdownObject = function () {
             html = _context.sent;
             images = getListOfRelativeImageFiles(contentRoot, assetDir, imageFormats);
 
-            // TODO: Deprecate this in future ?
-            // If we deprecate then we must state every .md file must provide a groupId!
+            // TODO: Setup logic for if generateGroupIdByFolder is true
+            // When true, we will enable defaultGroupId to be inferred from the folder the
+            // .md file is currently located within.
+            // When not turned on every .md file must set a groupId!
 
             defaultGroupId = getGroupId(assetDir);
             newHtml = replaceHtmlImageSrc({ images, imageMap, html });
@@ -12775,7 +12699,8 @@ var loadContentItems = function () {
         replaceContents = _ref.replaceContents,
         _ref$debugMode = _ref.debugMode,
         debugMode = _ref$debugMode === undefined ? false : _ref$debugMode,
-        codeHighlighter = _ref.codeHighlighter;
+        codeHighlighter = _ref.codeHighlighter,
+        _ref$generateGroupIdB = _ref.generateGroupIdByFolder;
     var isFunction, imageMap, mdFiles, contentItems;
     return regenerator.wrap(function _callee2$(_context2) {
       while (1) {
@@ -18870,7 +18795,7 @@ var _this$5 = undefined;
  * @param {string} id - The id of the ContentItem
  * @returns {Object|null} returns the ContentItem or null on error.
  */
-var getContentItem = function () {
+var findContentItemById = function () {
   var _ref = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(id) {
     var contentItem;
     return regenerator.wrap(function _callee$(_context) {
@@ -18911,30 +18836,19 @@ var getContentItem = function () {
     }, _callee, _this$5, [[1, 8]]);
   }));
 
-  return function getContentItem(_x) {
+  return function findContentItemById(_x) {
     return _ref.apply(this, arguments);
   };
 }();
 
-/**
- * Creates an object that maps the local fullPath of an image to it's desired path. e.g - { fullPathName: "cdn.com/foo.png", ... }
- * @param {Object} param
- * @param {string[]} param.ids - ContentItem's ids
- * @param {string[]} param.groupIds - ContentItem's groupIds
- * @param {Object} param.fieldMatcher - Refer to FieldMatcher in `src/graphql/typeDefs.graphql`
- * @param {Object} param.pagination - Refer to Pagination in `src/graphql/typeDefs.graphql`
- * @returns {Object[]} returns an array of ContentItems.
- */
-var getContentItems = function () {
+// *********************** TODO ********************
+// TODO: Refactor and abstract all three functions try/catch block code into
+// a single function that will query the nedb for us.
+// e.g queryDB({ query, sort, skip, limit, errorMsg });
+var findContentItemsByIds = function () {
   var _ref3 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee2(_ref2) {
     var _ref2$ids = _ref2.ids,
         ids = _ref2$ids === undefined ? [] : _ref2$ids,
-        _ref2$groupIds = _ref2.groupIds,
-        groupIds = _ref2$groupIds === undefined ? [] : _ref2$groupIds,
-        _ref2$fieldMatcher = _ref2.fieldMatcher;
-    _ref2$fieldMatcher = _ref2$fieldMatcher === undefined ? {} : _ref2$fieldMatcher;
-    var _ref2$fieldMatcher$fi = _ref2$fieldMatcher.fields,
-        fields = _ref2$fieldMatcher$fi === undefined ? [] : _ref2$fieldMatcher$fi,
         _ref2$pagination = _ref2.pagination;
     _ref2$pagination = _ref2$pagination === undefined ? {} : _ref2$pagination;
     var _ref2$pagination$sort = _ref2$pagination.sort,
@@ -18943,33 +18857,23 @@ var getContentItems = function () {
         skip = _ref2$pagination$skip === undefined ? 0 : _ref2$pagination$skip,
         _ref2$pagination$limi = _ref2$pagination.limit,
         limit = _ref2$pagination$limi === undefined ? 0 : _ref2$pagination$limi;
-    var idsQuery, groupIdQuery, fieldsQuery, multiArgsQuery, singleArgQuery, query, sortOptions, contentItems;
+    var query, sortOptions, contentItems;
     return regenerator.wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            if (!(!groupIds.length && !ids.length && !fields.length)) {
+            if (ids.length) {
               _context2.next = 2;
               break;
             }
 
-            throw new Error('[getContentItems]: Query expects at least one param, either ids, groupIds, or fieldMatcher.');
+            throw new Error('[findContentItemsByIds]: You must provide at least one id.');
 
           case 2:
-            if (!(groupIds.length || ids.length || fields.length)) {
-              _context2.next = 20;
-              break;
-            }
-
-            _context2.prev = 3;
-            idsQuery = { id: { $in: ids } };
-            groupIdQuery = { groupId: { $in: groupIds } };
-            fieldsQuery = metaDataToObject(fields);
-            multiArgsQuery = { $or: [idsQuery, groupIdQuery, fieldsQuery] };
-            singleArgQuery = _extends({}, ids.length ? idsQuery : null, groupIds.length ? groupIdQuery : null, fields.length ? fieldsQuery : null);
-            query = isMultiArgsQuery({ ids, groupIds, fields }) ? multiArgsQuery : singleArgQuery;
+            _context2.prev = 2;
+            query = { id: { $in: ids } };
             sortOptions = sort ? { [sort.sortBy]: convertOrderBy(sort.orderBy) } : null;
-            _context2.next = 13;
+            _context2.next = 7;
             return find({
               db: dataStore,
               query,
@@ -18979,43 +18883,195 @@ var getContentItems = function () {
               mapFunc: mapContentItems
             });
 
-          case 13:
+          case 7:
             contentItems = _context2.sent;
             return _context2.abrupt('return', contentItems);
 
-          case 17:
-            _context2.prev = 17;
-            _context2.t0 = _context2['catch'](3);
+          case 11:
+            _context2.prev = 11;
+            _context2.t0 = _context2['catch'](2);
 
-            console.error('[getContentItems]', _context2.t0); // eslint-disable-line no-console
+            // TODO: Should we throw or only log?
+            console.error('[getContentItemsByIds] -> ', _context2.t0); // eslint-disable-line no-console
 
-          case 20:
+          case 14:
             return _context2.abrupt('return', []);
 
-          case 21:
+          case 15:
           case 'end':
             return _context2.stop();
         }
       }
-    }, _callee2, _this$5, [[3, 17]]);
+    }, _callee2, _this$5, [[2, 11]]);
   }));
 
-  return function getContentItems(_x2) {
+  return function findContentItemsByIds(_x2) {
     return _ref3.apply(this, arguments);
+  };
+}();
+
+var findContentItemsByGroupId = function () {
+  var _ref5 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee3(_ref4) {
+    var groupId = _ref4.groupId,
+        _ref4$pagination = _ref4.pagination;
+    _ref4$pagination = _ref4$pagination === undefined ? {} : _ref4$pagination;
+    var _ref4$pagination$sort = _ref4$pagination.sort,
+        sort = _ref4$pagination$sort === undefined ? null : _ref4$pagination$sort,
+        _ref4$pagination$skip = _ref4$pagination.skip,
+        skip = _ref4$pagination$skip === undefined ? 0 : _ref4$pagination$skip,
+        _ref4$pagination$limi = _ref4$pagination.limit,
+        limit = _ref4$pagination$limi === undefined ? 0 : _ref4$pagination$limi;
+    var query, sortOptions, contentItems;
+    return regenerator.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            if (groupId) {
+              _context3.next = 2;
+              break;
+            }
+
+            throw new Error('[findByGroupId]: You must provide a groupId.');
+
+          case 2:
+            _context3.prev = 2;
+            query = { groupId };
+            sortOptions = sort ? { [sort.sortBy]: convertOrderBy(sort.orderBy) } : null;
+            _context3.next = 7;
+            return find({
+              db: dataStore,
+              query,
+              sortOptions,
+              skip,
+              limit,
+              mapFunc: mapContentItems
+            });
+
+          case 7:
+            contentItems = _context3.sent;
+            return _context3.abrupt('return', contentItems);
+
+          case 11:
+            _context3.prev = 11;
+            _context3.t0 = _context3['catch'](2);
+
+            // TODO: Should we throw or only log?
+            console.error('[getContentItemsByGroupId] -> ', _context3.t0); // eslint-disable-line no-console
+
+          case 14:
+            return _context3.abrupt('return', []);
+
+          case 15:
+          case 'end':
+            return _context3.stop();
+        }
+      }
+    }, _callee3, _this$5, [[2, 11]]);
+  }));
+
+  return function findContentItemsByGroupId(_x3) {
+    return _ref5.apply(this, arguments);
+  };
+}();
+
+// contentItems(filter: FilterFields!, pagination: Pagination): [ContentItem!]
+/**
+ *
+ * @param {Object} param
+ * @param {string[]} param.ids - ContentItem's ids
+ * @param {string[]} param.groupIds - ContentItem's groupIds
+ * @param {Object} param.fieldMatcher - Refer to FieldMatcher in `src/graphql/typeDefs.graphql`
+ * @param {Object} param.pagination - Refer to Pagination in `src/graphql/typeDefs.graphql`
+ * @returns {Object[]} returns an array of ContentItems.
+ */
+// getContentItems(ids: [foo, boo])
+// getContentItemsByField(fields: { title: "Hello World" });
+
+var findContentItemsByFilter = function () {
+  var _ref7 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee4(_ref6) {
+    var _ref6$filter = _ref6.filter;
+    _ref6$filter = _ref6$filter === undefined ? {} : _ref6$filter;
+    var _ref6$filter$AND = _ref6$filter.AND,
+        AND = _ref6$filter$AND === undefined ? {} : _ref6$filter$AND,
+        _ref6$filter$OR = _ref6$filter.OR,
+        OR = _ref6$filter$OR === undefined ? [] : _ref6$filter$OR,
+        _ref6$pagination = _ref6.pagination;
+    _ref6$pagination = _ref6$pagination === undefined ? {} : _ref6$pagination;
+    var _ref6$pagination$sort = _ref6$pagination.sort,
+        sort = _ref6$pagination$sort === undefined ? null : _ref6$pagination$sort,
+        _ref6$pagination$skip = _ref6$pagination.skip,
+        skip = _ref6$pagination$skip === undefined ? 0 : _ref6$pagination$skip,
+        _ref6$pagination$limi = _ref6$pagination.limit,
+        limit = _ref6$pagination$limi === undefined ? 0 : _ref6$pagination$limi;
+    var isAndEmpty, query, sortOptions, contentItems;
+    return regenerator.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            // NOTE: Currently do no support querying with AND + OR
+            // TODO: Throw error if try to filter with AND & OR
+            isAndEmpty = !Object.keys(AND).length;
+
+            // Only allowed to find ContentItems if fields have been provided
+
+            if (!(!OR.length && isAndEmpty)) {
+              _context4.next = 3;
+              break;
+            }
+
+            throw new Error('[findContentItemsByFilter]: You must provide at least one field to filter on.');
+
+          case 3:
+            _context4.prev = 3;
+            query = !isAndEmpty ? AND : { $or: OR };
+            sortOptions = sort ? { [sort.sortBy]: convertOrderBy(sort.orderBy) } : null;
+            _context4.next = 8;
+            return find({
+              db: dataStore,
+              query,
+              sortOptions,
+              skip,
+              limit,
+              mapFunc: mapContentItems
+            });
+
+          case 8:
+            contentItems = _context4.sent;
+            return _context4.abrupt('return', contentItems);
+
+          case 12:
+            _context4.prev = 12;
+            _context4.t0 = _context4['catch'](3);
+
+            console.error('[getContentItems] -> ', _context4.t0); // eslint-disable-line no-console
+
+          case 15:
+            return _context4.abrupt('return', []);
+
+          case 16:
+          case 'end':
+            return _context4.stop();
+        }
+      }
+    }, _callee4, _this$5, [[3, 12]]);
+  }));
+
+  return function findContentItemsByFilter(_x4) {
+    return _ref7.apply(this, arguments);
   };
 }();
 
 var _this$4 = undefined;
 
 var Query = {
-  contentItem: function () {
+  contentItemById: function () {
     var _ref2 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(root, _ref /* , context */) {
       var id = _ref.id;
       return regenerator.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              return _context.abrupt('return', getContentItem(id));
+              return _context.abrupt('return', findContentItemById(id));
 
             case 1:
             case 'end':
@@ -19025,21 +19081,22 @@ var Query = {
       }, _callee, _this$4);
     }));
 
-    function contentItem(_x, _x2) {
+    function contentItemById(_x, _x2) {
       return _ref2.apply(this, arguments);
     }
 
-    return contentItem;
+    return contentItemById;
   }(),
-  contentItems: function () {
+
+  contentItemsByIds: function () {
     var _ref4 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee2(root, _ref3 /* , context */) {
-      var query = _ref3.query,
+      var ids = _ref3.ids,
           pagination = _ref3.pagination;
       return regenerator.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              return _context2.abrupt('return', getContentItems(_extends({}, query, { pagination })));
+              return _context2.abrupt('return', findContentItemsByIds({ ids, pagination }));
 
             case 1:
             case 'end':
@@ -19049,8 +19106,58 @@ var Query = {
       }, _callee2, _this$4);
     }));
 
-    function contentItems(_x3, _x4) {
+    function contentItemsByIds(_x3, _x4) {
       return _ref4.apply(this, arguments);
+    }
+
+    return contentItemsByIds;
+  }(),
+
+  contentItemsByGroupId: function () {
+    var _ref6 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee3(root, _ref5 /* , ctx */) {
+      var groupId = _ref5.groupId,
+          pagination = _ref5.pagination;
+      return regenerator.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              return _context3.abrupt('return', findContentItemsByGroupId({ groupId, pagination }));
+
+            case 1:
+            case 'end':
+              return _context3.stop();
+          }
+        }
+      }, _callee3, _this$4);
+    }));
+
+    function contentItemsByGroupId(_x5, _x6) {
+      return _ref6.apply(this, arguments);
+    }
+
+    return contentItemsByGroupId;
+  }(),
+
+  contentItems: function () {
+    var _ref8 = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee4(root, _ref7 /* , context */) {
+      var filter = _ref7.filter,
+          pagination = _ref7.pagination;
+      return regenerator.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              return _context4.abrupt('return', findContentItemsByFilter({ filter, pagination }));
+
+            case 1:
+            case 'end':
+              return _context4.stop();
+          }
+        }
+      }, _callee4, _this$4);
+    }));
+
+    function contentItems(_x7, _x8) {
+      return _ref8.apply(this, arguments);
     }
 
     return contentItems;
@@ -19059,8 +19166,8 @@ var Query = {
 
 var contentItemResolvers = { Query };
 
-var doc = { "kind": "Document", "definitions": [{ "kind": "EnumTypeDefinition", "name": { "kind": "Name", "value": "OrderBy" }, "directives": [], "values": [{ "kind": "EnumValueDefinition", "name": { "kind": "Name", "value": "ASCENDING" }, "directives": [] }, { "kind": "EnumValueDefinition", "name": { "kind": "Name", "value": "DESCENDING" }, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "Sort" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "sortBy" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "orderBy" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "OrderBy" } } }, "defaultValue": null, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "Pagination" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "sort" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Sort" } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "skip" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Int" } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "limit" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Int" } }, "defaultValue": null, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "FieldMatch" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "name" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "value" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } } }, "defaultValue": null, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "FieldMatcher" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "fields" }, "type": { "kind": "NonNullType", "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "FieldMatch" } } } } }, "defaultValue": null, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "ContentItemsQuery" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "ids" }, "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "groupIds" }, "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "fieldMatcher" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "FieldMatcher" } }, "defaultValue": null, "directives": [] }] }, { "kind": "ObjectTypeDefinition", "name": { "kind": "Name", "value": "MetaDataField" }, "interfaces": [], "directives": [], "fields": [{ "kind": "FieldDefinition", "name": { "kind": "Name", "value": "name" }, "arguments": [], "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } } }, "directives": [] }, { "kind": "FieldDefinition", "name": { "kind": "Name", "value": "value" }, "arguments": [], "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } } }, "directives": [] }] }, { "kind": "ObjectTypeDefinition", "name": { "kind": "Name", "value": "ContentItem" }, "interfaces": [], "directives": [], "fields": [{ "kind": "FieldDefinition", "name": { "kind": "Name", "value": "id" }, "arguments": [], "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } }, "directives": [] }, { "kind": "FieldDefinition", "name": { "kind": "Name", "value": "groupId" }, "arguments": [], "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } }, "directives": [] }, { "kind": "FieldDefinition", "name": { "kind": "Name", "value": "html" }, "arguments": [], "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } }, "directives": [] }] }, { "kind": "ObjectTypeDefinition", "name": { "kind": "Name", "value": "Query" }, "interfaces": [], "directives": [], "fields": [{ "kind": "FieldDefinition", "name": { "kind": "Name", "value": "contentItem" }, "arguments": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "id" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } }, "defaultValue": null, "directives": [] }], "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ContentItem" } }, "directives": [] }, { "kind": "FieldDefinition", "name": { "kind": "Name", "value": "contentItems" }, "arguments": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "query" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ContentItemsQuery" } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "pagination" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Pagination" } }, "defaultValue": null, "directives": [] }], "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ContentItem" } } } }, "directives": [] }] }], "loc": { "start": 0, "end": 947 } };
-doc.loc.source = { "body": "enum OrderBy {\n  ASCENDING\n  DESCENDING\n}\n\n# Sort and order results by a specific field and order.\n# e.g - { sortBy: \"date\", orderBy: \"DESCENDING\" }\ninput Sort {\n  # Field to sort by. e.g - \"date\"\n  sortBy: String!\n  # ASCENDING or DESCENDING order. e.g - \"DESCENDING\"\n  orderBy: OrderBy!\n}\n\ninput Pagination {\n  # Sort and order objects by a specific field in a specific order.\n  sort: Sort\n  # Do not return the first x objects.\n  skip: Int\n  # Limit the number of objects to return.\n  limit: Int\n}\n\ninput FieldMatch {\n  name: String!\n  value: String!\n}\n\ninput FieldMatcher {\n  fields: [FieldMatch!]!\n}\n\ninput ContentItemsQuery {\n  ids: [ID!]\n  groupIds: [ID!]\n  fieldMatcher: FieldMatcher\n}\n\ntype MetaDataField {\n  name: String!\n  value: String!\n}\n\ntype ContentItem {\n  id: ID!\n  groupId: ID!\n  html: String\n}\n\ntype Query {\n  contentItem(id: ID!): ContentItem\n  contentItems(query: ContentItemsQuery!, pagination: Pagination): [ContentItem!]\n}\n", "name": "GraphQL request", "locationOffset": { "line": 1, "column": 1 } };
+var doc = { "kind": "Document", "definitions": [{ "kind": "EnumTypeDefinition", "name": { "kind": "Name", "value": "OrderBy" }, "directives": [], "values": [{ "kind": "EnumValueDefinition", "name": { "kind": "Name", "value": "ASCENDING" }, "directives": [] }, { "kind": "EnumValueDefinition", "name": { "kind": "Name", "value": "DESCENDING" }, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "Sort" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "sortBy" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "orderBy" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "OrderBy" } } }, "defaultValue": null, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "Pagination" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "sort" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Sort" } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "skip" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Int" } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "limit" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Int" } }, "defaultValue": null, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "FieldMatch" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "name" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "value" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } } }, "defaultValue": null, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "FieldMatcher" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "fields" }, "type": { "kind": "NonNullType", "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "FieldMatch" } } } } }, "defaultValue": null, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "ContentItemsQuery" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "ids" }, "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "groupIds" }, "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "fieldMatcher" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "FieldMatcher" } }, "defaultValue": null, "directives": [] }] }, { "kind": "ObjectTypeDefinition", "name": { "kind": "Name", "value": "ContentItem" }, "interfaces": [], "directives": [], "fields": [{ "kind": "FieldDefinition", "name": { "kind": "Name", "value": "id" }, "arguments": [], "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } }, "directives": [] }, { "kind": "FieldDefinition", "name": { "kind": "Name", "value": "groupId" }, "arguments": [], "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } }, "directives": [] }, { "kind": "FieldDefinition", "name": { "kind": "Name", "value": "html" }, "arguments": [], "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } }, "directives": [] }] }, { "kind": "ObjectTypeDefinition", "name": { "kind": "Name", "value": "Query" }, "interfaces": [], "directives": [], "fields": [{ "kind": "FieldDefinition", "name": { "kind": "Name", "value": "contentItem" }, "arguments": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "id" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } }, "defaultValue": null, "directives": [] }], "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ContentItem" } }, "directives": [] }, { "kind": "FieldDefinition", "name": { "kind": "Name", "value": "contentItems" }, "arguments": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "query" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ContentItemsQuery" } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "pagination" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Pagination" } }, "defaultValue": null, "directives": [] }], "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ContentItem" } } } }, "directives": [] }] }], "loc": { "start": 0, "end": 890 } };
+doc.loc.source = { "body": "enum OrderBy {\n  ASCENDING\n  DESCENDING\n}\n\n# Sort and order results by a specific field and order.\n# e.g - { sortBy: \"date\", orderBy: \"DESCENDING\" }\ninput Sort {\n  # Field to sort by. e.g - \"date\"\n  sortBy: String!\n  # ASCENDING or DESCENDING order. e.g - \"DESCENDING\"\n  orderBy: OrderBy!\n}\n\ninput Pagination {\n  # Sort and order objects by a specific field in a specific order.\n  sort: Sort\n  # Do not return the first x objects.\n  skip: Int\n  # Limit the number of objects to return.\n  limit: Int\n}\n\ninput FieldMatch {\n  name: String!\n  value: String!\n}\n\ninput FieldMatcher {\n  fields: [FieldMatch!]!\n}\n\ninput ContentItemsQuery {\n  ids: [ID!]\n  groupIds: [ID!]\n  fieldMatcher: FieldMatcher\n}\n\ntype ContentItem {\n  id: ID!\n  groupId: ID!\n  html: String\n}\n\ntype Query {\n  contentItem(id: ID!): ContentItem\n  contentItems(query: ContentItemsQuery!, pagination: Pagination): [ContentItem!]\n}\n", "name": "GraphQL request", "locationOffset": { "line": 1, "column": 1 } };
 
 var _this = undefined;
 
