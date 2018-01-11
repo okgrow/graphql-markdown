@@ -190,7 +190,9 @@ export const processContentItems = (items, contentRoot) => {
       });
 
       if (missmatchDetails) {
-        throw new Error(`The ${missmatchDetails.fieldWithMisMatch} field has been detected to contain differing GraphQL Types. Fields must use the same GraphQL type across all .md files. Details are below.\n
+        throw new Error(`The ${
+          missmatchDetails.fieldWithMisMatch
+        } field has been detected to contain differing GraphQL Types. Fields must use the same GraphQL type across all .md files. Details are below.\n
         ${JSON.stringify(missmatchDetails, null, 4)}`);
       }
 
@@ -209,44 +211,103 @@ export const processContentItems = (items, contentRoot) => {
   return { contentItems, contentItemGqlFields };
 };
 
-// Creates the TypeDefs for this package by creating a new TypeDefs AST containing
-// the Type Definitions inferred from the front-matter section of our .md files.
-// @returns {Object} - { graphqlMarkdownTypeDefs } - The packages TypeDefs
+// TODO: Improve comments & variable names
+/** Creates a new body string, by inserting the fieldDefs in the correct location.
+ *  @param {string} body - Existing body value from a graphql files AST.
+ *  @param {string} typeDefName - Name of the type def to modify.
+ *  @param {string} newFieldDefsStr - field defs to add to existing type Def.
+ *  @returns {string} - A new body string containing the inserted fieldDefs
+ */
+const updateBodyStr = ({ body, typeDefName, fieldDefsStr }) => {
+  // Indexes for the points where we inject our new string into.
+  const startSearchIndex = body.indexOf(`${typeDefName} {`);
+  const startInsertIndex = body.indexOf('}', startSearchIndex);
+
+  // Contents before and after our insertion points
+  const beforeStr = body.slice(0, startInsertIndex);
+  const afterStr = body.slice(startInsertIndex);
+
+  return `${beforeStr}${fieldDefsStr}${afterStr}`;
+};
+
+/** Find the location of the Type Defintion we wish to modify
+ *  in the GraphQL TypeDefs AST.
+ *  @param {Object} typeDefsAst - GraphQL TypeDefs AST to search.
+ *  @param {string} typeDefName - Name of the typeDef to search for
+ *  @returns {number} - Index for the TypeDefs location in the definitons array.
+ */
+const getTypeDefIndex = ({ typeDefsAst, typeDefName }) =>
+  typeDefsAst.definitions.findIndex(item => item.name.value === typeDefName);
+
+/** Add new field definitions to an existing GraphQL TypeDefs AST.
+ *  NOTE: This approach can be improved & abstracted further.
+ *  Refactor to be DRY whilst accounting for perf.
+ *  @param {Object} originalTypeDefs - GraphQL TypeDefs AST to modify.
+ *  @param {Object} fieldDefsToAdd - Contains all the new fieldDefs to add.
+ *  @returns {Object} - GraphQL AST containing the fieldsDefs we wished to add.
+ */
 export const createGraphqlMarkdownTypeDefs = ({
-  contentItemGqlFields,
-  contentItemTypeDefs,
+  originalTypeDefs,
+  fieldDefsToAdd,
 }) => {
-  // Find where our type ContentItem is located in the definitions array.
-  const contentItemIndex = contentItemTypeDefs.definitions.findIndex(
-    item => item.name.value === 'ContentItem',
-  );
+  // Create a copy with no references to original.
+  // As we intend to mutate the TypeDefsAst directly.
+  const typeDefsAst = cloneDeep(originalTypeDefs);
+
+  // Find the indexes for the TypeDefs we will modify.
+  const typeContentItemIndex = getTypeDefIndex({
+    typeDefsAst: originalTypeDefs,
+    typeDefName: 'ContentItem',
+  });
+  const inputTypeFieldsIndex = getTypeDefIndex({
+    typeDefsAst: originalTypeDefs,
+    typeDefName: 'Fields',
+  });
 
   let newFieldDefsStr = '';
-  const typeDefsAst = cloneDeep(contentItemTypeDefs);
 
-  Object.keys(contentItemGqlFields).forEach(field => {
-    const isID = field === 'id' || field === 'groupId';
-    if (!isID) {
-      // Add the new field def to our ContentItem type
-      typeDefsAst.definitions[contentItemIndex].fields.push(
-        contentItemGqlFields[field].ast,
+  // Add the new Field Defs to the typeDefsAst
+  Object.keys(fieldDefsToAdd).forEach(field => {
+    const isProtectedField =
+      field === 'id' || field === 'groupId' || field === 'html';
+
+    // Do not allow fields from .md front-matter to replace
+    // the existing AST for any of our reserved fields.
+    if (!isProtectedField) {
+      // Add the field def to our type ContentItem
+      typeDefsAst.definitions[typeContentItemIndex].fields.push(
+        fieldDefsToAdd[field].ast,
       );
-      // Store the new field def to be added to our ContentItem type
-      newFieldDefsStr += `  ${field}: ${contentItemGqlFields[field].gqlType}\n`;
+
+      // Add the field def to our type input Fields
+      typeDefsAst.definitions[inputTypeFieldsIndex].fields.push(
+        fieldDefsToAdd[field].ast,
+      );
+
+      // Construct a string version of the fieldDefs we have added.
+      newFieldDefsStr += `  ${field}: ${fieldDefsToAdd[field].gqlType}\n`;
     }
   });
 
   // Modify the TypeDefs ASTs source body string to match the new fields we inserted.
-  const gqlStr = contentItemTypeDefs.loc.source.body;
-  // Indexes for where to split the source body in half
-  const startSearchIndex = gqlStr.indexOf('ContentItem {');
-  const startInsertIndex = gqlStr.indexOf('}', startSearchIndex);
-  const beforeStr = gqlStr.slice(0, startInsertIndex);
-  const afterStr = gqlStr.slice(startInsertIndex);
+  const gqlStr = originalTypeDefs.loc.source.body;
+
+  // Insert the field defs into type ContentItem
+  const tempBody = updateBodyStr({
+    body: gqlStr,
+    typeDefName: 'ContentItem',
+    fieldDefsStr: newFieldDefsStr,
+  });
+
+  // Insert the field defs into input Fields
+  const newBody = updateBodyStr({
+    body: tempBody,
+    typeDefName: 'Fields',
+    fieldDefsStr: newFieldDefsStr,
+  });
 
   // Replace the old source body with our own version which
   // contains the new fields defs taken from the .md front-matter.
-  typeDefsAst.loc.source.body = `${beforeStr}${newFieldDefsStr}${afterStr}`;
-
-  return { graphqlMarkdownTypeDefs: typeDefsAst };
+  typeDefsAst.loc.source.body = newBody;
+  return typeDefsAst;
 };
