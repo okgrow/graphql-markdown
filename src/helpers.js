@@ -6,24 +6,6 @@
 export const getRelativeFilename = fullPathName =>
   fullPathName.slice(fullPathName.lastIndexOf('/') + 1);
 
-/**
- * Convert metaData from it's Object format to an Array of Objects.
- * NOTE: We are using es7 Object.entries.
- * @param {Object} metaData - Extra key/value pairs from a .md file. e.g - { foo: "bar" }
- * @returns {Array} metaData matching the gql schema format. e.g - [{ name: "foo", value: "bar" }, ...]
- */
-export const metaDataToArray = metaData =>
-  Object.entries(metaData).map(([key, value]) => ({ name: key, value }));
-
-/**
- * Convert metaData from it's gql schema format to it's Object format
- * with "key": "value" pairs.
- * @param {Array} metaData - [{ name: "", value: "foo" }, ...]
- * @returns {Object} metaData formatted as an object with it's "key": "value" pairs.
- */
-export const metaDataToObject = metaData =>
-  metaData.reduce((sum, { name, value }) => ({ ...sum, [name]: value }), {});
-
 // TODO: Decide if we will keep the getGroupId function
 /**
  * Returns the groupId from the file's path.
@@ -60,22 +42,6 @@ export const convertOrderBy = orderBy => {
     return -1;
   }
   return 1;
-};
-
-/**
- * Determine if a query has mulitple arguments
- * @param {Object} args - object containing all args provided by the client.
- * @returns {boolean}
- */
-// prettier-ignore
-export const isMultiArgsQuery = args => {
-  const count = Object.entries(args).reduce((sum, [key, value]) => { // eslint-disable-line
-    if (value && value.length > 0) {
-      return sum + 1;
-    }
-    return sum;
-  }, 0);
-  return count > 1;
 };
 
 /**

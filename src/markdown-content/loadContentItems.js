@@ -22,6 +22,8 @@ const loadContentItems = async ({
   replaceContents,
   debugMode = false,
   codeHighlighter,
+  // TODO: Setup generateGroupIdByFolder logic and Update readme/setOptions
+  generateGroupIdByFolder = false,
 }) => {
   const isFunction = codeHighlighter && typeof codeHighlighter === 'function';
 

@@ -38,6 +38,7 @@ const getMarkdownObject = async ({
     ? replaceContents({ contentRoot, rawContents })
     : rawContents;
 
+  // TODO: Abstract the below matter processing into its own function
   // WARNING: The 4 variables below are mutated directly by gqlTypeListener()
   let currKey = ''; // eslint-disable-line
   const stack = [];
@@ -68,8 +69,10 @@ const getMarkdownObject = async ({
     imageFormats,
   );
 
-  // TODO: Deprecate this in future ?
-  // If we deprecate then we must state every .md file must provide a groupId!
+  // TODO: Setup logic for if generateGroupIdByFolder is true
+  // When true, we will enable defaultGroupId to be inferred from the folder the
+  // .md file is currently located within.
+  // When not turned on every .md file must set a groupId!
   const defaultGroupId = getGroupId(assetDir);
 
   const newHtml = replaceHtmlImageSrc({ images, imageMap, html });
