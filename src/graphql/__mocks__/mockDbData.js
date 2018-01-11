@@ -3,7 +3,7 @@ export const CONTENT_ITEM_1 = {
   id: 'home_section',
   groupId: 'contentItems_test',
   html:
-    '<h1 id="welcome-to-this-super-example-">Welcome to this super example!</h1>\n',
+    '<h1 id="welcome-to-this-super-example-">Welcome to this super example!🎉🎉🎉</h1>\n',
   test: 'I am a ContentItem!',
   order: 1,
   temperature: 20.8,
@@ -34,7 +34,7 @@ export const EXPECTED_RESULT_1 = {
   id: 'home_section',
   groupId: 'contentItems_test',
   html:
-    '<h1 id="welcome-to-this-super-example-">Welcome to this super example!</h1>\n',
+    '<h1 id="welcome-to-this-super-example-">Welcome to this super example!🎉🎉🎉</h1>\n',
   test: 'I am a ContentItem!',
   order: 1,
   temperature: 20.8,
@@ -51,7 +51,6 @@ export const EXPECTED_RESULT_2 = {
 };
 
 export const EXPECTED_RESULT_3 = {
-  _id: 'contentItem_test_3',
   id: 'fire_man',
   groupId: 'fireman_test',
   html: '<p>🚒🔥🔥🔥🚒🔥🔥🔥🚒</p>\n',
