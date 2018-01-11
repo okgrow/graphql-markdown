@@ -12471,44 +12471,109 @@ var processContentItems = function processContentItems(items, contentRoot) {
   return { contentItems, contentItemGqlFields };
 };
 
-// Creates the TypeDefs for this package by creating a new TypeDefs AST containing
-// the Type Definitions inferred from the front-matter section of our .md files.
-// @returns {Object} - { graphqlMarkdownTypeDefs } - The packages TypeDefs
-var createGraphqlMarkdownTypeDefs = function createGraphqlMarkdownTypeDefs(_ref8) {
-  var contentItemGqlFields = _ref8.contentItemGqlFields,
-      contentItemTypeDefs = _ref8.contentItemTypeDefs;
+// TODO: Improve comments & variable names
+/** Creates a new body string, by inserting the fieldDefs in the correct location.
+ *  @param {string} body - Existing body value from a graphql files AST.
+ *  @param {string} typeDefName - Name of the type def to modify.
+ *  @param {string} newFieldDefsStr - field defs to add to existing type Def.
+ *  @returns {string} - A new body string containing the inserted fieldDefs
+ */
+var updateBodyStr = function updateBodyStr(_ref8) {
+  var body = _ref8.body,
+      typeDefName = _ref8.typeDefName,
+      fieldDefsStr = _ref8.fieldDefsStr;
 
-  // Find where our type ContentItem is located in the definitions array.
-  var contentItemIndex = contentItemTypeDefs.definitions.findIndex(function (item) {
-    return item.name.value === 'ContentItem';
+  // Indexes for the points where we inject our new string into.
+  var startSearchIndex = body.indexOf(`${typeDefName} {`);
+  var startInsertIndex = body.indexOf('}', startSearchIndex);
+
+  // Contents before and after our insertion points
+  var beforeStr = body.slice(0, startInsertIndex);
+  var afterStr = body.slice(startInsertIndex);
+
+  return `${beforeStr}${fieldDefsStr}${afterStr}`;
+};
+
+/** Find the location of the Type Defintion we wish to modify
+ *  in the GraphQL TypeDefs AST.
+ *  @param {Object} typeDefsAst - GraphQL TypeDefs AST to search.
+ *  @param {string} typeDefName - Name of the typeDef to search for
+ *  @returns {number} - Index for the TypeDefs location in the definitons array.
+ */
+var getTypeDefIndex = function getTypeDefIndex(_ref9) {
+  var typeDefsAst = _ref9.typeDefsAst,
+      typeDefName = _ref9.typeDefName;
+  return typeDefsAst.definitions.findIndex(function (item) {
+    return item.name.value === typeDefName;
+  });
+};
+
+/** Add new field definitions to an existing GraphQL TypeDefs AST.
+ *  NOTE: This approach can be improved & abstracted further.
+ *  Refactor to be DRY whilst accounting for perf.
+ *  @param {Object} originalTypeDefs - GraphQL TypeDefs AST to modify.
+ *  @param {Object} fieldDefsToAdd - Contains all the new fieldDefs to add.
+ *  @returns {Object} - GraphQL AST containing the fieldsDefs we wished to add.
+ */
+var createGraphqlMarkdownTypeDefs = function createGraphqlMarkdownTypeDefs(_ref10) {
+  var originalTypeDefs = _ref10.originalTypeDefs,
+      fieldDefsToAdd = _ref10.fieldDefsToAdd;
+
+  // Create a copy with no references to original.
+  // As we intend to mutate the TypeDefsAst directly.
+  var typeDefsAst = lodash_clonedeep(originalTypeDefs);
+
+  // Find the indexes for the TypeDefs we will modify.
+  var typeContentItemIndex = getTypeDefIndex({
+    typeDefsAst: originalTypeDefs,
+    typeDefName: 'ContentItem'
+  });
+  var inputTypeFieldsIndex = getTypeDefIndex({
+    typeDefsAst: originalTypeDefs,
+    typeDefName: 'Fields'
   });
 
   var newFieldDefsStr = '';
-  var typeDefsAst = lodash_clonedeep(contentItemTypeDefs);
 
-  Object.keys(contentItemGqlFields).forEach(function (field) {
-    var isID = field === 'id' || field === 'groupId';
-    if (!isID) {
-      // Add the new field def to our ContentItem type
-      typeDefsAst.definitions[contentItemIndex].fields.push(contentItemGqlFields[field].ast);
-      // Store the new field def to be added to our ContentItem type
-      newFieldDefsStr += `  ${field}: ${contentItemGqlFields[field].gqlType}\n`;
+  // Add the new Field Defs to the typeDefsAst
+  Object.keys(fieldDefsToAdd).forEach(function (field) {
+    var isProtectedField = field === 'id' || field === 'groupId' || field === 'html';
+
+    // Do not allow fields from .md front-matter to replace
+    // the existing AST for any of our reserved fields.
+    if (!isProtectedField) {
+      // Add the field def to our type ContentItem
+      typeDefsAst.definitions[typeContentItemIndex].fields.push(fieldDefsToAdd[field].ast);
+
+      // Add the field def to our type input Fields
+      typeDefsAst.definitions[inputTypeFieldsIndex].fields.push(fieldDefsToAdd[field].ast);
+
+      // Construct a string version of the fieldDefs we have added.
+      newFieldDefsStr += `  ${field}: ${fieldDefsToAdd[field].gqlType}\n`;
     }
   });
 
   // Modify the TypeDefs ASTs source body string to match the new fields we inserted.
-  var gqlStr = contentItemTypeDefs.loc.source.body;
-  // Indexes for where to split the source body in half
-  var startSearchIndex = gqlStr.indexOf('ContentItem {');
-  var startInsertIndex = gqlStr.indexOf('}', startSearchIndex);
-  var beforeStr = gqlStr.slice(0, startInsertIndex);
-  var afterStr = gqlStr.slice(startInsertIndex);
+  var gqlStr = originalTypeDefs.loc.source.body;
+
+  // Insert the field defs into type ContentItem
+  var tempBody = updateBodyStr({
+    body: gqlStr,
+    typeDefName: 'ContentItem',
+    fieldDefsStr: newFieldDefsStr
+  });
+
+  // Insert the field defs into input Fields
+  var newBody = updateBodyStr({
+    body: tempBody,
+    typeDefName: 'Fields',
+    fieldDefsStr: newFieldDefsStr
+  });
 
   // Replace the old source body with our own version which
   // contains the new fields defs taken from the .md front-matter.
-  typeDefsAst.loc.source.body = `${beforeStr}${newFieldDefsStr}${afterStr}`;
-
-  return { graphqlMarkdownTypeDefs: typeDefsAst };
+  typeDefsAst.loc.source.body = newBody;
+  return typeDefsAst;
 };
 
 /**
@@ -19159,8 +19224,8 @@ var Query = {
 
 var contentItemResolvers = { Query };
 
-var doc = { "kind": "Document", "definitions": [{ "kind": "EnumTypeDefinition", "name": { "kind": "Name", "value": "OrderBy" }, "directives": [], "values": [{ "kind": "EnumValueDefinition", "name": { "kind": "Name", "value": "ASCENDING" }, "directives": [] }, { "kind": "EnumValueDefinition", "name": { "kind": "Name", "value": "DESCENDING" }, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "Sort" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "sortBy" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "orderBy" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "OrderBy" } } }, "defaultValue": null, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "Pagination" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "sort" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Sort" } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "skip" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Int" } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "limit" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Int" } }, "defaultValue": null, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "FieldMatch" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "name" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "value" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } } }, "defaultValue": null, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "FieldMatcher" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "fields" }, "type": { "kind": "NonNullType", "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "FieldMatch" } } } } }, "defaultValue": null, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "ContentItemsQuery" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "ids" }, "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "groupIds" }, "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "fieldMatcher" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "FieldMatcher" } }, "defaultValue": null, "directives": [] }] }, { "kind": "ObjectTypeDefinition", "name": { "kind": "Name", "value": "ContentItem" }, "interfaces": [], "directives": [], "fields": [{ "kind": "FieldDefinition", "name": { "kind": "Name", "value": "id" }, "arguments": [], "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } }, "directives": [] }, { "kind": "FieldDefinition", "name": { "kind": "Name", "value": "groupId" }, "arguments": [], "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } }, "directives": [] }, { "kind": "FieldDefinition", "name": { "kind": "Name", "value": "html" }, "arguments": [], "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } }, "directives": [] }] }, { "kind": "ObjectTypeDefinition", "name": { "kind": "Name", "value": "Query" }, "interfaces": [], "directives": [], "fields": [{ "kind": "FieldDefinition", "name": { "kind": "Name", "value": "contentItem" }, "arguments": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "id" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } }, "defaultValue": null, "directives": [] }], "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ContentItem" } }, "directives": [] }, { "kind": "FieldDefinition", "name": { "kind": "Name", "value": "contentItems" }, "arguments": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "query" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ContentItemsQuery" } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "pagination" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Pagination" } }, "defaultValue": null, "directives": [] }], "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ContentItem" } } } }, "directives": [] }] }], "loc": { "start": 0, "end": 890 } };
-doc.loc.source = { "body": "enum OrderBy {\n  ASCENDING\n  DESCENDING\n}\n\n# Sort and order results by a specific field and order.\n# e.g - { sortBy: \"date\", orderBy: \"DESCENDING\" }\ninput Sort {\n  # Field to sort by. e.g - \"date\"\n  sortBy: String!\n  # ASCENDING or DESCENDING order. e.g - \"DESCENDING\"\n  orderBy: OrderBy!\n}\n\ninput Pagination {\n  # Sort and order objects by a specific field in a specific order.\n  sort: Sort\n  # Do not return the first x objects.\n  skip: Int\n  # Limit the number of objects to return.\n  limit: Int\n}\n\ninput FieldMatch {\n  name: String!\n  value: String!\n}\n\ninput FieldMatcher {\n  fields: [FieldMatch!]!\n}\n\ninput ContentItemsQuery {\n  ids: [ID!]\n  groupIds: [ID!]\n  fieldMatcher: FieldMatcher\n}\n\ntype ContentItem {\n  id: ID!\n  groupId: ID!\n  html: String\n}\n\ntype Query {\n  contentItem(id: ID!): ContentItem\n  contentItems(query: ContentItemsQuery!, pagination: Pagination): [ContentItem!]\n}\n", "name": "GraphQL request", "locationOffset": { "line": 1, "column": 1 } };
+var doc = { "kind": "Document", "definitions": [{ "kind": "EnumTypeDefinition", "name": { "kind": "Name", "value": "OrderBy" }, "directives": [], "values": [{ "kind": "EnumValueDefinition", "name": { "kind": "Name", "value": "ASCENDING" }, "directives": [] }, { "kind": "EnumValueDefinition", "name": { "kind": "Name", "value": "DESCENDING" }, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "Sort" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "sortBy" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "orderBy" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "OrderBy" } } }, "defaultValue": null, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "Pagination" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "sort" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Sort" } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "skip" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Int" } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "limit" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Int" } }, "defaultValue": null, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "Fields" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "id" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "groupId" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "html" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } }, "defaultValue": null, "directives": [] }] }, { "kind": "ObjectTypeDefinition", "name": { "kind": "Name", "value": "ContentItem" }, "interfaces": [], "directives": [], "fields": [{ "kind": "FieldDefinition", "name": { "kind": "Name", "value": "id" }, "arguments": [], "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } }, "directives": [] }, { "kind": "FieldDefinition", "name": { "kind": "Name", "value": "groupId" }, "arguments": [], "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } }, "directives": [] }, { "kind": "FieldDefinition", "name": { "kind": "Name", "value": "html" }, "arguments": [], "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } }, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "FilterFields" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "AND" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Fields" } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "OR" }, "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Fields" } } } }, "defaultValue": null, "directives": [] }] }, { "kind": "ObjectTypeDefinition", "name": { "kind": "Name", "value": "Query" }, "interfaces": [], "directives": [], "fields": [{ "kind": "FieldDefinition", "name": { "kind": "Name", "value": "contentItemById" }, "arguments": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "id" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } }, "defaultValue": null, "directives": [] }], "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ContentItem" } }, "directives": [] }, { "kind": "FieldDefinition", "name": { "kind": "Name", "value": "contentItemsByIds" }, "arguments": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "ids" }, "type": { "kind": "NonNullType", "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "pagination" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Pagination" } }, "defaultValue": null, "directives": [] }], "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ContentItem" } } } }, "directives": [] }, { "kind": "FieldDefinition", "name": { "kind": "Name", "value": "contentItemsByGroupId" }, "arguments": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "groupId" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "pagination" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Pagination" } }, "defaultValue": null, "directives": [] }], "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ContentItem" } } } }, "directives": [] }, { "kind": "FieldDefinition", "name": { "kind": "Name", "value": "contentItems" }, "arguments": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "filter" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "FilterFields" } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "pagination" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Pagination" } }, "defaultValue": null, "directives": [] }], "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ContentItem" } } } }, "directives": [] }] }], "loc": { "start": 0, "end": 1568 } };
+doc.loc.source = { "body": "enum OrderBy {\n  ASCENDING\n  DESCENDING\n}\n\n# Sort and order results by a specific field and order.\n# e.g - { sortBy: \"date\", orderBy: \"DESCENDING\" }\ninput Sort {\n  # Field to sort by. e.g - \"date\"\n  sortBy: String!\n  # ASCENDING or DESCENDING order. e.g - \"DESCENDING\"\n  orderBy: OrderBy!\n}\n\ninput Pagination {\n  # Sort and order objects by a specific field in a specific order.\n  sort: Sort\n  # Do not return the first x objects.\n  skip: Int\n  # Limit the number of objects to return.\n  limit: Int\n}\n\ninput Fields {\n  id: ID\n  groupId: ID\n  html: String\n  # field defs generated from .md front-matter will be injected by pkg here.\n}\n\ntype ContentItem {\n  # Mandatory - a unique id must exist for every .md file.\n  id: ID!\n  # Mandatory - a non unique groupId must exist for every .md file. If you do not\n  # wish to manually set you can use the generateGroupIdByFolder option check pkg Readme.\n  groupId: ID!\n  # The html generated from parsing the .md contents.\n  html: String\n  # field defs generated from .md front-matter will be injected by pkg here.\n}\n\ninput FilterFields {\n  # Query ContentItems by any fields using logical AND condition.\n  AND: Fields\n  # Query ContentItems by any fields using logical OR condition.\n  OR: [Fields!]\n}\n\ntype Query {\n  contentItemById(id: ID!): ContentItem\n  contentItemsByIds(ids: [ID!]!, pagination: Pagination): [ContentItem!]\n  contentItemsByGroupId(groupId: ID!, pagination: Pagination): [ContentItem!]\n  # Query for contentItems by any field\n  contentItems(filter: FilterFields!, pagination: Pagination): [ContentItem!]\n}\n", "name": "GraphQL request", "locationOffset": { "line": 1, "column": 1 } };
 
 var _this = undefined;
 
@@ -19185,7 +19250,7 @@ var loadMarkdownIntoDb = function () {
         replaceContents = _ref.replaceContents,
         codeHighlighter = _ref.codeHighlighter;
 
-    var isFunction, defaultOptions, _ref3, contentItems, contentItemGqlFields, _createGraphqlMarkdow, graphqlMarkdownTypeDefs, itemsInserted;
+    var isFunction, defaultOptions, _ref3, contentItems, contentItemGqlFields, graphqlMarkdownTypeDefs, itemsInserted;
 
     return regenerator.wrap(function _callee$(_context) {
       while (1) {
@@ -19220,10 +19285,10 @@ var loadMarkdownIntoDb = function () {
 
 
             // Generate the packages TypeDefs to return to the pkg user
-            _createGraphqlMarkdow = createGraphqlMarkdownTypeDefs({
-              contentItemGqlFields,
-              contentItemTypeDefs: doc
-            }), graphqlMarkdownTypeDefs = _createGraphqlMarkdow.graphqlMarkdownTypeDefs;
+            graphqlMarkdownTypeDefs = createGraphqlMarkdownTypeDefs({
+              originalTypeDefs: doc,
+              fieldDefsToAdd: contentItemGqlFields
+            });
 
             // Insert all ContentItems into the in-memory nedb instance.
 
