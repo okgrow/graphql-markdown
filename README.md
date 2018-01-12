@@ -218,24 +218,36 @@ Run the simple-example found in `examples/simple`, and copy/paste the below snip
   # Simplified helper query to search for a single ContentItem.
   # Returns a ContentItem, else null if not found.
   contentItemById(id: "homePage") {
+    html
     description
   }
 
   # Simplified helper query to search for ContentItems by ids.
   # Returns a List of contentItems, else empty List if none found.
   # Supports Pagination (sort, skip, limit).
-  contentItemsByIds(ids: ["graphqlIntro", "foo"]) {
+  contentItemsByIds(ids: ["graphqlIntro", "homePage"]) {
     id
     tags
+    order
   }
 
   # Simplified helper query to search for ContentItems by groupId.
   # Return a List of contentItems, else empty List if none found.
   # Supports Pagination (sort, skip, limit).
-  contentItemsByGroupId(groupId: "simple-example") {
+  contentItemsByGroupId(
+    groupId: "simple-example",
+    pagination: {
+      sort: {
+        sortBy: "order",
+        orderBy: DESCENDING
+      },
+      skip: 0,
+      limit: 0
+    })
+  {
     id
+    order
     groupId
-    tags
   }
 
   # Full powered query to search for ContentItems by any field!!!
@@ -243,20 +255,24 @@ Run the simple-example found in `examples/simple`, and copy/paste the below snip
   # Return a List of contentItems, else empty List if none found.
   # Supports Pagination (sort, skip, limit).
   contentItems(
-    filter: { AND: { id: "homePage", groupId: "simple-example" } }
+    filter: {
+      AND:{
+        order: 2,
+        groupId: "simple-example"
+      }
+    },
     pagination: {
-      sort: { sortBy: "order", orderBy: DESCENDING }
-      skip: 0
-      limit: 0
-    }
-  ) {
+      sort: {
+        sortBy: "order",
+        orderBy: ASCENDING
+      }
+    })
+  {
     id
-    groupId
     type
-    description
     date
-    tags
-    html
+    groupId
+    description  
   }
 }
 ```

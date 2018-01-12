@@ -1,4 +1,4 @@
-# Simple Graphiql Example
+# Simple GraphiQL Example
 
 ## Requirements
 
@@ -16,62 +16,67 @@
 
 Below are some example queries demonstrating the packages capabilities. Give them a try in GraphiQL!
 
-### contentItem
+Any query that returns a List also supports a basic form of pagination via the ability to `sort`, `skip`, and `limit` the results returned from a query.
 
-```
+#### Query by id(s)
+
+```graphql
 {
-  contentItem(id: "graphqlIntro") {
+  # Simplified helper query to search for a single ContentItem.
+  # Returns a ContentItem, else null if not found.
+  contentItemById(id: "graphqlIntro") {
     id
     groupId
     html
     title
     tags
   }
-}
-```
 
-### contentItems query
-
-The `contentItems` query allows you to query by `ids`, `groupIds`, or `fieldMatcher`.
-
-- `ids` will match against the `id` in your `.md` file. Every `.md` file must have an `id`.
-- `groupIds` will match against the `groupId` in your `.md` file. Every `.md` file must have an `groupId`.
-- `fieldMatcher` will match against any specific field that you have set in your `.md` file.
-
-The `contentItems` query also supports a basic form of pagination via the ability to `sort`, `skip`, and `limit` the results returned from a query.
-
-#### Query by ids
-
-```
-{
-  contentItems(query: { ids: ["graphqlIntro", "homePage"] }) {
+  # Simplified helper query to search for ContentItems by ids.
+  # Returns a List of contentItems, else empty List if none found.
+  # Supports Pagination (sort, skip, limit).
+  contentItemsByIds(ids: ["graphqlIntro", "homePage"] ) {
     id
     groupId
   }
 }
 ```
 
-#### Query by groupIds
+#### Query by groupId
 
-```
+```graphql
 {
-  contentItems(query: { groupIds: ["simple-example"] }) {
+  # Simplified helper query to search for ContentItems by groupId.
+  # Return a List of contentItems, else empty List if none found.
+  # Supports Pagination (sort, skip, limit).
+  contentItemsByGroupId(groupId: "simple-example") {
     id
     groupId
   }
 }
 ```
 
-#### Query by fieldMatcher.
+#### Query by any field!
 
-```
+The `contentItems` query allows you to query on any field with a `filter` which uses the logical `AND`, `OR` conditions.
+
+```graphql
 {
+  # Full powered query to search for ContentItems by any field!!!
+  # Supports searching by logical AND, OR conditions on any fields.
+  # Return a List of contentItems, else empty List if none found.
+  # Supports Pagination (sort, skip, limit).
   contentItems(
-    query: { fieldMatcher: { fields: [{ name: "type", value: "page" }] } }
-  ){
+    filter: {
+      OR: [
+        { order: 2 },
+        { id: "graphqlIntro" }
+      ]
+    })
+  {
     id
+    order
     groupId
-    type
   }
 }
 ```
@@ -83,13 +88,17 @@ Try changing the below example and see what happens. Here are a few hints:
 - Set `skip` to 1 and `limit` to 0.
 - Set `skip` to 0 and `limit` to 1.
 - Swap `DESCENDING` with `ASCENDING`.
-- Replace `groupIds` with `ids: ["graphqlIntro", "homePage"]`
+- Replace `AND: { groupId: "simple-example" }` with `OR: [{ order: 2 }, { order: 1 }]`.
 - Remove `skip` and `limit` all together.
 
-```
+```graphql
 {
   contentItems(
-    query: { groupIds: ["simple-example"] },
+    filter: {
+      AND: {
+        groupId: "simple-example"
+      }
+    },
     pagination: {
       sort: {
         sortBy: "order",
