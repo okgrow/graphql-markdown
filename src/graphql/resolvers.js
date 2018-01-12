@@ -1,10 +1,17 @@
 import * as queryHelpers from './queryHelpers';
 
 const Query = {
-  contentItem: async (root, { id } /* , context */) =>
-    queryHelpers.getContentItem(id),
-  contentItems: async (root, { query, pagination } /* , context */) =>
-    queryHelpers.getContentItems({ ...query, pagination }),
+  contentItemById: async (root, { id } /* , context */) =>
+    queryHelpers.findContentItemById(id),
+
+  contentItemsByIds: async (root, { ids, pagination } /* , context */) =>
+    queryHelpers.findContentItemsByIds({ ids, pagination }),
+
+  contentItemsByGroupId: async (root, { groupId, pagination } /* , ctx */) =>
+    queryHelpers.findContentItemsByGroupId({ groupId, pagination }),
+
+  contentItems: async (root, { filter, pagination } /* , context */) =>
+    queryHelpers.findContentItemsByFilter({ filter, pagination }),
 };
 
 export default { Query };

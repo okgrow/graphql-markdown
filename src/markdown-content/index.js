@@ -44,9 +44,9 @@ const loadMarkdownIntoDb = async ({
   );
 
   // Generate the packages TypeDefs to return to the pkg user
-  const { graphqlMarkdownTypeDefs } = createGraphqlMarkdownTypeDefs({
-    contentItemGqlFields,
-    contentItemTypeDefs,
+  const graphqlMarkdownTypeDefs = createGraphqlMarkdownTypeDefs({
+    originalTypeDefs: contentItemTypeDefs,
+    fieldDefsToAdd: contentItemGqlFields,
   });
 
   // Insert all ContentItems into the in-memory nedb instance.

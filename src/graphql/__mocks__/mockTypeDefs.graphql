@@ -21,32 +21,37 @@ input Pagination {
   limit: Int
 }
 
-input FieldMatch {
-  name: String!
-  value: String!
-}
-
-input FieldMatcher {
-  fields: [FieldMatch!]!
-}
-
-input ContentItemsQuery {
-  ids: [ID!]
-  groupIds: [ID!]
-  fieldMatcher: FieldMatcher
-}
-
-type ContentItem {
-  id: ID!
-  groupId: ID!
+input Fields {
+  id: ID
+  groupId: ID
   html: String
+  # field defs below will have been dynamically injected by pkg
   test: String
   order: Int
   temperature: Float
   isContentItem: Boolean
 }
 
+type ContentItem {
+  id: ID!
+  groupId: ID!
+  html: String
+  # field defs below will have been dynamically injected by pkg
+  test: String
+  order: Int
+  temperature: Float
+  isContentItem: Boolean
+}
+
+input FilterFields {
+  AND: Fields
+  OR: [Fields!]
+}
+
 type Query {
-  contentItem(id: ID!): ContentItem
-  contentItems(query: ContentItemsQuery!, pagination: Pagination): [ContentItem!]
+  contentItemById(id: ID!): ContentItem
+  contentItemsByIds(ids: [ID!]!, pagination: Pagination): [ContentItem!]
+  contentItemsByGroupId(groupId: ID!, pagination: Pagination): [ContentItem!]
+  # Query for contentItems by any field
+  contentItems(filter: FilterFields!, pagination: Pagination): [ContentItem!]
 }
