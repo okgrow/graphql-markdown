@@ -6,8 +6,10 @@ import {
   markedPromise,
   getListOfRelativeImageFiles,
 } from '../server-helpers';
+import { gqlTypeListener } from './detectGqlTypesFromMd';
 import { getGroupId, replaceHtmlImageSrc } from '../helpers';
 
+// TODO: Think of renaming to better reflect the item we are returning
 /**
  * Create a markdown object from parsing a .md file and any image files that it references.
  * @param {Object} param
@@ -19,7 +21,7 @@ import { getGroupId, replaceHtmlImageSrc } from '../helpers';
  * Expected format is "(ext|ext|ext)" e.g - "(png|svg|jpg)"
  * @param {function} param.replaceContents - Manipulate the contents of the .md file before processing.
  * @returns {Object} Created from the contents of the .md file that has been processed.
-*/
+ */
 const getMarkdownObject = async ({
   filename,
   imageMap,
@@ -28,14 +30,37 @@ const getMarkdownObject = async ({
   replaceContents,
 }) => {
   const assetDir = getAssetDir({ filename, contentRoot });
+  const rawContents = fs.readFileSync(filename, 'utf8');
+  const relativeFileName = filename.slice(contentRoot.length);
 
-  const rawContents = await fs.readFileSync(filename, 'utf8');
   // Provide the ability to manipulate the contents of the .md file before processing
   const fileContents = replaceContents
     ? replaceContents({ contentRoot, rawContents })
     : rawContents;
 
-  const { content, data } = matter(fileContents);
+  // TODO: Abstract the below matter processing into its own function
+  // WARNING: The 4 variables below are mutated directly by gqlTypeListener()
+  let currKey = ''; // eslint-disable-line
+  const stack = [];
+  const debug = [];
+  const gqlTypesInMd = {};
+
+  const { content, data /* , excerpt */ } = matter(fileContents, {
+    listener: gqlTypeListener({
+      stack,
+      debug,
+      currKey,
+      gqlTypesInMd,
+      relativeFileName,
+    }),
+  });
+
+  if (!data || !data.id) {
+    throw new Error(
+      `[getMarkdownObject] id is missing from your .md file: ${assetDir}`,
+    );
+  }
+
   const html = await markedPromise(content);
 
   const images = getListOfRelativeImageFiles(
@@ -44,26 +69,28 @@ const getMarkdownObject = async ({
     imageFormats,
   );
 
-  // TODO: Deprecate this in future ?
-  // If we do then we must state every .md file must provide a groupId?
+  // TODO: Setup logic for if generateGroupIdByFolder is true
+  // When true, we will enable defaultGroupId to be inferred from the folder the
+  // .md file is currently located within.
+  // When not turned on every .md file must set a groupId!
   const defaultGroupId = getGroupId(assetDir);
-
-  if (!data || !data.id) {
-    console.warn(
-      '[getMarkdownObject] id is missing from your MD file: ',
-      assetDir,
-    );
-  }
 
   const newHtml = replaceHtmlImageSrc({ images, imageMap, html });
 
-  return {
+  const contentItem = {
     html: newHtml,
     groupId: defaultGroupId, // NOTE: Must be before ...data, so default can be overwritten
     ...data,
-    assetDir,
-    markdown: content,
-    images,
+    // TODO: Decide if we should insert these into db, no purpose other then for testing ???
+    // images,
+    // assetDir,
+    // markdown: content,
+  };
+
+  return {
+    filename,
+    contentItem,
+    gqlTypesInMd, // TODO: Think of a better name to describe the GQL fields/type
   };
 };
 

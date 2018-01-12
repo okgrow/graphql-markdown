@@ -25,24 +25,26 @@ input Fields {
   id: ID
   groupId: ID
   html: String
-  # field defs generated from .md front-matter will be injected by pkg here.
+  # field defs below will have been dynamically injected by pkg
+  test: String
+  order: Int
+  temperature: Float
+  isContentItem: Boolean
 }
 
 type ContentItem {
-  # Mandatory - a unique id must exist for every .md file.
   id: ID!
-  # Mandatory - a non unique groupId must exist for every .md file. If you do not
-  # wish to manually set you can use the generateGroupIdByFolder option check pkg Readme.
   groupId: ID!
-  # The html generated from parsing the .md contents.
   html: String
-  # field defs generated from .md front-matter will be injected by pkg here.
+  # field defs below will have been dynamically injected by pkg
+  test: String
+  order: Int
+  temperature: Float
+  isContentItem: Boolean
 }
 
 input FilterFields {
-  # Query ContentItems by any fields using logical AND condition.
   AND: Fields
-  # Query ContentItems by any fields using logical OR condition.
   OR: [Fields!]
 }
 

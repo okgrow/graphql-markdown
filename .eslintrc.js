@@ -13,7 +13,12 @@ module.exports = {
     'arrow-parens': ['error', 'as-needed'], // Allow usage of: foo => {...}
     'no-mixed-operators': 0, // Allow && || usage. e.g: const foo = a && a.foo || undefined;
     'no-underscore-dangle': 0, // Allow usage of _id or foo._id
-    quotes: ['error', 'single', { allowTemplateLiterals: true, avoidEscape: true }],
+    quotes: [
+      'error',
+      'single',
+      { allowTemplateLiterals: true, avoidEscape: true },
+    ],
+    'function-paren-newline': 1,
     'prettier/prettier': [
       'error',
       {

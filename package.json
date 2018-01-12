@@ -5,11 +5,7 @@
   "description": "Write markdown, serve as html, query via GraphQL.🔥",
   "author": "OK GROW! <hello@okgrow.com> (https://www.okgrow.com)",
   "homepage": "https://github.com/okgrow/guides",
-  "keywords": [
-    "graphql",
-    "markdown",
-    "html"
-  ],
+  "keywords": ["graphql", "markdown", "html"],
   "repository": {
     "type": "git",
     "url": "https://github.com/okgrow/guides.git"
@@ -19,6 +15,9 @@
   },
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
+  "engines": {
+    "node": ">=4.8.3"
+  },
   "scripts": {
     "test": "jest",
     "format": "prettier-eslint --write \"src/**/*.js\"",
@@ -28,48 +27,47 @@
   },
   "dependencies": {
     "glob": "^7.1.2",
-    "gray-matter": "^3.0.3",
-    "marked": "^0.3.6",
+    "gray-matter": "^3.1.1",
+    "lodash.clonedeep": "^4.5.0",
+    "marked": "^0.3.12",
     "nedb": "^1.8.0"
   },
   "peerDependencies": {
-    "graphql": "^0.11.2"
+    "graphql": "^0.11.7"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
-    "babel-eslint": "^7.2.3",
-    "babel-jest": "^21.0.0",
+    "babel-eslint": "^8.2.1",
+    "babel-jest": "^22.0.4",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-regenerator": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.6.0",
+    "babel-preset-env": "^1.6.1",
     "babel-runtime": "^6.26.0",
-    "core-js": "^2.5.1",
-    "eslint": "^4.6.1",
-    "eslint-config-airbnb": "^15.1.0",
-    "eslint-config-prettier": "^2.4.0",
-    "eslint-plugin-graphql": "^1.3.0",
-    "eslint-plugin-import": "^2.7.0",
-    "eslint-plugin-jsx-a11y": "^5.1.1",
-    "eslint-plugin-prettier": "^2.2.0",
-    "eslint-plugin-react": "^7.3.0",
+    "core-js": "^2.5.3",
+    "eslint": "^4.15.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-graphql": "^1.4.1",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-prettier": "^2.4.0",
+    "eslint-plugin-react": "^7.5.1",
     "graphql": "^0.11.2",
-    "graphql-tools": "^1.2.2",
-    "jest": "^21.0.1",
+    "graphql-tools": "^2.17.0",
+    "jest": "^22.0.5",
     "jest-transform-graphql": "^2.1.0",
-    "prettier": "^1.6.1",
-    "prettier-eslint-cli": "^4.3.0",
-    "rollup": "^0.49.2",
-    "rollup-plugin-babel": "3.0.2",
-    "rollup-plugin-commonjs": "^8.2.0",
-    "rollup-plugin-filesize": "^1.4.2",
+    "prettier": "^1.9.2",
+    "prettier-eslint-cli": "^4.7.0",
+    "rollup": "^0.53.3",
+    "rollup-plugin-babel": "3.0.3",
+    "rollup-plugin-commonjs": "^8.2.6",
+    "rollup-plugin-filesize": "^1.5.0",
     "rollup-plugin-graphql": "^0.1.0",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-watch": "^4.3.1"
   },
-  "files": [
-    "dist"
-  ]
+  "files": ["dist"]
 }

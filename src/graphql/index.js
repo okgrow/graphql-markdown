@@ -1,4 +1,4 @@
-import resolvers from './resolvers';
-import typeDefs from './typeDefs.graphql';
+import contentItemResolvers from './resolvers';
+import contentItemTypeDefs from './typeDefs.graphql';
 
-export default { typeDefs, resolvers };
+export { contentItemTypeDefs, contentItemResolvers };
