@@ -5752,14 +5752,16 @@ var getAssetDir = function getAssetDir(_ref) {
 
 /**
  * Reads an image file & converts it into the correct base64 format for html
- * @param {string} fullPathName - Path to where image is located.
+ * @param {Object} param
+ * @param {string} obj.imgPath - Path to where image is located.
  * @returns {string} base64 string formatted as a data:image string.
  */
-var createBase64Image = function createBase64Image(fullPathName) {
-  var bitmap = fs.readFileSync(fullPathName);
+var createBase64Image = function createBase64Image(_ref2) {
+  var imgPath = _ref2.imgPath;
+
   // Convert binary data to base64 encoded string
-  var base64Str = new Buffer(bitmap).toString('base64');
-  var fileType = fullPathName.slice(fullPathName.lastIndexOf('.') + 1);
+  var base64Str = fs.readFileSync(imgPath, 'base64');
+  var fileType = imgPath.slice(imgPath.lastIndexOf('.') + 1);
   // Create the base64 image string format
   return `data:image/${fileType};base64,${base64Str}`;
 };
@@ -5921,32 +5923,15 @@ var createImagesMap = function () {
                   while (1) {
                     switch (_context.prev = _context.next) {
                       case 0:
-                        if (!imageFunc) {
-                          _context.next = 6;
-                          break;
-                        }
-
-                        _context.next = 3;
+                        _context.next = 2;
                         return imageFunc({ imgPath, contentRoot });
 
-                      case 3:
-                        _context.t0 = _context.sent;
-                        _context.next = 9;
-                        break;
-
-                      case 6:
-                        _context.next = 8;
-                        return createBase64Image(imgPath);
-
-                      case 8:
-                        _context.t0 = _context.sent;
-
-                      case 9:
-                        newImage = _context.t0;
+                      case 2:
+                        newImage = _context.sent;
 
                         imagesMap[imgPath] = newImage;
 
-                      case 11:
+                      case 4:
                       case 'end':
                         return _context.stop();
                     }
@@ -12342,7 +12327,7 @@ var createFieldDefinitionForGqlAst = function createFieldDefinitionForGqlAst(_re
 // We attach this function for every .md file as its front-matter is being
 // processed we map the field names to GraphQL Field definitions. e.g ->
 // front-matter -> title: "My First Post" , GraphQL -> title: String
-// The 3 paramters modified irectly are debug, stack, gqlTypesInMd.
+// The 3 paramters modified directly are debug, stack, gqlTypesInMd.
 // @returns {undefined}
 var gqlTypeListener = function gqlTypeListener(_ref4) {
   var debug = _ref4.debug,
