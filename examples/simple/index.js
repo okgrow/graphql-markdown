@@ -4,10 +4,15 @@ import { makeExecutableSchema } from 'graphql-tools';
 
 import { loadMarkdownIntoDb } from '../../dist/index.cjs';
 
+// Simple example of mapping the relative images stored with our .md
+// files to the URL path that we will access/serve them from.
+const serveImagesFromServer = ({ imgPath, contentRoot }) =>
+  `/images${imgPath.slice(contentRoot.length)}`;
+
 // Create our options for processing the markdown & images.
 const options = {
   contentRoot: `${__dirname}/content`,
-  imageFunc: ({ imgPath, contentRoot }) => imgPath,
+  imageFunc: serveImagesFromServer,
 };
 
 const app = express();

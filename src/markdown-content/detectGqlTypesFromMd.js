@@ -94,7 +94,7 @@ const createFieldDefinitionForGqlAst = ({
 // We attach this function for every .md file as its front-matter is being
 // processed we map the field names to GraphQL Field definitions. e.g ->
 // front-matter -> title: "My First Post" , GraphQL -> title: String
-// The 3 paramters modified irectly are debug, stack, gqlTypesInMd.
+// The 3 paramters modified directly are debug, stack, gqlTypesInMd.
 // @returns {undefined}
 export const gqlTypeListener = ({
   debug,

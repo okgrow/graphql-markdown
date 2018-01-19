@@ -56,9 +56,7 @@ const getMarkdownObject = async ({
   });
 
   if (!data || !data.id) {
-    throw new Error(
-      `[getMarkdownObject] id is missing from your .md file: ${assetDir}`,
-    );
+    throw new Error(`[getMarkdownObject] id is missing from your .md file: ${assetDir}`);
   }
 
   const html = await markedPromise(content);
@@ -82,6 +80,7 @@ const getMarkdownObject = async ({
     groupId: defaultGroupId, // NOTE: Must be before ...data, so default can be overwritten
     ...data,
     // TODO: Decide if we should insert these into db, no purpose other then for testing ???
+    // Or would users like to access them on the server side via our db functions?
     // images,
     // assetDir,
     // markdown: content,
