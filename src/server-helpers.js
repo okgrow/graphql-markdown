@@ -46,14 +46,14 @@ export const getAssetDir = ({ contentRoot, filename }) =>
 
 /**
  * Reads an image file & converts it into the correct base64 format for html
- * @param {string} fullPathName - Path to where image is located.
+ * @param {Object} param
+ * @param {string} obj.imgPath - Path to where image is located.
  * @returns {string} base64 string formatted as a data:image string.
  */
-export const createBase64Image = fullPathName => {
-  const bitmap = fs.readFileSync(fullPathName);
+export const createBase64Image = ({ imgPath }) => {
   // Convert binary data to base64 encoded string
-  const base64Str = new Buffer(bitmap).toString('base64');
-  const fileType = fullPathName.slice(fullPathName.lastIndexOf('.') + 1);
+  const base64Str = fs.readFileSync(imgPath, 'base64');
+  const fileType = imgPath.slice(imgPath.lastIndexOf('.') + 1);
   // Create the base64 image string format
   return `data:image/${fileType};base64,${base64Str}`;
 };

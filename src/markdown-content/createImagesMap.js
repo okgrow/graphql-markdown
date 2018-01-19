@@ -1,4 +1,4 @@
-import { createBase64Image, getListOfAllImageFiles } from '../server-helpers';
+import { getListOfAllImageFiles } from '../server-helpers';
 
 /**
  * Creates an object that maps the local fullPath of an image to it's desired path.
@@ -15,9 +15,7 @@ const createImagesMap = async ({ contentRoot, imageFunc, imageFormats }) => {
   const imageList = getListOfAllImageFiles(contentRoot, imageFormats);
   await Promise.all(
     imageList.map(async imgPath => {
-      const newImage = imageFunc
-        ? await imageFunc({ imgPath, contentRoot })
-        : await createBase64Image(imgPath);
+      const newImage = await imageFunc({ imgPath, contentRoot });
       imagesMap[imgPath] = newImage;
     }),
   );
