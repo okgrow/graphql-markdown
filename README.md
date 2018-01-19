@@ -14,6 +14,9 @@ TODO: Replace me with a gif of the pkg in action.
 ## Table of Contents
 
 * [Quick Start](#quick-start)
+* [Server Setup](#server-setup)
+  * [Example 1 - Promise usage](#example-1-promise-usage)
+  * [Example 2 - Async/Await](#example-2-async/await-usage)
 * [Markdown Files](#markdown-files)
   * [MetaData section](#metadata-section)
   * [Markdown section](#markdown-section)
@@ -35,7 +38,7 @@ npm install --save https://github.com/okgrow/graphql-markdown
 yarn add https://github.com/okgrow/graphql-markdown
 ```
 
-Now lets follow the simple example below to get started quickly.
+### Server Setup
 
 ```js
 // server/index.js
@@ -71,6 +74,14 @@ const options = {
   },
 };
 
+// Continue on by selecting Example 1 - Promise or Example 2 - Async/Await
+```
+
+
+#### Example 1 - Promise usage
+
+```js
+// Continuation of server/index.js
 //*** Example 1 - Promise ***/
 
 // Find all markdown files, process and load them into memory and
@@ -88,12 +99,17 @@ loadMarkdownIntoDb(options).then({
   });
 
   // Now start your GraphQL Server using the schema you just created.
-  // If your unsure how to do this see check out our examples dir.
+  // If your unsure how to do this check out the examples dir.
 
 }).catch(error => {
   console.error('[loadMarkdownIntoDb]', error);
 });
+```
 
+#### Example 2 - Async/Await usage
+
+```js
+// Continuation of server/index.js
 /*** Example 2 - Async/Await ***/
 (async () => {
   try {
@@ -112,7 +128,7 @@ loadMarkdownIntoDb(options).then({
     });
 
     // Now start your GraphQL Server using the schema you just created.
-    // If your unsure how to do this see check out our examples dir.
+    // If your unsure how to do this check out the examples dir.
 
   } catch (error) {
     console.error('[loadMarkdownIntoDb]', error);
@@ -168,12 +184,13 @@ tags: [Happy, Learnings]
 
 # Welcome to this wonderful website!
 
-Hello world! Thanks for dropping by to say hello.
+Hello world!
+Thanks for dropping by to say hello! 🔥🔥🔥
 ```
 
 ## Querying Your Data
 
-Graphql Markdown provides a few approaches to querying for your ContentItems. We also provide a way to `sort`, `limit`, and `skip` your results allows a basic (naive) form of pagination. 🍾
+Graphql Markdown provides a few approaches to querying for the data extracted from you `.md` files. We also provide a way to `sort`, `limit`, and `skip` your results allows a basic (naive) form of pagination. 🍾
 
 * 💪 A powerful & all purpose query: Search by logical AND, OR conditions on any fields!!! 🎉
 
@@ -200,13 +217,13 @@ enum OrderBy {
 # Sort results by a specific field and order in Ascending or Descending order.
 # e.g -> { sortBy: "date", orderBy: "DESCENDING" }
 input Sort {
-  sortBy: String! # Field to sort by. e.g -> "date"
+  sortBy: String!   # Field to sort by. e.g -> "date"
   orderBy: OrderBy! # ASCENDING or DESCENDING order. e.g -> "DESCENDING"
 }
 
 input Pagination {
   sort: Sort # Sort and order elements by a specific field in a specific order.
-  skip: Int # Do not return the first x elements.
+  skip: Int  # Do not return the first x elements.
   limit: Int # Limit the number of elements to return.
 }
 ```
@@ -235,16 +252,16 @@ Run the simple-example found in `examples/simple`, and copy/paste the below snip
   # Return a List of contentItems, else empty List if none found.
   # Supports Pagination (sort, skip, limit).
   contentItemsByGroupId(
-    groupId: "simple-example",
+    groupId: "simple-example"
     pagination: {
       sort: {
         sortBy: "order",
         orderBy: DESCENDING
-      },
-      skip: 0,
+      }
+      skip: 0
       limit: 0
-    })
-  {
+    }
+  ) {
     id
     order
     groupId
@@ -256,23 +273,23 @@ Run the simple-example found in `examples/simple`, and copy/paste the below snip
   # Supports Pagination (sort, skip, limit).
   contentItems(
     filter: {
-      AND:{
+      AND: {
         order: 2,
         groupId: "simple-example"
+        }
       }
-    },
     pagination: {
       sort: {
         sortBy: "order",
         orderBy: ASCENDING
+        }
       }
-    })
-  {
+  ) {
     id
     type
     date
     groupId
-    description  
+    description
   }
 }
 ```
@@ -284,8 +301,8 @@ Run the simple-example found in `examples/simple`, and copy/paste the below snip
 git clone git@github.com:okgrow/graphql-markdown.git
 # Don't forget to install
 npm install
-# Run all tests
-npm run test
+# Run all tests (We use Jest)
+npm test
 ```
 
 ## Examples
