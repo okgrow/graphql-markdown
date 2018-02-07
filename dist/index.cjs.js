@@ -4,12 +4,12 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var fs = _interopDefault(require('fs'));
 var path = require('path');
 var path__default = _interopDefault(path);
+var fs = _interopDefault(require('fs'));
 var util = _interopDefault(require('util'));
-var events = _interopDefault(require('events'));
 var assert = _interopDefault(require('assert'));
+var events = _interopDefault(require('events'));
 var crypto = _interopDefault(require('crypto'));
 
 var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
@@ -2530,7 +2530,7 @@ if (isWindows) {
   var splitRootRe = /^[\/]*/;
 }
 
-var realpathSync$1 = function realpathSync(p, cache) {
+var realpathSync = function realpathSync(p, cache) {
   // make p is absolute
   p = path__default.resolve(p);
 
@@ -2627,7 +2627,7 @@ var realpathSync$1 = function realpathSync(p, cache) {
 };
 
 
-var realpath$1 = function realpath(p, cache, cb) {
+var realpath = function realpath(p, cache, cb) {
   if (typeof cb !== 'function') {
     cb = maybeCallback(cache);
     cache = null;
@@ -2750,16 +2750,16 @@ var realpath$1 = function realpath(p, cache, cb) {
 };
 
 var old = {
-	realpathSync: realpathSync$1,
-	realpath: realpath$1
+	realpathSync: realpathSync,
+	realpath: realpath
 };
 
-var fs_realpath = realpath;
-realpath.realpath = realpath;
-realpath.sync = realpathSync;
-realpath.realpathSync = realpathSync;
-realpath.monkeypatch = monkeypatch;
-realpath.unmonkeypatch = unmonkeypatch;
+var fs_realpath = realpath$1;
+realpath$1.realpath = realpath$1;
+realpath$1.sync = realpathSync$1;
+realpath$1.realpathSync = realpathSync$1;
+realpath$1.monkeypatch = monkeypatch;
+realpath$1.unmonkeypatch = unmonkeypatch;
 
 
 var origRealpath = fs.realpath;
@@ -2777,7 +2777,7 @@ function newError (er) {
   )
 }
 
-function realpath (p, cache, cb) {
+function realpath$1 (p, cache, cb) {
   if (ok) {
     return origRealpath(p, cache, cb)
   }
@@ -2795,7 +2795,7 @@ function realpath (p, cache, cb) {
   });
 }
 
-function realpathSync (p, cache) {
+function realpathSync$1 (p, cache) {
   if (ok) {
     return origRealpathSync(p, cache)
   }
@@ -2812,8 +2812,8 @@ function realpathSync (p, cache) {
 }
 
 function monkeypatch () {
-  fs.realpath = realpath;
-  fs.realpathSync = realpathSync;
+  fs.realpath = realpath$1;
+  fs.realpathSync = realpathSync$1;
 }
 
 function unmonkeypatch () {
@@ -3089,14 +3089,14 @@ function expand(str, isTop) {
 }
 
 var minimatch_1 = minimatch;
-minimatch.Minimatch = Minimatch$1;
+minimatch.Minimatch = Minimatch;
 
 var path$2 = { sep: '/' };
 try {
   path$2 = path__default;
 } catch (er) {}
 
-var GLOBSTAR = minimatch.GLOBSTAR = Minimatch$1.GLOBSTAR = {};
+var GLOBSTAR = minimatch.GLOBSTAR = Minimatch.GLOBSTAR = {};
 
 
 var plTypes = {
@@ -3174,8 +3174,8 @@ minimatch.defaults = function (def) {
   return m
 };
 
-Minimatch$1.defaults = function (def) {
-  if (!def || !Object.keys(def).length) return Minimatch$1
+Minimatch.defaults = function (def) {
+  if (!def || !Object.keys(def).length) return Minimatch
   return minimatch.defaults(def).Minimatch
 };
 
@@ -3194,12 +3194,12 @@ function minimatch (p, pattern, options) {
   // "" only matches ""
   if (pattern.trim() === '') return p === ''
 
-  return new Minimatch$1(pattern, options).match(p)
+  return new Minimatch(pattern, options).match(p)
 }
 
-function Minimatch$1 (pattern, options) {
-  if (!(this instanceof Minimatch$1)) {
-    return new Minimatch$1(pattern, options)
+function Minimatch (pattern, options) {
+  if (!(this instanceof Minimatch)) {
+    return new Minimatch(pattern, options)
   }
 
   if (typeof pattern !== 'string') {
@@ -3226,9 +3226,9 @@ function Minimatch$1 (pattern, options) {
   this.make();
 }
 
-Minimatch$1.prototype.debug = function () {};
+Minimatch.prototype.debug = function () {};
 
-Minimatch$1.prototype.make = make;
+Minimatch.prototype.make = make;
 function make () {
   // don't do it more than once.
   if (this._made) return
@@ -3284,7 +3284,7 @@ function make () {
   this.set = set;
 }
 
-Minimatch$1.prototype.parseNegate = parseNegate;
+Minimatch.prototype.parseNegate = parseNegate;
 function parseNegate () {
   var pattern = this.pattern;
   var negate = false;
@@ -3318,11 +3318,11 @@ minimatch.braceExpand = function (pattern, options) {
   return braceExpand(pattern, options)
 };
 
-Minimatch$1.prototype.braceExpand = braceExpand;
+Minimatch.prototype.braceExpand = braceExpand;
 
 function braceExpand (pattern, options) {
   if (!options) {
-    if (this instanceof Minimatch$1) {
+    if (this instanceof Minimatch) {
       options = this.options;
     } else {
       options = {};
@@ -3356,7 +3356,7 @@ function braceExpand (pattern, options) {
 // when it is the *only* thing in a path portion.  Otherwise, any series
 // of * is equivalent to a single *.  Globstar behavior is enabled by
 // default, and can be disabled by setting options.noglobstar.
-Minimatch$1.prototype.parse = parse;
+Minimatch.prototype.parse = parse;
 var SUBPARSE = {};
 function parse (pattern, isSub) {
   if (pattern.length > 1024 * 64) {
@@ -3725,10 +3725,10 @@ function parse (pattern, isSub) {
 }
 
 minimatch.makeRe = function (pattern, options) {
-  return new Minimatch$1(pattern, options || {}).makeRe()
+  return new Minimatch(pattern, options || {}).makeRe()
 };
 
-Minimatch$1.prototype.makeRe = makeRe;
+Minimatch.prototype.makeRe = makeRe;
 function makeRe () {
   if (this.regexp || this.regexp === false) return this.regexp
 
@@ -3776,7 +3776,7 @@ function makeRe () {
 
 minimatch.match = function (list, pattern, options) {
   options = options || {};
-  var mm = new Minimatch$1(pattern, options);
+  var mm = new Minimatch(pattern, options);
   list = list.filter(function (f) {
     return mm.match(f)
   });
@@ -3786,7 +3786,7 @@ minimatch.match = function (list, pattern, options) {
   return list
 };
 
-Minimatch$1.prototype.match = match;
+Minimatch.prototype.match = match;
 function match (f, partial) {
   this.debug('match', f, this.pattern);
   // short-circuit in the case of busted things.
@@ -3847,7 +3847,7 @@ function match (f, partial) {
 // Partial means, if you run out of file before you run
 // out of pattern, then that's fine, as long as all
 // the parts match.
-Minimatch$1.prototype.matchOne = function (file, pattern, partial) {
+Minimatch.prototype.matchOne = function (file, pattern, partial) {
   var options = this.options;
 
   this.debug('matchOne',
@@ -4070,30 +4070,30 @@ var win32_1 = win32;
 pathIsAbsolute.posix = posix_1;
 pathIsAbsolute.win32 = win32_1;
 
-var alphasort_1 = alphasort$2;
-var alphasorti_1 = alphasorti$2;
-var setopts_1 = setopts$2;
-var ownProp_1 = ownProp$2;
+var alphasort_1 = alphasort;
+var alphasorti_1 = alphasorti;
+var setopts_1 = setopts;
+var ownProp_1 = ownProp;
 var makeAbs_1 = makeAbs;
 var finish_1 = finish;
 var mark_1 = mark;
-var isIgnored_1 = isIgnored$2;
-var childrenIgnored_1 = childrenIgnored$2;
+var isIgnored_1 = isIgnored;
+var childrenIgnored_1 = childrenIgnored;
 
-function ownProp$2 (obj, field) {
+function ownProp (obj, field) {
   return Object.prototype.hasOwnProperty.call(obj, field)
 }
 
 
 
 
-var Minimatch$3 = minimatch_1.Minimatch;
+var Minimatch$1 = minimatch_1.Minimatch;
 
-function alphasorti$2 (a, b) {
+function alphasorti (a, b) {
   return a.toLowerCase().localeCompare(b.toLowerCase())
 }
 
-function alphasort$2 (a, b) {
+function alphasort (a, b) {
   return a.localeCompare(b)
 }
 
@@ -4113,16 +4113,16 @@ function ignoreMap (pattern) {
   var gmatcher = null;
   if (pattern.slice(-3) === '/**') {
     var gpattern = pattern.replace(/(\/\*\*)+$/, '');
-    gmatcher = new Minimatch$3(gpattern, { dot: true });
+    gmatcher = new Minimatch$1(gpattern, { dot: true });
   }
 
   return {
-    matcher: new Minimatch$3(pattern, { dot: true }),
+    matcher: new Minimatch$1(pattern, { dot: true }),
     gmatcher: gmatcher
   }
 }
 
-function setopts$2 (self, pattern, options) {
+function setopts (self, pattern, options) {
   if (!options)
     options = {};
 
@@ -4163,7 +4163,7 @@ function setopts$2 (self, pattern, options) {
 
   self.changedCwd = false;
   var cwd = process.cwd();
-  if (!ownProp$2(options, "cwd"))
+  if (!ownProp(options, "cwd"))
     self.cwd = cwd;
   else {
     self.cwd = path__default.resolve(options.cwd);
@@ -4187,7 +4187,7 @@ function setopts$2 (self, pattern, options) {
   options.nonegate = true;
   options.nocomment = true;
 
-  self.minimatch = new Minimatch$3(pattern, options);
+  self.minimatch = new Minimatch$1(pattern, options);
   self.options = self.minimatch.options;
 }
 
@@ -4222,7 +4222,7 @@ function finish (self) {
     all = Object.keys(all);
 
   if (!self.nosort)
-    all = all.sort(self.nocase ? alphasorti$2 : alphasort$2);
+    all = all.sort(self.nocase ? alphasorti : alphasort);
 
   // at *some* point we statted all of these
   if (self.mark) {
@@ -4242,7 +4242,7 @@ function finish (self) {
 
   if (self.ignore.length)
     all = all.filter(function(m) {
-      return !isIgnored$2(self, m)
+      return !isIgnored(self, m)
     });
 
   self.found = all;
@@ -4293,21 +4293,21 @@ function makeAbs (self, f) {
 
 // Return true, if pattern ends with globstar '**', for the accompanying parent directory.
 // Ex:- If node_modules/** is the pattern, add 'node_modules' to ignore list along with it's contents
-function isIgnored$2 (self, path$$2) {
+function isIgnored (self, path$$1) {
   if (!self.ignore.length)
     return false
 
   return self.ignore.some(function(item) {
-    return item.matcher.match(path$$2) || !!(item.gmatcher && item.gmatcher.match(path$$2))
+    return item.matcher.match(path$$1) || !!(item.gmatcher && item.gmatcher.match(path$$1))
   })
 }
 
-function childrenIgnored$2 (self, path$$2) {
+function childrenIgnored (self, path$$1) {
   if (!self.ignore.length)
     return false
 
   return self.ignore.some(function(item) {
-    return !!(item.gmatcher && item.gmatcher.match(path$$2))
+    return !!(item.gmatcher && item.gmatcher.match(path$$1))
   })
 }
 
@@ -4324,7 +4324,7 @@ var common = {
 };
 
 var sync = globSync;
-globSync.GlobSync = GlobSync$1;
+globSync.GlobSync = GlobSync;
 
 
 
@@ -4339,10 +4339,10 @@ function globSync (pattern, options) {
     throw new TypeError('callback provided to sync glob\n'+
                         'See: https://github.com/isaacs/node-glob/issues/167')
 
-  return new GlobSync$1(pattern, options).found
+  return new GlobSync(pattern, options).found
 }
 
-function GlobSync$1 (pattern, options) {
+function GlobSync (pattern, options) {
   if (!pattern)
     throw new Error('must provide pattern')
 
@@ -4350,8 +4350,8 @@ function GlobSync$1 (pattern, options) {
     throw new TypeError('callback provided to sync glob\n'+
                         'See: https://github.com/isaacs/node-glob/issues/167')
 
-  if (!(this instanceof GlobSync$1))
-    return new GlobSync$1(pattern, options)
+  if (!(this instanceof GlobSync))
+    return new GlobSync(pattern, options)
 
   setopts$1(this, pattern, options);
 
@@ -4366,8 +4366,8 @@ function GlobSync$1 (pattern, options) {
   this._finish();
 }
 
-GlobSync$1.prototype._finish = function () {
-  assert(this instanceof GlobSync$1);
+GlobSync.prototype._finish = function () {
+  assert(this instanceof GlobSync);
   if (this.realpath) {
     var self = this;
     this.matches.forEach(function (matchset, index) {
@@ -4390,8 +4390,8 @@ GlobSync$1.prototype._finish = function () {
 };
 
 
-GlobSync$1.prototype._process = function (pattern, index, inGlobStar) {
-  assert(this instanceof GlobSync$1);
+GlobSync.prototype._process = function (pattern, index, inGlobStar) {
+  assert(this instanceof GlobSync);
 
   // Get the first [n] parts of pattern that are all strings.
   var n = 0;
@@ -4449,7 +4449,7 @@ GlobSync$1.prototype._process = function (pattern, index, inGlobStar) {
 };
 
 
-GlobSync$1.prototype._processReaddir = function (prefix, read, abs, remain, index, inGlobStar) {
+GlobSync.prototype._processReaddir = function (prefix, read, abs, remain, index, inGlobStar) {
   var entries = this._readdir(abs, inGlobStar);
 
   // if the abs isn't a dir, then nothing can match!
@@ -4525,7 +4525,7 @@ GlobSync$1.prototype._processReaddir = function (prefix, read, abs, remain, inde
 };
 
 
-GlobSync$1.prototype._emitMatch = function (index, e) {
+GlobSync.prototype._emitMatch = function (index, e) {
   if (isIgnored$1(this, e))
     return
 
@@ -4554,7 +4554,7 @@ GlobSync$1.prototype._emitMatch = function (index, e) {
 };
 
 
-GlobSync$1.prototype._readdirInGlobStar = function (abs) {
+GlobSync.prototype._readdirInGlobStar = function (abs) {
   // follow all symlinked directories forever
   // just proceed as if this is a non-globstar situation
   if (this.follow)
@@ -4584,7 +4584,7 @@ GlobSync$1.prototype._readdirInGlobStar = function (abs) {
   return entries
 };
 
-GlobSync$1.prototype._readdir = function (abs, inGlobStar) {
+GlobSync.prototype._readdir = function (abs, inGlobStar) {
   if (inGlobStar && !ownProp$1(this.symlinks, abs))
     return this._readdirInGlobStar(abs)
 
@@ -4605,7 +4605,7 @@ GlobSync$1.prototype._readdir = function (abs, inGlobStar) {
   }
 };
 
-GlobSync$1.prototype._readdirEntries = function (abs, entries) {
+GlobSync.prototype._readdirEntries = function (abs, entries) {
   // if we haven't asked to stat everything, then just
   // assume that everything in there exists, so we can avoid
   // having to stat it a second time.
@@ -4626,7 +4626,7 @@ GlobSync$1.prototype._readdirEntries = function (abs, entries) {
   return entries
 };
 
-GlobSync$1.prototype._readdirError = function (f, er) {
+GlobSync.prototype._readdirError = function (f, er) {
   // handle errors, and cache the information
   switch (er.code) {
     case 'ENOTSUP': // https://github.com/isaacs/node-glob/issues/205
@@ -4658,7 +4658,7 @@ GlobSync$1.prototype._readdirError = function (f, er) {
   }
 };
 
-GlobSync$1.prototype._processGlobStar = function (prefix, read, abs, remain, index, inGlobStar) {
+GlobSync.prototype._processGlobStar = function (prefix, read, abs, remain, index, inGlobStar) {
 
   var entries = this._readdir(abs, inGlobStar);
 
@@ -4697,7 +4697,7 @@ GlobSync$1.prototype._processGlobStar = function (prefix, read, abs, remain, ind
   }
 };
 
-GlobSync$1.prototype._processSimple = function (prefix, index) {
+GlobSync.prototype._processSimple = function (prefix, index) {
   // XXX review this.  Shouldn't it be doing the mounting etc
   // before doing stat?  kinda weird?
   var exists = this._stat(prefix);
@@ -4728,7 +4728,7 @@ GlobSync$1.prototype._processSimple = function (prefix, index) {
 };
 
 // Returns either 'DIR', 'FILE', or false
-GlobSync$1.prototype._stat = function (f) {
+GlobSync.prototype._stat = function (f) {
   var abs = this._makeAbs(f);
   var needDir = f.slice(-1) === '/';
 
@@ -4789,11 +4789,11 @@ GlobSync$1.prototype._stat = function (f) {
   return c
 };
 
-GlobSync$1.prototype._mark = function (p) {
+GlobSync.prototype._mark = function (p) {
   return common.mark(this, p)
 };
 
-GlobSync$1.prototype._makeAbs = function (f) {
+GlobSync.prototype._makeAbs = function (f) {
   return common.makeAbs(this, f)
 };
 
@@ -4980,12 +4980,12 @@ var EE = events.EventEmitter;
 
 
 
-var setopts = common.setopts;
-var ownProp = common.ownProp;
+var setopts$2 = common.setopts;
+var ownProp$2 = common.ownProp;
 
 
-var childrenIgnored = common.childrenIgnored;
-var isIgnored = common.isIgnored;
+var childrenIgnored$2 = common.childrenIgnored;
+var isIgnored$2 = common.isIgnored;
 
 
 
@@ -4999,11 +4999,11 @@ function glob (pattern, options, cb) {
     return sync(pattern, options)
   }
 
-  return new Glob(pattern, options, cb)
+  return new Glob$1(pattern, options, cb)
 }
 
 glob.sync = sync;
-var GlobSync = glob.GlobSync = sync.GlobSync;
+var GlobSync$1 = glob.GlobSync = sync.GlobSync;
 
 // old api surface
 glob.glob = glob;
@@ -5025,7 +5025,7 @@ glob.hasMagic = function (pattern, options_) {
   var options = extend({}, options_);
   options.noprocess = true;
 
-  var g = new Glob(pattern, options);
+  var g = new Glob$1(pattern, options);
   var set = g.minimatch.set;
 
   if (!pattern)
@@ -5042,9 +5042,9 @@ glob.hasMagic = function (pattern, options_) {
   return false
 };
 
-glob.Glob = Glob;
-inherits(Glob, EE);
-function Glob (pattern, options, cb) {
+glob.Glob = Glob$1;
+inherits(Glob$1, EE);
+function Glob$1 (pattern, options, cb) {
   if (typeof options === 'function') {
     cb = options;
     options = null;
@@ -5053,13 +5053,13 @@ function Glob (pattern, options, cb) {
   if (options && options.sync) {
     if (cb)
       throw new TypeError('callback provided to sync glob')
-    return new GlobSync(pattern, options)
+    return new GlobSync$1(pattern, options)
   }
 
-  if (!(this instanceof Glob))
-    return new Glob(pattern, options, cb)
+  if (!(this instanceof Glob$1))
+    return new Glob$1(pattern, options, cb)
 
-  setopts(this, pattern, options);
+  setopts$2(this, pattern, options);
   this._didRealPath = false;
 
   // process each pattern in the minimatch set
@@ -5112,8 +5112,8 @@ function Glob (pattern, options, cb) {
   }
 }
 
-Glob.prototype._finish = function () {
-  assert(this instanceof Glob);
+Glob$1.prototype._finish = function () {
+  assert(this instanceof Glob$1);
   if (this.aborted)
     return
 
@@ -5124,7 +5124,7 @@ Glob.prototype._finish = function () {
   this.emit('end', this.found);
 };
 
-Glob.prototype._realpath = function () {
+Glob$1.prototype._realpath = function () {
   if (this._didRealpath)
     return
 
@@ -5144,7 +5144,7 @@ Glob.prototype._realpath = function () {
   }
 };
 
-Glob.prototype._realpathSet = function (index, cb) {
+Glob$1.prototype._realpathSet = function (index, cb) {
   var matchset = this.matches[index];
   if (!matchset)
     return cb()
@@ -5178,27 +5178,27 @@ Glob.prototype._realpathSet = function (index, cb) {
   });
 };
 
-Glob.prototype._mark = function (p) {
+Glob$1.prototype._mark = function (p) {
   return common.mark(this, p)
 };
 
-Glob.prototype._makeAbs = function (f) {
+Glob$1.prototype._makeAbs = function (f) {
   return common.makeAbs(this, f)
 };
 
-Glob.prototype.abort = function () {
+Glob$1.prototype.abort = function () {
   this.aborted = true;
   this.emit('abort');
 };
 
-Glob.prototype.pause = function () {
+Glob$1.prototype.pause = function () {
   if (!this.paused) {
     this.paused = true;
     this.emit('pause');
   }
 };
 
-Glob.prototype.resume = function () {
+Glob$1.prototype.resume = function () {
   if (this.paused) {
     this.emit('resume');
     this.paused = false;
@@ -5222,8 +5222,8 @@ Glob.prototype.resume = function () {
   }
 };
 
-Glob.prototype._process = function (pattern, index, inGlobStar, cb) {
-  assert(this instanceof Glob);
+Glob$1.prototype._process = function (pattern, index, inGlobStar, cb) {
+  assert(this instanceof Glob$1);
   assert(typeof cb === 'function');
 
   if (this.aborted)
@@ -5282,7 +5282,7 @@ Glob.prototype._process = function (pattern, index, inGlobStar, cb) {
   var abs = this._makeAbs(read);
 
   //if ignored, skip _processing
-  if (childrenIgnored(this, read))
+  if (childrenIgnored$2(this, read))
     return cb()
 
   var isGlobStar = remain[0] === minimatch_1.GLOBSTAR;
@@ -5292,14 +5292,14 @@ Glob.prototype._process = function (pattern, index, inGlobStar, cb) {
     this._processReaddir(prefix, read, abs, remain, index, inGlobStar, cb);
 };
 
-Glob.prototype._processReaddir = function (prefix, read, abs, remain, index, inGlobStar, cb) {
+Glob$1.prototype._processReaddir = function (prefix, read, abs, remain, index, inGlobStar, cb) {
   var self = this;
   this._readdir(abs, inGlobStar, function (er, entries) {
     return self._processReaddir2(prefix, read, abs, remain, index, inGlobStar, entries, cb)
   });
 };
 
-Glob.prototype._processReaddir2 = function (prefix, read, abs, remain, index, inGlobStar, entries, cb) {
+Glob$1.prototype._processReaddir2 = function (prefix, read, abs, remain, index, inGlobStar, entries, cb) {
 
   // if the abs isn't a dir, then nothing can match!
   if (!entries)
@@ -5377,11 +5377,11 @@ Glob.prototype._processReaddir2 = function (prefix, read, abs, remain, index, in
   cb();
 };
 
-Glob.prototype._emitMatch = function (index, e) {
+Glob$1.prototype._emitMatch = function (index, e) {
   if (this.aborted)
     return
 
-  if (isIgnored(this, e))
+  if (isIgnored$2(this, e))
     return
 
   if (this.paused) {
@@ -5415,7 +5415,7 @@ Glob.prototype._emitMatch = function (index, e) {
   this.emit('match', e);
 };
 
-Glob.prototype._readdirInGlobStar = function (abs, cb) {
+Glob$1.prototype._readdirInGlobStar = function (abs, cb) {
   if (this.aborted)
     return
 
@@ -5448,7 +5448,7 @@ Glob.prototype._readdirInGlobStar = function (abs, cb) {
   }
 };
 
-Glob.prototype._readdir = function (abs, inGlobStar, cb) {
+Glob$1.prototype._readdir = function (abs, inGlobStar, cb) {
   if (this.aborted)
     return
 
@@ -5457,10 +5457,10 @@ Glob.prototype._readdir = function (abs, inGlobStar, cb) {
     return
 
   //console.error('RD %j %j', +inGlobStar, abs)
-  if (inGlobStar && !ownProp(this.symlinks, abs))
+  if (inGlobStar && !ownProp$2(this.symlinks, abs))
     return this._readdirInGlobStar(abs, cb)
 
-  if (ownProp(this.cache, abs)) {
+  if (ownProp$2(this.cache, abs)) {
     var c = this.cache[abs];
     if (!c || c === 'FILE')
       return cb()
@@ -5481,7 +5481,7 @@ function readdirCb (self, abs, cb) {
   }
 }
 
-Glob.prototype._readdirEntries = function (abs, entries, cb) {
+Glob$1.prototype._readdirEntries = function (abs, entries, cb) {
   if (this.aborted)
     return
 
@@ -5503,7 +5503,7 @@ Glob.prototype._readdirEntries = function (abs, entries, cb) {
   return cb(null, entries)
 };
 
-Glob.prototype._readdirError = function (f, er, cb) {
+Glob$1.prototype._readdirError = function (f, er, cb) {
   if (this.aborted)
     return
 
@@ -5545,7 +5545,7 @@ Glob.prototype._readdirError = function (f, er, cb) {
   return cb()
 };
 
-Glob.prototype._processGlobStar = function (prefix, read, abs, remain, index, inGlobStar, cb) {
+Glob$1.prototype._processGlobStar = function (prefix, read, abs, remain, index, inGlobStar, cb) {
   var self = this;
   this._readdir(abs, inGlobStar, function (er, entries) {
     self._processGlobStar2(prefix, read, abs, remain, index, inGlobStar, entries, cb);
@@ -5553,7 +5553,7 @@ Glob.prototype._processGlobStar = function (prefix, read, abs, remain, index, in
 };
 
 
-Glob.prototype._processGlobStar2 = function (prefix, read, abs, remain, index, inGlobStar, entries, cb) {
+Glob$1.prototype._processGlobStar2 = function (prefix, read, abs, remain, index, inGlobStar, entries, cb) {
   //console.error('pgs2', prefix, remain[0], entries)
 
   // no entries means not a dir, so it can never have matches
@@ -5593,7 +5593,7 @@ Glob.prototype._processGlobStar2 = function (prefix, read, abs, remain, index, i
   cb();
 };
 
-Glob.prototype._processSimple = function (prefix, index, cb) {
+Glob$1.prototype._processSimple = function (prefix, index, cb) {
   // XXX review this.  Shouldn't it be doing the mounting etc
   // before doing stat?  kinda weird?
   var self = this;
@@ -5601,7 +5601,7 @@ Glob.prototype._processSimple = function (prefix, index, cb) {
     self._processSimple2(prefix, index, er, exists, cb);
   });
 };
-Glob.prototype._processSimple2 = function (prefix, index, er, exists, cb) {
+Glob$1.prototype._processSimple2 = function (prefix, index, er, exists, cb) {
 
   //console.error('ps2', prefix, exists)
 
@@ -5632,14 +5632,14 @@ Glob.prototype._processSimple2 = function (prefix, index, er, exists, cb) {
 };
 
 // Returns either 'DIR', 'FILE', or false
-Glob.prototype._stat = function (f, cb) {
+Glob$1.prototype._stat = function (f, cb) {
   var abs = this._makeAbs(f);
   var needDir = f.slice(-1) === '/';
 
   if (f.length > this.maxLength)
     return cb()
 
-  if (!this.stat && ownProp(this.cache, abs)) {
+  if (!this.stat && ownProp$2(this.cache, abs)) {
     var c = this.cache[abs];
 
     if (Array.isArray(c))
@@ -5690,7 +5690,7 @@ Glob.prototype._stat = function (f, cb) {
   }
 };
 
-Glob.prototype._stat2 = function (f, abs, er, stat, cb) {
+Glob$1.prototype._stat2 = function (f, abs, er, stat, cb) {
   if (er && (er.code === 'ENOENT' || er.code === 'ENOTDIR')) {
     this.statCache[abs] = false;
     return cb()
@@ -5898,7 +5898,7 @@ var toConsumableArray = function (arr) {
   }
 };
 
-var _this$2 = undefined;
+var _this = undefined;
 
 /**
  * Creates an object that maps the local fullPath of an image to it's desired path.
@@ -5943,7 +5943,7 @@ var createImagesMap = function () {
                         return _context.stop();
                     }
                   }
-                }, _callee, _this$2);
+                }, _callee, _this);
               }));
 
               return function (_x2) {
@@ -5959,7 +5959,7 @@ var createImagesMap = function () {
             return _context2.stop();
         }
       }
-    }, _callee2, _this$2);
+    }, _callee2, _this);
   }));
 
   return function createImagesMap(_x) {
@@ -6106,7 +6106,7 @@ var common$3 = {
 
 // YAML error class. http://stackoverflow.com/questions/8458984
 //
-function YAMLException$1(reason, mark) {
+function YAMLException(reason, mark) {
   // Super constructor
   Error.call(this);
 
@@ -6127,11 +6127,11 @@ function YAMLException$1(reason, mark) {
 
 
 // Inherit from Error
-YAMLException$1.prototype = Object.create(Error.prototype);
-YAMLException$1.prototype.constructor = YAMLException$1;
+YAMLException.prototype = Object.create(Error.prototype);
+YAMLException.prototype.constructor = YAMLException;
 
 
-YAMLException$1.prototype.toString = function toString(compact) {
+YAMLException.prototype.toString = function toString(compact) {
   var result = this.name + ': ';
 
   result += this.reason || '(unknown reason)';
@@ -6144,7 +6144,7 @@ YAMLException$1.prototype.toString = function toString(compact) {
 };
 
 
-var exception = YAMLException$1;
+var exception = YAMLException;
 
 function Mark(name, buffer, position, line, column) {
   this.name     = name;
@@ -6248,7 +6248,7 @@ function compileStyleAliases(map) {
   return result;
 }
 
-function Type$1(tag, options) {
+function Type(tag, options) {
   options = options || {};
 
   Object.keys(options).forEach(function (name) {
@@ -6273,7 +6273,7 @@ function Type$1(tag, options) {
   }
 }
 
-var type = Type$1;
+var type = Type;
 
 /*eslint-disable max-len*/
 
@@ -6324,7 +6324,7 @@ function compileMap(/* lists... */) {
 }
 
 
-function Schema$1(definition) {
+function Schema(definition) {
   this.include  = definition.include  || [];
   this.implicit = definition.implicit || [];
   this.explicit = definition.explicit || [];
@@ -6341,15 +6341,15 @@ function Schema$1(definition) {
 }
 
 
-Schema$1.DEFAULT = null;
+Schema.DEFAULT = null;
 
 
-Schema$1.create = function createSchema() {
+Schema.create = function createSchema() {
   var schemas, types;
 
   switch (arguments.length) {
     case 1:
-      schemas = Schema$1.DEFAULT;
+      schemas = Schema.DEFAULT;
       types = arguments[0];
       break;
 
@@ -6365,7 +6365,7 @@ Schema$1.create = function createSchema() {
   schemas = common$3.toArray(schemas);
   types = common$3.toArray(types);
 
-  if (!schemas.every(function (schema) { return schema instanceof Schema$1; })) {
+  if (!schemas.every(function (schema) { return schema instanceof Schema; })) {
     throw new exception('Specified list of super schemas (or a single Schema object) contains a non-Schema object.');
   }
 
@@ -6373,14 +6373,14 @@ Schema$1.create = function createSchema() {
     throw new exception('Specified list of YAML types (or a single Type object) contains a non-Type object.');
   }
 
-  return new Schema$1({
+  return new Schema({
     include: schemas,
     explicit: types
   });
 };
 
 
-var schema = Schema$1;
+var schema = Schema;
 
 var str = new type('tag:yaml.org,2002:str', {
   kind: 'scalar',
@@ -6997,7 +6997,7 @@ var binary = new type('tag:yaml.org,2002:binary', {
   represent: representYamlBinary
 });
 
-var _hasOwnProperty$1 = Object.prototype.hasOwnProperty;
+var _hasOwnProperty = Object.prototype.hasOwnProperty;
 var _toString       = Object.prototype.toString;
 
 function resolveYamlOmap(data) {
@@ -7013,7 +7013,7 @@ function resolveYamlOmap(data) {
     if (_toString.call(pair) !== '[object Object]') return false;
 
     for (pairKey in pair) {
-      if (_hasOwnProperty$1.call(pair, pairKey)) {
+      if (_hasOwnProperty.call(pair, pairKey)) {
         if (!pairHasKey) pairHasKey = true;
         else return false;
       }
@@ -7088,7 +7088,7 @@ var pairs = new type('tag:yaml.org,2002:pairs', {
   construct: constructYamlPairs
 });
 
-var _hasOwnProperty$2 = Object.prototype.hasOwnProperty;
+var _hasOwnProperty$1 = Object.prototype.hasOwnProperty;
 
 function resolveYamlSet(data) {
   if (data === null) return true;
@@ -7096,7 +7096,7 @@ function resolveYamlSet(data) {
   var key, object = data;
 
   for (key in object) {
-    if (_hasOwnProperty$2.call(object, key)) {
+    if (_hasOwnProperty$1.call(object, key)) {
       if (object[key] !== null) return false;
     }
   }
@@ -7315,7 +7315,7 @@ var default_full = schema.DEFAULT = new schema({
 
 
 
-var _hasOwnProperty = Object.prototype.hasOwnProperty;
+var _hasOwnProperty$2 = Object.prototype.hasOwnProperty;
 
 
 var CONTEXT_FLOW_IN   = 1;
@@ -7534,7 +7534,7 @@ var directiveHandlers = {
       throwError(state, 'ill-formed tag handle (first argument) of the TAG directive');
     }
 
-    if (_hasOwnProperty.call(state.tagMap, handle)) {
+    if (_hasOwnProperty$2.call(state.tagMap, handle)) {
       throwError(state, 'there is a previously declared suffix for "' + handle + '" tag handle');
     }
 
@@ -7581,7 +7581,7 @@ function mergeMappings(state, destination, source, overridableKeys) {
   for (index = 0, quantity = sourceKeys.length; index < quantity; index += 1) {
     key = sourceKeys[index];
 
-    if (!_hasOwnProperty.call(destination, key)) {
+    if (!_hasOwnProperty$2.call(destination, key)) {
       destination[key] = source[key];
       overridableKeys[key] = true;
     }
@@ -7607,8 +7607,8 @@ function storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valu
     }
   } else {
     if (!state.json &&
-        !_hasOwnProperty.call(overridableKeys, keyNode) &&
-        _hasOwnProperty.call(_result, keyNode)) {
+        !_hasOwnProperty$2.call(overridableKeys, keyNode) &&
+        _hasOwnProperty$2.call(_result, keyNode)) {
       state.line = startLine || state.line;
       state.position = startPos || state.position;
       throwError(state, 'duplicated mapping key');
@@ -8487,7 +8487,7 @@ function readTagProperty(state) {
   if (isVerbatim) {
     state.tag = tagName;
 
-  } else if (_hasOwnProperty.call(state.tagMap, tagHandle)) {
+  } else if (_hasOwnProperty$2.call(state.tagMap, tagHandle)) {
     state.tag = state.tagMap[tagHandle] + tagName;
 
   } else if (tagHandle === '!') {
@@ -8688,7 +8688,7 @@ function composeNode(state, parentIndent, nodeContext, allowToSeek, allowCompact
           break;
         }
       }
-    } else if (_hasOwnProperty.call(state.typeMap[state.kind || 'fallback'], state.tag)) {
+    } else if (_hasOwnProperty$2.call(state.typeMap[state.kind || 'fallback'], state.tag)) {
       type = state.typeMap[state.kind || 'fallback'][state.tag];
 
       if (state.result !== null && type.kind !== state.kind) {
@@ -8775,7 +8775,7 @@ function readDocument(state) {
 
     if (ch !== 0) readLineBreak(state);
 
-    if (_hasOwnProperty.call(directiveHandlers, directiveName)) {
+    if (_hasOwnProperty$2.call(directiveHandlers, directiveName)) {
       directiveHandlers[directiveName](state, directiveName, directiveArgs);
     } else {
       throwWarning(state, 'unknown document directive "' + directiveName + '"');
@@ -8858,7 +8858,7 @@ function loadDocuments(input, options) {
 }
 
 
-function loadAll$1(input, iterator, options) {
+function loadAll(input, iterator, options) {
   var documents = loadDocuments(input, options), index, length;
 
   if (typeof iterator !== 'function') {
@@ -8871,7 +8871,7 @@ function loadAll$1(input, iterator, options) {
 }
 
 
-function load$1(input, options) {
+function load(input, options) {
   var documents = loadDocuments(input, options);
 
   if (documents.length === 0) {
@@ -8884,24 +8884,24 @@ function load$1(input, options) {
 }
 
 
-function safeLoadAll$1(input, output, options) {
+function safeLoadAll(input, output, options) {
   if (typeof output === 'function') {
-    loadAll$1(input, output, common$3.extend({ schema: default_safe }, options));
+    loadAll(input, output, common$3.extend({ schema: default_safe }, options));
   } else {
-    return loadAll$1(input, common$3.extend({ schema: default_safe }, options));
+    return loadAll(input, common$3.extend({ schema: default_safe }, options));
   }
 }
 
 
-function safeLoad$1(input, options) {
-  return load$1(input, common$3.extend({ schema: default_safe }, options));
+function safeLoad(input, options) {
+  return load(input, common$3.extend({ schema: default_safe }, options));
 }
 
 
-var loadAll_1     = loadAll$1;
-var load_1        = load$1;
-var safeLoadAll_1 = safeLoadAll$1;
-var safeLoad_1    = safeLoad$1;
+var loadAll_1     = loadAll;
+var load_1        = load;
+var safeLoadAll_1 = safeLoadAll;
+var safeLoad_1    = safeLoad;
 
 var loader = {
 	loadAll: loadAll_1,
@@ -9709,7 +9709,7 @@ function inspectNode(object, objects, duplicatesIndexes) {
   }
 }
 
-function dump$1(input, options) {
+function dump(input, options) {
   options = options || {};
 
   var state = new State$1(options);
@@ -9721,12 +9721,12 @@ function dump$1(input, options) {
   return '';
 }
 
-function safeDump$1(input, options) {
-  return dump$1(input, common$3.extend({ schema: default_safe }, options));
+function safeDump(input, options) {
+  return dump(input, common$3.extend({ schema: default_safe }, options));
 }
 
-var dump_1     = dump$1;
-var safeDump_1 = safeDump$1;
+var dump_1     = dump;
+var safeDump_1 = safeDump;
 
 var dumper = {
 	dump: dump_1,
@@ -9740,20 +9740,20 @@ function deprecated(name) {
 }
 
 
-var Type                = type;
-var Schema              = schema;
+var Type$2                = type;
+var Schema$2              = schema;
 var FAILSAFE_SCHEMA     = failsafe;
 var JSON_SCHEMA         = json;
 var CORE_SCHEMA         = core;
-var DEFAULT_SAFE_SCHEMA = default_safe;
-var DEFAULT_FULL_SCHEMA = default_full;
-var load                = loader.load;
-var loadAll             = loader.loadAll;
-var safeLoad            = loader.safeLoad;
-var safeLoadAll         = loader.safeLoadAll;
-var dump                = dumper.dump;
-var safeDump            = dumper.safeDump;
-var YAMLException       = exception;
+var DEFAULT_SAFE_SCHEMA$1 = default_safe;
+var DEFAULT_FULL_SCHEMA$1 = default_full;
+var load$1                = loader.load;
+var loadAll$1             = loader.loadAll;
+var safeLoad$1            = loader.safeLoad;
+var safeLoadAll$1         = loader.safeLoadAll;
+var dump$1                = dumper.dump;
+var safeDump$1            = dumper.safeDump;
+var YAMLException$2       = exception;
 
 // Deprecated schema names from JS-YAML 2.0.x
 var MINIMAL_SCHEMA = failsafe;
@@ -9762,35 +9762,35 @@ var DEFAULT_SCHEMA = default_full;
 
 // Deprecated functions from JS-YAML 1.x.x
 var scan           = deprecated('scan');
-var parse$3          = deprecated('parse');
+var parse$1          = deprecated('parse');
 var compose        = deprecated('compose');
 var addConstructor = deprecated('addConstructor');
 
-var jsYaml$2 = {
-	Type: Type,
-	Schema: Schema,
+var jsYaml = {
+	Type: Type$2,
+	Schema: Schema$2,
 	FAILSAFE_SCHEMA: FAILSAFE_SCHEMA,
 	JSON_SCHEMA: JSON_SCHEMA,
 	CORE_SCHEMA: CORE_SCHEMA,
-	DEFAULT_SAFE_SCHEMA: DEFAULT_SAFE_SCHEMA,
-	DEFAULT_FULL_SCHEMA: DEFAULT_FULL_SCHEMA,
-	load: load,
-	loadAll: loadAll,
-	safeLoad: safeLoad,
-	safeLoadAll: safeLoadAll,
-	dump: dump,
-	safeDump: safeDump,
-	YAMLException: YAMLException,
+	DEFAULT_SAFE_SCHEMA: DEFAULT_SAFE_SCHEMA$1,
+	DEFAULT_FULL_SCHEMA: DEFAULT_FULL_SCHEMA$1,
+	load: load$1,
+	loadAll: loadAll$1,
+	safeLoad: safeLoad$1,
+	safeLoadAll: safeLoadAll$1,
+	dump: dump$1,
+	safeDump: safeDump$1,
+	YAMLException: YAMLException$2,
 	MINIMAL_SCHEMA: MINIMAL_SCHEMA,
 	SAFE_SCHEMA: SAFE_SCHEMA,
 	DEFAULT_SCHEMA: DEFAULT_SCHEMA,
 	scan: scan,
-	parse: parse$3,
+	parse: parse$1,
 	compose: compose,
 	addConstructor: addConstructor
 };
 
-var jsYaml = jsYaml$2;
+var jsYaml$2 = jsYaml;
 
 var engines_1 = createCommonjsModule(function (module, exports) {
 var engines = exports = module.exports;
@@ -9800,8 +9800,8 @@ var engines = exports = module.exports;
  */
 
 engines.yaml = {
-  parse: jsYaml.safeLoad.bind(jsYaml),
-  stringify: jsYaml.safeDump.bind(jsYaml)
+  parse: jsYaml$2.safeLoad.bind(jsYaml$2),
+  stringify: jsYaml$2.safeDump.bind(jsYaml$2)
 };
 
 /**
@@ -10086,7 +10086,7 @@ var defaults$1 = function(options) {
   return opts;
 };
 
-var parse$1 = function(language, str, options) {
+var parse$2 = function(language, str, options) {
   var opts = defaults$1(options);
   var engine$$1 = engine(language, opts);
   if (typeof engine$$1.parse !== 'function') {
@@ -10120,15 +10120,15 @@ var stringify = function(file, data, options) {
   }
 
   var language = file.language || opts.language;
-  var engine$$2 = engine(language, opts);
-  if (typeof engine$$2.stringify !== 'function') {
+  var engine$$1 = engine(language, opts);
+  if (typeof engine$$1.stringify !== 'function') {
     throw new TypeError('expected "' + language + '.stringify" to be a function');
   }
 
   data = extendShallow({}, file.data, data);
   var open = opts.delimiters[0];
   var close = opts.delimiters[1];
-  var matter = engine$$2.stringify(data, options).trim();
+  var matter = engine$$1.stringify(data, options).trim();
   var buf = '';
 
   if (matter !== '{}') {
@@ -10317,7 +10317,7 @@ function parseMatter(file, options) {
   file.matter = str.slice(0, closeIndex);
 
   // create file.data by parsing the raw file.matter block
-  file.data = parse$1(file.language, file.matter, opts);
+  file.data = parse$2(file.language, file.matter, opts);
 
   // update file.content
   if (closeIndex === len) {
@@ -12629,7 +12629,7 @@ var replaceHtmlImageSrc = function replaceHtmlImageSrc(_ref2) {
   }, html);
 };
 
-var _this$3 = undefined;
+var _this$1 = undefined;
 
 // TODO: Think of renaming to better reflect the item we are returning
 /**
@@ -12720,7 +12720,7 @@ var getMarkdownObject = function () {
             return _context.stop();
         }
       }
-    }, _callee, _this$3);
+    }, _callee, _this$1);
   }));
 
   return function getMarkdownObject(_x) {
@@ -12728,7 +12728,7 @@ var getMarkdownObject = function () {
   };
 }();
 
-var _this$1 = undefined;
+var _this$2 = undefined;
 
 /**
  * Read all .md files and process them into contentItems ready to be stored.
@@ -12812,7 +12812,7 @@ var loadContentItems = function () {
                         return _context.stop();
                     }
                   }
-                }, _callee, _this$1);
+                }, _callee, _this$2);
               }));
 
               return function (_x2) {
@@ -12836,7 +12836,7 @@ var loadContentItems = function () {
             return _context2.stop();
         }
       }
-    }, _callee2, _this$1, [[2, 13]]);
+    }, _callee2, _this$2, [[2, 13]]);
   }));
 
   return function loadContentItems(_x) {
@@ -16042,7 +16042,7 @@ var customUtils$2 = {
  * @param {Value}    options.value Initialize this BST's data with [value]
  * @param {Function} options.compareKeys Initialize this BST's compareKeys
  */
-function BinarySearchTree$2 (options) {
+function BinarySearchTree (options) {
   options = options || {};
 
   this.left = null;
@@ -16065,7 +16065,7 @@ function BinarySearchTree$2 (options) {
 /**
  * Get the descendant with max key
  */
-BinarySearchTree$2.prototype.getMaxKeyDescendant = function () {
+BinarySearchTree.prototype.getMaxKeyDescendant = function () {
   if (this.right) {
     return this.right.getMaxKeyDescendant();
   } else {
@@ -16077,7 +16077,7 @@ BinarySearchTree$2.prototype.getMaxKeyDescendant = function () {
 /**
  * Get the maximum key
  */
-BinarySearchTree$2.prototype.getMaxKey = function () {
+BinarySearchTree.prototype.getMaxKey = function () {
   return this.getMaxKeyDescendant().key;
 };
 
@@ -16085,7 +16085,7 @@ BinarySearchTree$2.prototype.getMaxKey = function () {
 /**
  * Get the descendant with min key
  */
-BinarySearchTree$2.prototype.getMinKeyDescendant = function () {
+BinarySearchTree.prototype.getMinKeyDescendant = function () {
   if (this.left) {
     return this.left.getMinKeyDescendant()
   } else {
@@ -16097,7 +16097,7 @@ BinarySearchTree$2.prototype.getMinKeyDescendant = function () {
 /**
  * Get the minimum key
  */
-BinarySearchTree$2.prototype.getMinKey = function () {
+BinarySearchTree.prototype.getMinKey = function () {
   return this.getMinKeyDescendant().key;
 };
 
@@ -16106,7 +16106,7 @@ BinarySearchTree$2.prototype.getMinKey = function () {
  * Check that all nodes (incl. leaves) fullfil condition given by fn
  * test is a function passed every (key, data) and which throws if the condition is not met
  */
-BinarySearchTree$2.prototype.checkAllNodesFullfillCondition = function (test) {
+BinarySearchTree.prototype.checkAllNodesFullfillCondition = function (test) {
   if (!this.hasOwnProperty('key')) { return; }
 
   test(this.key, this.data);
@@ -16119,7 +16119,7 @@ BinarySearchTree$2.prototype.checkAllNodesFullfillCondition = function (test) {
  * Check that the core BST properties on node ordering are verified
  * Throw if they aren't
  */
-BinarySearchTree$2.prototype.checkNodeOrdering = function () {
+BinarySearchTree.prototype.checkNodeOrdering = function () {
   var self = this;
 
   if (!this.hasOwnProperty('key')) { return; }
@@ -16147,7 +16147,7 @@ BinarySearchTree$2.prototype.checkNodeOrdering = function () {
 /**
  * Check that all pointers are coherent in this tree
  */
-BinarySearchTree$2.prototype.checkInternalPointers = function () {
+BinarySearchTree.prototype.checkInternalPointers = function () {
   if (this.left) {
     if (this.left.parent !== this) { throw new Error('Parent pointer broken for key ' + this.key); }
     this.left.checkInternalPointers();
@@ -16163,7 +16163,7 @@ BinarySearchTree$2.prototype.checkInternalPointers = function () {
 /**
  * Check that a tree is a BST as defined here (node ordering and pointer references)
  */
-BinarySearchTree$2.prototype.checkIsBST = function () {
+BinarySearchTree.prototype.checkIsBST = function () {
   this.checkNodeOrdering();
   this.checkInternalPointers();
   if (this.parent) { throw new Error("The root shouldn't have a parent"); }
@@ -16173,7 +16173,7 @@ BinarySearchTree$2.prototype.checkIsBST = function () {
 /**
  * Get number of keys inserted
  */
-BinarySearchTree$2.prototype.getNumberOfKeys = function () {
+BinarySearchTree.prototype.getNumberOfKeys = function () {
   var res;
 
   if (!this.hasOwnProperty('key')) { return 0; }
@@ -16196,7 +16196,7 @@ BinarySearchTree$2.prototype.getNumberOfKeys = function () {
  * Use the same constructor (i.e. BinarySearchTree, AVLTree etc)
  * @param {Object} options see constructor
  */
-BinarySearchTree$2.prototype.createSimilar = function (options) {
+BinarySearchTree.prototype.createSimilar = function (options) {
   options = options || {};
   options.unique = this.unique;
   options.compareKeys = this.compareKeys;
@@ -16209,7 +16209,7 @@ BinarySearchTree$2.prototype.createSimilar = function (options) {
 /**
  * Create the left child of this BST and return it
  */
-BinarySearchTree$2.prototype.createLeftChild = function (options) {
+BinarySearchTree.prototype.createLeftChild = function (options) {
   var leftChild = this.createSimilar(options);
   leftChild.parent = this;
   this.left = leftChild;
@@ -16221,7 +16221,7 @@ BinarySearchTree$2.prototype.createLeftChild = function (options) {
 /**
  * Create the right child of this BST and return it
  */
-BinarySearchTree$2.prototype.createRightChild = function (options) {
+BinarySearchTree.prototype.createRightChild = function (options) {
   var rightChild = this.createSimilar(options);
   rightChild.parent = this;
   this.right = rightChild;
@@ -16233,7 +16233,7 @@ BinarySearchTree$2.prototype.createRightChild = function (options) {
 /**
  * Insert a new element
  */
-BinarySearchTree$2.prototype.insert = function (key, value) {
+BinarySearchTree.prototype.insert = function (key, value) {
   // Empty tree, insert as root
   if (!this.hasOwnProperty('key')) {
     this.key = key;
@@ -16275,7 +16275,7 @@ BinarySearchTree$2.prototype.insert = function (key, value) {
 /**
  * Search for all data corresponding to a key
  */
-BinarySearchTree$2.prototype.search = function (key) {
+BinarySearchTree.prototype.search = function (key) {
   if (!this.hasOwnProperty('key')) { return []; }
 
   if (this.compareKeys(this.key, key) === 0) { return this.data; }
@@ -16299,7 +16299,7 @@ BinarySearchTree$2.prototype.search = function (key) {
 /**
  * Return a function that tells whether a given key matches a lower bound
  */
-BinarySearchTree$2.prototype.getLowerBoundMatcher = function (query) {
+BinarySearchTree.prototype.getLowerBoundMatcher = function (query) {
   var self = this;
 
   // No lower bound
@@ -16330,7 +16330,7 @@ BinarySearchTree$2.prototype.getLowerBoundMatcher = function (query) {
 /**
  * Return a function that tells whether a given key matches an upper bound
  */
-BinarySearchTree$2.prototype.getUpperBoundMatcher = function (query) {
+BinarySearchTree.prototype.getUpperBoundMatcher = function (query) {
   var self = this;
 
   // No lower bound
@@ -16374,7 +16374,7 @@ function append (array, toAppend) {
  * @param {Object} query Mongo-style query where keys are $lt, $lte, $gt or $gte (other keys are not considered)
  * @param {Functions} lbm/ubm matching functions calculated at the first recursive step
  */
-BinarySearchTree$2.prototype.betweenBounds = function (query, lbm, ubm) {
+BinarySearchTree.prototype.betweenBounds = function (query, lbm, ubm) {
   var res = [];
 
   if (!this.hasOwnProperty('key')) { return []; }   // Empty tree
@@ -16394,7 +16394,7 @@ BinarySearchTree$2.prototype.betweenBounds = function (query, lbm, ubm) {
  * Delete the current node if it is a leaf
  * Return true if it was deleted
  */
-BinarySearchTree$2.prototype.deleteIfLeaf = function () {
+BinarySearchTree.prototype.deleteIfLeaf = function () {
   if (this.left || this.right) { return false; }
 
   // The leaf is itself a root
@@ -16418,7 +16418,7 @@ BinarySearchTree$2.prototype.deleteIfLeaf = function () {
  * Delete the current node if it has only one child
  * Return true if it was deleted
  */
-BinarySearchTree$2.prototype.deleteIfOnlyOneChild = function () {
+BinarySearchTree.prototype.deleteIfOnlyOneChild = function () {
   var child;
 
   if (this.left && !this.right) { child = this.left; }
@@ -16462,7 +16462,7 @@ BinarySearchTree$2.prototype.deleteIfOnlyOneChild = function () {
  * @param {Key} key
  * @param {Value} value Optional. If not set, the whole key is deleted. If set, only this value is deleted
  */
-BinarySearchTree$2.prototype.delete = function (key, value) {
+BinarySearchTree.prototype.delete = function (key, value) {
   var newData = [], replaceWith
     , self = this;
 
@@ -16534,7 +16534,7 @@ BinarySearchTree$2.prototype.delete = function (key, value) {
  * Execute a function on every node of the tree, in key order
  * @param {Function} fn Signature: node. Most useful will probably be node.key and node.data
  */
-BinarySearchTree$2.prototype.executeOnEveryNode = function (fn) {
+BinarySearchTree.prototype.executeOnEveryNode = function (fn) {
   if (this.left) { this.left.executeOnEveryNode(fn); }
   fn(this);
   if (this.right) { this.right.executeOnEveryNode(fn); }
@@ -16545,7 +16545,7 @@ BinarySearchTree$2.prototype.executeOnEveryNode = function (fn) {
  * Pretty print a tree
  * @param {Boolean} printData To print the nodes' data along with the key
  */
-BinarySearchTree$2.prototype.prettyPrint = function (printData, spacing) {
+BinarySearchTree.prototype.prettyPrint = function (printData, spacing) {
   spacing = spacing || "";
 
   console.log(spacing + "* " + this.key);
@@ -16569,7 +16569,7 @@ BinarySearchTree$2.prototype.prettyPrint = function (printData, spacing) {
 
 
 // Interface
-var bst = BinarySearchTree$2;
+var bst = BinarySearchTree;
 
 /**
  * Self-balancing binary search tree using the AVL implementation
@@ -16584,7 +16584,7 @@ var bst = BinarySearchTree$2;
  * @param {Boolean}  options.unique Whether to enforce a 'unique' constraint on the key or not
  * @param {Function} options.compareKeys Initialize this BST's compareKeys
  */
-function AVLTree$1 (options) {
+function AVLTree (options) {
   this.tree = new _AVLTree(options);
 }
 
@@ -16620,7 +16620,7 @@ util.inherits(_AVLTree, bst);
 /**
  * Keep a pointer to the internal tree constructor for testing purposes
  */
-AVLTree$1._AVLTree = _AVLTree;
+AVLTree._AVLTree = _AVLTree;
 
 
 /**
@@ -16675,7 +16675,7 @@ _AVLTree.prototype.checkIsAVLT = function () {
   this.checkHeightCorrect();
   this.checkBalanceFactors();
 };
-AVLTree$1.prototype.checkIsAVLT = function () { this.tree.checkIsAVLT(); };
+AVLTree.prototype.checkIsAVLT = function () { this.tree.checkIsAVLT(); };
 
 
 /**
@@ -16870,7 +16870,7 @@ _AVLTree.prototype.insert = function (key, value) {
 };
 
 // Insert in the internal tree, update the pointer to the root if needed
-AVLTree$1.prototype.insert = function (key, value) {
+AVLTree.prototype.insert = function (key, value) {
   var newTree = this.tree.insert(key, value);
 
   // If newTree is undefined, that means its structure was not modified
@@ -16999,7 +16999,7 @@ _AVLTree.prototype.delete = function (key, value) {
 };
 
 // Delete a value
-AVLTree$1.prototype.delete = function (key, value) {
+AVLTree.prototype.delete = function (key, value) {
   var newTree = this.tree.delete(key, value);
 
   // If newTree is undefined, that means its structure was not modified
@@ -17011,24 +17011,24 @@ AVLTree$1.prototype.delete = function (key, value) {
  * Other functions we want to use on an AVLTree as if it were the internal _AVLTree
  */
 ['getNumberOfKeys', 'search', 'betweenBounds', 'prettyPrint', 'executeOnEveryNode'].forEach(function (fn) {
-  AVLTree$1.prototype[fn] = function () {
+  AVLTree.prototype[fn] = function () {
     return this.tree[fn].apply(this.tree, arguments);
   };
 });
 
 
 // Interface
-var avltree = AVLTree$1;
+var avltree = AVLTree;
 
-var BinarySearchTree$1 = bst;
-var AVLTree = avltree;
+var BinarySearchTree$2 = bst;
+var AVLTree$1 = avltree;
 
 var binarySearchTree = {
-	BinarySearchTree: BinarySearchTree$1,
-	AVLTree: AVLTree
+	BinarySearchTree: BinarySearchTree$2,
+	AVLTree: AVLTree$1
 };
 
-var BinarySearchTree = binarySearchTree.AVLTree;
+var BinarySearchTree$3 = binarySearchTree.AVLTree;
 
 /**
  * Two indexed pointers are equal iif they point to the same place
@@ -17076,7 +17076,7 @@ function Index (options) {
  *                                                 If an error is thrown during insertion, the index is not modified
  */
 Index.prototype.reset = function (newData) {
-  this.tree = new BinarySearchTree(this.treeOptions);
+  this.tree = new BinarySearchTree$3(this.treeOptions);
 
   if (newData) { this.insert(newData); }
 };
@@ -18067,7 +18067,7 @@ var cursor = Cursor;
  * Event Emitter - Events
  * * compaction.done - Fired whenever a compaction operation was finished
  */
-function Datastore$1 (options) {
+function Datastore (options) {
   var filename;
 
   // Retrocompatibility with v0.6 and before
@@ -18119,13 +18119,13 @@ function Datastore$1 (options) {
   }); }
 }
 
-util.inherits(Datastore$1, events.EventEmitter);
+util.inherits(Datastore, events.EventEmitter);
 
 
 /**
  * Load the database from the datafile, and trigger the execution of buffered commands if any
  */
-Datastore$1.prototype.loadDatabase = function () {
+Datastore.prototype.loadDatabase = function () {
   this.executor.push({ this: this.persistence, fn: this.persistence.loadDatabase, arguments: arguments }, true);
 };
 
@@ -18133,7 +18133,7 @@ Datastore$1.prototype.loadDatabase = function () {
 /**
  * Get an array of all the data in the database
  */
-Datastore$1.prototype.getAllData = function () {
+Datastore.prototype.getAllData = function () {
   return this.indexes._id.getAll();
 };
 
@@ -18141,7 +18141,7 @@ Datastore$1.prototype.getAllData = function () {
 /**
  * Reset all currently defined indexes
  */
-Datastore$1.prototype.resetIndexes = function (newData) {
+Datastore.prototype.resetIndexes = function (newData) {
   var self = this;
 
   Object.keys(this.indexes).forEach(function (i) {
@@ -18160,7 +18160,7 @@ Datastore$1.prototype.resetIndexes = function (newData) {
  * @param {Number} options.expireAfterSeconds - Optional, if set this index becomes a TTL index (only works on Date fields, not arrays of Date)
  * @param {Function} cb Optional callback, signature: err
  */
-Datastore$1.prototype.ensureIndex = function (options, cb) {
+Datastore.prototype.ensureIndex = function (options, cb) {
   var err
     , callback = cb || function () {};
 
@@ -18196,7 +18196,7 @@ Datastore$1.prototype.ensureIndex = function (options, cb) {
  * @param {String} fieldName
  * @param {Function} cb Optional callback, signature: err
  */
-Datastore$1.prototype.removeIndex = function (fieldName, cb) {
+Datastore.prototype.removeIndex = function (fieldName, cb) {
   var callback = cb || function () {};
 
   delete this.indexes[fieldName];
@@ -18211,7 +18211,7 @@ Datastore$1.prototype.removeIndex = function (fieldName, cb) {
 /**
  * Add one or several document(s) to all indexes
  */
-Datastore$1.prototype.addToIndexes = function (doc) {
+Datastore.prototype.addToIndexes = function (doc) {
   var i, failingIndex, error
     , keys = Object.keys(this.indexes);
 
@@ -18239,7 +18239,7 @@ Datastore$1.prototype.addToIndexes = function (doc) {
 /**
  * Remove one or several document(s) from all indexes
  */
-Datastore$1.prototype.removeFromIndexes = function (doc) {
+Datastore.prototype.removeFromIndexes = function (doc) {
   var self = this;
 
   Object.keys(this.indexes).forEach(function (i) {
@@ -18253,7 +18253,7 @@ Datastore$1.prototype.removeFromIndexes = function (doc) {
  * To update multiple documents, oldDoc must be an array of { oldDoc, newDoc } pairs
  * If one update violates a constraint, all changes are rolled back
  */
-Datastore$1.prototype.updateIndexes = function (oldDoc, newDoc) {
+Datastore.prototype.updateIndexes = function (oldDoc, newDoc) {
   var i, failingIndex, error
     , keys = Object.keys(this.indexes);
 
@@ -18291,7 +18291,7 @@ Datastore$1.prototype.updateIndexes = function (oldDoc, newDoc) {
  * @param {Boolean} dontExpireStaleDocs Optional, defaults to false, if true don't remove stale docs. Useful for the remove function which shouldn't be impacted by expirations
  * @param {Function} callback Signature err, docs
  */
-Datastore$1.prototype.getCandidates = function (query, dontExpireStaleDocs, callback) {
+Datastore.prototype.getCandidates = function (query, dontExpireStaleDocs, callback) {
   var indexNames = Object.keys(this.indexes)
     , self = this
     , usableQueryKeys;
@@ -18377,7 +18377,7 @@ Datastore$1.prototype.getCandidates = function (query, dontExpireStaleDocs, call
  *
  * @api private Use Datastore.insert which has the same signature
  */
-Datastore$1.prototype._insert = function (newDoc, cb) {
+Datastore.prototype._insert = function (newDoc, cb) {
   var callback = cb || function () {}
     , preparedDoc;
 
@@ -18397,7 +18397,7 @@ Datastore$1.prototype._insert = function (newDoc, cb) {
 /**
  * Create a new _id that's not already in use
  */
-Datastore$1.prototype.createNewId = function () {
+Datastore.prototype.createNewId = function () {
   var tentativeId = customUtils.uid(16);
   // Try as many times as needed to get an unused _id. As explained in customUtils, the probability of this ever happening is extremely small, so this is O(1)
   if (this.indexes._id.getMatching(tentativeId).length > 0) {
@@ -18411,7 +18411,7 @@ Datastore$1.prototype.createNewId = function () {
  * Meaning adds _id and timestamps if necessary on a copy of newDoc to avoid any side effect on user input
  * @api private
  */
-Datastore$1.prototype.prepareDocumentForInsertion = function (newDoc) {
+Datastore.prototype.prepareDocumentForInsertion = function (newDoc) {
   var preparedDoc, self = this;
 
   if (util.isArray(newDoc)) {
@@ -18433,7 +18433,7 @@ Datastore$1.prototype.prepareDocumentForInsertion = function (newDoc) {
  * If newDoc is an array of documents, this will insert all documents in the cache
  * @api private
  */
-Datastore$1.prototype._insertInCache = function (preparedDoc) {
+Datastore.prototype._insertInCache = function (preparedDoc) {
   if (util.isArray(preparedDoc)) {
     this._insertMultipleDocsInCache(preparedDoc);
   } else {
@@ -18446,7 +18446,7 @@ Datastore$1.prototype._insertInCache = function (preparedDoc) {
  * inserts and throws the error
  * @api private
  */
-Datastore$1.prototype._insertMultipleDocsInCache = function (preparedDocs) {
+Datastore.prototype._insertMultipleDocsInCache = function (preparedDocs) {
   var i, failingI, error;
 
   for (i = 0; i < preparedDocs.length; i += 1) {
@@ -18468,7 +18468,7 @@ Datastore$1.prototype._insertMultipleDocsInCache = function (preparedDocs) {
   }
 };
 
-Datastore$1.prototype.insert = function () {
+Datastore.prototype.insert = function () {
   this.executor.push({ this: this, fn: this._insert, arguments: arguments });
 };
 
@@ -18477,7 +18477,7 @@ Datastore$1.prototype.insert = function () {
  * Count all documents matching the query
  * @param {Object} query MongoDB-style query
  */
-Datastore$1.prototype.count = function(query, callback) {
+Datastore.prototype.count = function(query, callback) {
   var cursor$$1 = new cursor(this, query, function(err, docs, callback) {
     if (err) { return callback(err); }
     return callback(null, docs.length);
@@ -18497,7 +18497,7 @@ Datastore$1.prototype.count = function(query, callback) {
  * @param {Object} query MongoDB-style query
  * @param {Object} projection MongoDB-style projection
  */
-Datastore$1.prototype.find = function (query, projection, callback) {
+Datastore.prototype.find = function (query, projection, callback) {
   switch (arguments.length) {
     case 1:
       projection = {};
@@ -18536,7 +18536,7 @@ Datastore$1.prototype.find = function (query, projection, callback) {
  * @param {Object} query MongoDB-style query
  * @param {Object} projection MongoDB-style projection
  */
-Datastore$1.prototype.findOne = function (query, projection, callback) {
+Datastore.prototype.findOne = function (query, projection, callback) {
   switch (arguments.length) {
     case 1:
       projection = {};
@@ -18593,7 +18593,7 @@ Datastore$1.prototype.findOne = function (query, projection, callback) {
  *
  * @api private Use Datastore.update which has the same signature
  */
-Datastore$1.prototype._update = function (query, updateQuery, options, cb) {
+Datastore.prototype._update = function (query, updateQuery, options, cb) {
   var callback
     , self = this
     , numReplaced = 0
@@ -18688,7 +18688,7 @@ Datastore$1.prototype._update = function (query, updateQuery, options, cb) {
   }]);
 };
 
-Datastore$1.prototype.update = function () {
+Datastore.prototype.update = function () {
   this.executor.push({ this: this, fn: this._update, arguments: arguments });
 };
 
@@ -18703,7 +18703,7 @@ Datastore$1.prototype.update = function () {
  *
  * @api private Use Datastore.remove which has the same signature
  */
-Datastore$1.prototype._remove = function (query, options, cb) {
+Datastore.prototype._remove = function (query, options, cb) {
   var callback
     , self = this, numRemoved = 0, removedDocs = [], multi;
 
@@ -18731,13 +18731,13 @@ Datastore$1.prototype._remove = function (query, options, cb) {
   });
 };
 
-Datastore$1.prototype.remove = function () {
+Datastore.prototype.remove = function () {
   this.executor.push({ this: this, fn: this._remove, arguments: arguments });
 };
 
 
 
-var datastore = Datastore$1;
+var datastore = Datastore;
 
 var nedb = datastore;
 
@@ -18838,7 +18838,7 @@ var findOne = function findOne(_ref3) {
 
 var dataStore = new nedb();
 
-var _this$5 = undefined;
+var _this$3 = undefined;
 
 /**
  * Retrieves the specified ContentItem by it's id.
@@ -18883,7 +18883,7 @@ var findContentItemById = function () {
             return _context.stop();
         }
       }
-    }, _callee, _this$5, [[1, 8]]);
+    }, _callee, _this$3, [[1, 8]]);
   }));
 
   return function findContentItemById(_x) {
@@ -18952,7 +18952,7 @@ var findContentItemsByIds = function () {
             return _context2.stop();
         }
       }
-    }, _callee2, _this$5, [[2, 11]]);
+    }, _callee2, _this$3, [[2, 11]]);
   }));
 
   return function findContentItemsByIds(_x2) {
@@ -19016,7 +19016,7 @@ var findContentItemsByGroupId = function () {
             return _context3.stop();
         }
       }
-    }, _callee3, _this$5, [[2, 11]]);
+    }, _callee3, _this$3, [[2, 11]]);
   }));
 
   return function findContentItemsByGroupId(_x3) {
@@ -19103,7 +19103,7 @@ var findContentItemsByFilter = function () {
             return _context4.stop();
         }
       }
-    }, _callee4, _this$5, [[3, 12]]);
+    }, _callee4, _this$3, [[3, 12]]);
   }));
 
   return function findContentItemsByFilter(_x4) {
@@ -19219,7 +19219,7 @@ var contentItemResolvers = { Query };
 var doc = { "kind": "Document", "definitions": [{ "kind": "EnumTypeDefinition", "name": { "kind": "Name", "value": "OrderBy" }, "directives": [], "values": [{ "kind": "EnumValueDefinition", "name": { "kind": "Name", "value": "ASCENDING" }, "directives": [] }, { "kind": "EnumValueDefinition", "name": { "kind": "Name", "value": "DESCENDING" }, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "Sort" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "sortBy" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "orderBy" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "OrderBy" } } }, "defaultValue": null, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "Pagination" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "sort" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Sort" } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "skip" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Int" } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "limit" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Int" } }, "defaultValue": null, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "Fields" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "id" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "groupId" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "html" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } }, "defaultValue": null, "directives": [] }] }, { "kind": "ObjectTypeDefinition", "name": { "kind": "Name", "value": "ContentItem" }, "interfaces": [], "directives": [], "fields": [{ "kind": "FieldDefinition", "name": { "kind": "Name", "value": "id" }, "arguments": [], "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } }, "directives": [] }, { "kind": "FieldDefinition", "name": { "kind": "Name", "value": "groupId" }, "arguments": [], "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } }, "directives": [] }, { "kind": "FieldDefinition", "name": { "kind": "Name", "value": "html" }, "arguments": [], "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } }, "directives": [] }] }, { "kind": "InputObjectTypeDefinition", "name": { "kind": "Name", "value": "FilterFields" }, "directives": [], "fields": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "AND" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Fields" } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "OR" }, "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Fields" } } } }, "defaultValue": null, "directives": [] }] }, { "kind": "ObjectTypeDefinition", "name": { "kind": "Name", "value": "Query" }, "interfaces": [], "directives": [], "fields": [{ "kind": "FieldDefinition", "name": { "kind": "Name", "value": "contentItemById" }, "arguments": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "id" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } }, "defaultValue": null, "directives": [] }], "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ContentItem" } }, "directives": [] }, { "kind": "FieldDefinition", "name": { "kind": "Name", "value": "contentItemsByIds" }, "arguments": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "ids" }, "type": { "kind": "NonNullType", "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "pagination" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Pagination" } }, "defaultValue": null, "directives": [] }], "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ContentItem" } } } }, "directives": [] }, { "kind": "FieldDefinition", "name": { "kind": "Name", "value": "contentItemsByGroupId" }, "arguments": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "groupId" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ID" } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "pagination" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Pagination" } }, "defaultValue": null, "directives": [] }], "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ContentItem" } } } }, "directives": [] }, { "kind": "FieldDefinition", "name": { "kind": "Name", "value": "contentItems" }, "arguments": [{ "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "filter" }, "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "FilterFields" } } }, "defaultValue": null, "directives": [] }, { "kind": "InputValueDefinition", "name": { "kind": "Name", "value": "pagination" }, "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Pagination" } }, "defaultValue": null, "directives": [] }], "type": { "kind": "ListType", "type": { "kind": "NonNullType", "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "ContentItem" } } } }, "directives": [] }] }], "loc": { "start": 0, "end": 1568 } };
 doc.loc.source = { "body": "enum OrderBy {\n  ASCENDING\n  DESCENDING\n}\n\n# Sort and order results by a specific field and order.\n# e.g - { sortBy: \"date\", orderBy: \"DESCENDING\" }\ninput Sort {\n  # Field to sort by. e.g - \"date\"\n  sortBy: String!\n  # ASCENDING or DESCENDING order. e.g - \"DESCENDING\"\n  orderBy: OrderBy!\n}\n\ninput Pagination {\n  # Sort and order objects by a specific field in a specific order.\n  sort: Sort\n  # Do not return the first x objects.\n  skip: Int\n  # Limit the number of objects to return.\n  limit: Int\n}\n\ninput Fields {\n  id: ID\n  groupId: ID\n  html: String\n  # field defs generated from .md front-matter will be injected by pkg here.\n}\n\ntype ContentItem {\n  # Mandatory - a unique id must exist for every .md file.\n  id: ID!\n  # Mandatory - a non unique groupId must exist for every .md file. If you do not\n  # wish to manually set you can use the generateGroupIdByFolder option check pkg Readme.\n  groupId: ID!\n  # The html generated from parsing the .md contents.\n  html: String\n  # field defs generated from .md front-matter will be injected by pkg here.\n}\n\ninput FilterFields {\n  # Query ContentItems by any fields using logical AND condition.\n  AND: Fields\n  # Query ContentItems by any fields using logical OR condition.\n  OR: [Fields!]\n}\n\ntype Query {\n  contentItemById(id: ID!): ContentItem\n  contentItemsByIds(ids: [ID!]!, pagination: Pagination): [ContentItem!]\n  contentItemsByGroupId(groupId: ID!, pagination: Pagination): [ContentItem!]\n  # Query for contentItems by any field\n  contentItems(filter: FilterFields!, pagination: Pagination): [ContentItem!]\n}\n", "name": "GraphQL request", "locationOffset": { "line": 1, "column": 1 } };
 
-var _this = undefined;
+var _this$5 = undefined;
 
 var DEFAULT_SUPPORTED_IMAGE_FORMATS = '(png|jpg|jpeg|svg|gif|webp|bmp)';
 
@@ -19303,7 +19303,7 @@ var loadMarkdownIntoDb = function () {
             return _context.stop();
         }
       }
-    }, _callee, _this);
+    }, _callee, _this$5);
   }));
 
   return function loadMarkdownIntoDb(_x) {
