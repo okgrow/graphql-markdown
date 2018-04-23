@@ -20,10 +20,11 @@
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "engines": {
-    "node": ">=4.8.3"
+    "node": ">=8.9.4"
   },
   "scripts": {
     "test": "jest",
+    "test-coverage": "jest --coverage",
     "format": "prettier-eslint --write \"src/**/*.js\"",
     "prepare": "npm run rollup:build",
     "rollup:build": "BABEL_ENV=build rollup -c",
@@ -31,13 +32,13 @@
   },
   "dependencies": {
     "glob": "^7.1.2",
-    "gray-matter": "^3.1.1",
+    "gray-matter": "^4.0.1",
     "lodash.clonedeep": "^4.5.0",
-    "marked": "^0.3.12",
+    "marked": "^0.3.19",
     "nedb": "^1.8.0"
   },
   "peerDependencies": {
-    "graphql": "^0.11.7"
+    "graphql": "^0.13.2"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -59,7 +60,7 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-prettier": "^2.6.0",
     "eslint-plugin-react": "^7.6.1",
-    "graphql": "^0.11.7",
+    "graphql": "^0.13.2",
     "graphql-tools": "^2.20.0",
     "jest": "^22.1.4",
     "jest-transform-graphql": "^2.1.0",

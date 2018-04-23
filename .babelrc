@@ -4,7 +4,7 @@
       "presets": [
         ["env", {
           "targets": {
-            "node": "4.8.3"
+            "node": "8.9.4"
           },
           "useBuiltIns": true,
           "modules": false
@@ -12,12 +12,6 @@
       ],
       "plugins": [
         "external-helpers",
-        "transform-regenerator",
-        ["transform-runtime", {
-          "helpers": false,
-          "polyfill": false,
-          "regenerator": true
-        }],
         "transform-object-rest-spread"
       ]
     },
@@ -25,13 +19,12 @@
       "presets": [
         ["env", {
           "targets": {
-            "node": "4.8.3"
+            "node": "8.9.4"
           },
           "useBuiltIns": true,
         }]
       ],
       "plugins": [
-        "transform-async-to-generator",
         "transform-object-rest-spread"
       ]
     }
