@@ -7,20 +7,31 @@
 [![Dependencies](ADD_SHIELDS.IO_URL)]()
 [![Dev Dependencies](ADD_SHIELDS.IO_URL)]()
 
-> Write markdown, serve as html, query via GraphQL.🔥
+> Write markdown, generate GraphQL TypesDefs & Resolvers, query via GraphQL, and serve as html.🔥
 
 TODO: Replace me with a gif of the pkg in action.
+
+GraphQL Markdown is a simple library that
+
+Simply put we parse your `.md`, converting the `.md` into `html` and automatically generating `GraphQL FieldDefinitions` from the markdown's `frontMatter`.🔥
+
+After generating the `FieldDefinitions`, we save the processed data to an in-memory db. We export the generated `TypeDefs` and `Resolvers` to enable you to have complete control over creating your own GraphQL Schema.🎉
+
+A simple GraphQL API for querying your processed content is provided. Which includes a way to `sort`, `limit`, and `skip` your results enabling a basic form of pagination. 🍾
+
 
 ## Table of Contents
 
 * [Quick Start](#quick-start)
-* [Server Setup](#server-setup)
-  * [Example 1 - Promise usage](#example-1-promise-usage)
-  * [Example 2 - Async/Await](#example-2-async/await-usage)
-* [Markdown Files](#markdown-files)
-  * [MetaData section](#metadata-section)
-  * [Markdown section](#markdown-section)
-  * [Putting it all together](#putting-it-all-together)
+  * [Querying Your Data](#querying-your-data)
+  * [Server Setup](#server-setup)
+    * [Example 1 - Promise usage](#example-1-promise-usage)
+    * [Example 2 - Async/Await](#example-2-async/await-usage)
+  * [Markdown Files](#markdown-files)
+    * [FrontMatter section](#frontmatter-section)
+    * [Markdown section](#markdown-section)
+    * [Putting it all together](#putting-it-all-together)
+    * [Seeing it in Action](#seeing-it-in-action)
 * [Testing](#testing)
 * [Examples](#examples)
 * [Maintainers](#maintainers)
@@ -36,6 +47,46 @@ TODO: Replace me with a gif of the pkg in action.
 npm install --save https://github.com/okgrow/graphql-markdown
 # With Yarn
 yarn add https://github.com/okgrow/graphql-markdown
+```
+
+### Querying Your Data
+
+Graphql Markdown provides a few different approaches to querying the data extracted from your `.md` files.
+
+* 💪&nbsp; A powerful & all purpose query: Search by logical `AND`, `OR` conditions on any fields!!! 🎉
+
+```graphql
+ contentItems(filter: FilterFields!, pagination: Pagination): [ContentItem!]
+```
+
+* 🎁&nbsp; Simplified helper queries: providing a clean & crisp syntax for common querying patterns. 🎊
+
+```graphql
+contentItemById(id: ID!): ContentItem
+contentItemsByIds(ids: [ID!]!, pagination: Pagination): [ContentItem!]
+contentItemsByGroupId(groupId: ID!, pagination: Pagination): [ContentItem!]
+```
+
+* 🎀&nbsp; Organise the query results: Simple syntax to `sort`, `skip`, and `limit` your results. 🎈
+
+```graphql
+enum OrderBy {
+  ASCENDING
+  DESCENDING
+}
+
+# Sort results by a specific field and order in Ascending or Descending order.
+# e.g -> { sortBy: "date", orderBy: "DESCENDING" }
+input Sort {
+  sortBy: String!   # Field to sort by. e.g -> "date"
+  orderBy: OrderBy! # ASCENDING or DESCENDING order. e.g -> "DESCENDING"
+}
+
+input Pagination {
+  sort: Sort # Sort and order elements by a specific field in a specific order.
+  skip: Int  # Do not return the first x elements.
+  limit: Int # Limit the number of elements to return.
+}
 ```
 
 ### Server Setup
@@ -138,19 +189,19 @@ loadMarkdownIntoDb(options).then({
 
 ## Markdown files
 
-A markdown file contains two distinct sections, the MetaData section and the Markdown section.
+A markdown file contains two distinct sections, the FrontMatter section and the Markdown section.
 
 ```
 ---
-MetaData Section
+FrontMatter Section
 ---
 
 Markdown Section
 ```
 
-#### MetaData section
+#### FrontMatter section
 
-The MetaData section contains `key`:`value` pairs. Every Markdown file is required to contain a MetaData section and must contain an `id` and an `groupId` key-value pair. You can add as many additional `key`:`value` pairs as you like, we will generate GraphQL Field Definitions from these additional `key`:`value` at runtime.
+The FrontMatter section contains `key`:`value` pairs. Every Markdown file is required to contain a FrontMatter section and must contain an `id` and an `groupId` key-value pair. You can add as many additional `key`:`value` pairs as you like, we will generate `GraphQL Field Definitions` from these additional `key`:`value` at runtime. Check out the [typeDefs.graphql](./src/graphql/typeDefs.graphql) file to see where we inject these `Field Definitions`.
 
 ```md
 ---
@@ -161,7 +212,7 @@ groupId: homePage
 
 #### Markdown section
 
-The Markdown section is placed after the MetaData section and contains your markdown content. The markdown content will be converted into valid HTML when we process all markdown files and store them in memory.
+The Markdown section is placed after the FrontMatter section and contains your markdown content. The markdown content will be converted into valid HTML when we process all markdown files and store them in memory.
 
 ```md
 # My First Markdown file
@@ -188,45 +239,7 @@ Hello world!
 Thanks for dropping by to say hello! 🔥🔥🔥
 ```
 
-## Querying Your Data
-
-Graphql Markdown provides a few approaches to querying for the data extracted from you `.md` files. We also provide a way to `sort`, `limit`, and `skip` your results allows a basic (naive) form of pagination. 🍾
-
-* 💪 A powerful & all purpose query: Search by logical AND, OR conditions on any fields!!! 🎉
-
-```graphql
- contentItems(filter: FilterFields!, pagination: Pagination): [ContentItem!]
-```
-
-* 🎁 Simplified helper queries: providing a clean & crisp syntax for common querying patterns. 🎊
-
-```graphql
-contentItemById(id: ID!): ContentItem
-contentItemsByIds(ids: [ID!]!, pagination: Pagination): [ContentItem!]
-contentItemsByGroupId(groupId: ID!, pagination: Pagination): [ContentItem!]
-```
-
-* 🎀 Organise the query results: Simple syntax to sort, skip, and limit your results. 🎈
-
-```graphql
-enum OrderBy {
-  ASCENDING
-  DESCENDING
-}
-
-# Sort results by a specific field and order in Ascending or Descending order.
-# e.g -> { sortBy: "date", orderBy: "DESCENDING" }
-input Sort {
-  sortBy: String!   # Field to sort by. e.g -> "date"
-  orderBy: OrderBy! # ASCENDING or DESCENDING order. e.g -> "DESCENDING"
-}
-
-input Pagination {
-  sort: Sort # Sort and order elements by a specific field in a specific order.
-  skip: Int  # Do not return the first x elements.
-  limit: Int # Limit the number of elements to return.
-}
-```
+#### Seeing it in Action!
 
 Run the simple-example found in `examples/simple`, and copy/paste the below snippet into GraphiQL to see the response yourself!🔥
 
