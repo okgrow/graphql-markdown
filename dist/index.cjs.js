@@ -31,43 +31,20 @@ var global = module.exports = typeof window != 'undefined' && window.Math == Mat
 if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 });
 
-var _global$1 = /*#__PURE__*/Object.freeze({
-	default: _global,
-	__moduleExports: _global
-});
-
 var _core = createCommonjsModule(function (module) {
 var core = module.exports = { version: '2.5.5' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 });
 var _core_1 = _core.version;
 
-var _core$1 = /*#__PURE__*/Object.freeze({
-	default: _core,
-	__moduleExports: _core,
-	version: _core_1
-});
-
 var _isObject = function (it) {
   return typeof it === 'object' ? it !== null : typeof it === 'function';
 };
 
-var _isObject$1 = /*#__PURE__*/Object.freeze({
-	default: _isObject,
-	__moduleExports: _isObject
-});
-
-var isObject = ( _isObject$1 && _isObject ) || _isObject$1;
-
 var _anObject = function (it) {
-  if (!isObject(it)) throw TypeError(it + ' is not an object!');
+  if (!_isObject(it)) throw TypeError(it + ' is not an object!');
   return it;
 };
-
-var _anObject$1 = /*#__PURE__*/Object.freeze({
-	default: _anObject,
-	__moduleExports: _anObject
-});
 
 var _fails = function (exec) {
   try {
@@ -77,48 +54,20 @@ var _fails = function (exec) {
   }
 };
 
-var _fails$1 = /*#__PURE__*/Object.freeze({
-	default: _fails,
-	__moduleExports: _fails
-});
-
-var require$$1 = ( _fails$1 && _fails ) || _fails$1;
-
 // Thank's IE8 for his funny defineProperty
-var _descriptors = !require$$1(function () {
+var _descriptors = !_fails(function () {
   return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
 });
 
-var _descriptors$1 = /*#__PURE__*/Object.freeze({
-	default: _descriptors,
-	__moduleExports: _descriptors
-});
-
-var global$1 = ( _global$1 && _global ) || _global$1;
-
-var document = global$1.document;
+var document = _global.document;
 // typeof document.createElement is 'object' in old IE
-var is = isObject(document) && isObject(document.createElement);
+var is = _isObject(document) && _isObject(document.createElement);
 var _domCreate = function (it) {
   return is ? document.createElement(it) : {};
 };
 
-var _domCreate$1 = /*#__PURE__*/Object.freeze({
-	default: _domCreate,
-	__moduleExports: _domCreate
-});
-
-var require$$0 = ( _descriptors$1 && _descriptors ) || _descriptors$1;
-
-var require$$2 = ( _domCreate$1 && _domCreate ) || _domCreate$1;
-
-var _ie8DomDefine = !require$$0 && !require$$1(function () {
-  return Object.defineProperty(require$$2('div'), 'a', { get: function () { return 7; } }).a != 7;
-});
-
-var _ie8DomDefine$1 = /*#__PURE__*/Object.freeze({
-	default: _ie8DomDefine,
-	__moduleExports: _ie8DomDefine
+var _ie8DomDefine = !_descriptors && !_fails(function () {
+  return Object.defineProperty(_domCreate('div'), 'a', { get: function () { return 7; } }).a != 7;
 });
 
 // 7.1.1 ToPrimitive(input [, PreferredType])
@@ -126,32 +75,21 @@ var _ie8DomDefine$1 = /*#__PURE__*/Object.freeze({
 // instead of the ES6 spec version, we didn't implement @@toPrimitive case
 // and the second argument - flag - preferred type is a string
 var _toPrimitive = function (it, S) {
-  if (!isObject(it)) return it;
+  if (!_isObject(it)) return it;
   var fn, val;
-  if (S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it))) return val;
-  if (typeof (fn = it.valueOf) == 'function' && !isObject(val = fn.call(it))) return val;
-  if (!S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it))) return val;
+  if (S && typeof (fn = it.toString) == 'function' && !_isObject(val = fn.call(it))) return val;
+  if (typeof (fn = it.valueOf) == 'function' && !_isObject(val = fn.call(it))) return val;
+  if (!S && typeof (fn = it.toString) == 'function' && !_isObject(val = fn.call(it))) return val;
   throw TypeError("Can't convert object to primitive value");
 };
 
-var _toPrimitive$1 = /*#__PURE__*/Object.freeze({
-	default: _toPrimitive,
-	__moduleExports: _toPrimitive
-});
-
-var anObject = ( _anObject$1 && _anObject ) || _anObject$1;
-
-var IE8_DOM_DEFINE = ( _ie8DomDefine$1 && _ie8DomDefine ) || _ie8DomDefine$1;
-
-var toPrimitive = ( _toPrimitive$1 && _toPrimitive ) || _toPrimitive$1;
-
 var dP = Object.defineProperty;
 
-var f = require$$0 ? Object.defineProperty : function defineProperty(O, P, Attributes) {
-  anObject(O);
-  P = toPrimitive(P, true);
-  anObject(Attributes);
-  if (IE8_DOM_DEFINE) try {
+var f = _descriptors ? Object.defineProperty : function defineProperty(O, P, Attributes) {
+  _anObject(O);
+  P = _toPrimitive(P, true);
+  _anObject(Attributes);
+  if (_ie8DomDefine) try {
     return dP(O, P, Attributes);
   } catch (e) { /* empty */ }
   if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported!');
@@ -163,12 +101,6 @@ var _objectDp = {
 	f: f
 };
 
-var _objectDp$1 = /*#__PURE__*/Object.freeze({
-	default: _objectDp,
-	__moduleExports: _objectDp,
-	f: f
-});
-
 var _propertyDesc = function (bitmap, value) {
   return {
     enumerable: !(bitmap & 1),
@@ -178,36 +110,17 @@ var _propertyDesc = function (bitmap, value) {
   };
 };
 
-var _propertyDesc$1 = /*#__PURE__*/Object.freeze({
-	default: _propertyDesc,
-	__moduleExports: _propertyDesc
-});
-
-var dP$1 = ( _objectDp$1 && _objectDp ) || _objectDp$1;
-
-var createDesc = ( _propertyDesc$1 && _propertyDesc ) || _propertyDesc$1;
-
-var _hide = require$$0 ? function (object, key, value) {
-  return dP$1.f(object, key, createDesc(1, value));
+var _hide = _descriptors ? function (object, key, value) {
+  return _objectDp.f(object, key, _propertyDesc(1, value));
 } : function (object, key, value) {
   object[key] = value;
   return object;
 };
 
-var _hide$1 = /*#__PURE__*/Object.freeze({
-	default: _hide,
-	__moduleExports: _hide
-});
-
 var hasOwnProperty = {}.hasOwnProperty;
 var _has = function (it, key) {
   return hasOwnProperty.call(it, key);
 };
-
-var _has$1 = /*#__PURE__*/Object.freeze({
-	default: _has,
-	__moduleExports: _has
-});
 
 var id = 0;
 var px = Math.random();
@@ -215,43 +128,30 @@ var _uid = function (key) {
   return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
 };
 
-var _uid$1 = /*#__PURE__*/Object.freeze({
-	default: _uid,
-	__moduleExports: _uid
-});
-
-var hide = ( _hide$1 && _hide ) || _hide$1;
-
-var has = ( _has$1 && _has ) || _has$1;
-
-var uid = ( _uid$1 && _uid ) || _uid$1;
-
-var require$$1$1 = ( _core$1 && _core ) || _core$1;
-
 var _redefine = createCommonjsModule(function (module) {
-var SRC = uid('src');
+var SRC = _uid('src');
 var TO_STRING = 'toString';
 var $toString = Function[TO_STRING];
 var TPL = ('' + $toString).split(TO_STRING);
 
-require$$1$1.inspectSource = function (it) {
+_core.inspectSource = function (it) {
   return $toString.call(it);
 };
 
 (module.exports = function (O, key, val, safe) {
   var isFunction = typeof val == 'function';
-  if (isFunction) has(val, 'name') || hide(val, 'name', key);
+  if (isFunction) _has(val, 'name') || _hide(val, 'name', key);
   if (O[key] === val) return;
-  if (isFunction) has(val, SRC) || hide(val, SRC, O[key] ? '' + O[key] : TPL.join(String(key)));
-  if (O === global$1) {
+  if (isFunction) _has(val, SRC) || _hide(val, SRC, O[key] ? '' + O[key] : TPL.join(String(key)));
+  if (O === _global) {
     O[key] = val;
   } else if (!safe) {
     delete O[key];
-    hide(O, key, val);
+    _hide(O, key, val);
   } else if (O[key]) {
     O[key] = val;
   } else {
-    hide(O, key, val);
+    _hide(O, key, val);
   }
 // add fake Function#toString for correct work wrapped methods / constructors with methods like LoDash isNative
 })(Function.prototype, TO_STRING, function toString() {
@@ -259,27 +159,15 @@ require$$1$1.inspectSource = function (it) {
 });
 });
 
-var _redefine$1 = /*#__PURE__*/Object.freeze({
-	default: _redefine,
-	__moduleExports: _redefine
-});
-
 var _aFunction = function (it) {
   if (typeof it != 'function') throw TypeError(it + ' is not a function!');
   return it;
 };
 
-var _aFunction$1 = /*#__PURE__*/Object.freeze({
-	default: _aFunction,
-	__moduleExports: _aFunction
-});
-
-var aFunction = ( _aFunction$1 && _aFunction ) || _aFunction$1;
-
 // optional / simple context binding
 
 var _ctx = function (fn, that, length) {
-  aFunction(fn);
+  _aFunction(fn);
   if (that === undefined) return fn;
   switch (length) {
     case 1: return function (a) {
@@ -297,15 +185,6 @@ var _ctx = function (fn, that, length) {
   };
 };
 
-var _ctx$1 = /*#__PURE__*/Object.freeze({
-	default: _ctx,
-	__moduleExports: _ctx
-});
-
-var redefine = ( _redefine$1 && _redefine ) || _redefine$1;
-
-var ctx = ( _ctx$1 && _ctx ) || _ctx$1;
-
 var PROTOTYPE = 'prototype';
 
 var $export = function (type, name, source) {
@@ -314,8 +193,8 @@ var $export = function (type, name, source) {
   var IS_STATIC = type & $export.S;
   var IS_PROTO = type & $export.P;
   var IS_BIND = type & $export.B;
-  var target = IS_GLOBAL ? global$1 : IS_STATIC ? global$1[name] || (global$1[name] = {}) : (global$1[name] || {})[PROTOTYPE];
-  var exports = IS_GLOBAL ? require$$1$1 : require$$1$1[name] || (require$$1$1[name] = {});
+  var target = IS_GLOBAL ? _global : IS_STATIC ? _global[name] || (_global[name] = {}) : (_global[name] || {})[PROTOTYPE];
+  var exports = IS_GLOBAL ? _core : _core[name] || (_core[name] = {});
   var expProto = exports[PROTOTYPE] || (exports[PROTOTYPE] = {});
   var key, own, out, exp;
   if (IS_GLOBAL) source = name;
@@ -325,15 +204,15 @@ var $export = function (type, name, source) {
     // export native or passed
     out = (own ? target : source)[key];
     // bind timers to global for call from export context
-    exp = IS_BIND && own ? ctx(out, global$1) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
+    exp = IS_BIND && own ? _ctx(out, _global) : IS_PROTO && typeof out == 'function' ? _ctx(Function.call, out) : out;
     // extend global
-    if (target) redefine(target, key, out, type & $export.U);
+    if (target) _redefine(target, key, out, type & $export.U);
     // export
-    if (exports[key] != out) hide(exports, key, exp);
+    if (exports[key] != out) _hide(exports, key, exp);
     if (IS_PROTO && expProto[key] != out) expProto[key] = out;
   }
 };
-global$1.core = require$$1$1;
+_global.core = _core;
 // type bitmap
 $export.F = 1;   // forced
 $export.G = 2;   // global
@@ -345,35 +224,18 @@ $export.U = 64;  // safe
 $export.R = 128; // real proto method for `library`
 var _export = $export;
 
-var _export$1 = /*#__PURE__*/Object.freeze({
-	default: _export,
-	__moduleExports: _export
-});
-
 var toString = {}.toString;
 
 var _cof = function (it) {
   return toString.call(it).slice(8, -1);
 };
 
-var _cof$1 = /*#__PURE__*/Object.freeze({
-	default: _cof,
-	__moduleExports: _cof
-});
-
-var cof = ( _cof$1 && _cof ) || _cof$1;
-
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
 
 // eslint-disable-next-line no-prototype-builtins
 var _iobject = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
-  return cof(it) == 'String' ? it.split('') : Object(it);
+  return _cof(it) == 'String' ? it.split('') : Object(it);
 };
-
-var _iobject$1 = /*#__PURE__*/Object.freeze({
-	default: _iobject,
-	__moduleExports: _iobject
-});
 
 // 7.2.1 RequireObjectCoercible(argument)
 var _defined = function (it) {
@@ -381,26 +243,12 @@ var _defined = function (it) {
   return it;
 };
 
-var _defined$1 = /*#__PURE__*/Object.freeze({
-	default: _defined,
-	__moduleExports: _defined
-});
-
-var IObject = ( _iobject$1 && _iobject ) || _iobject$1;
-
-var defined = ( _defined$1 && _defined ) || _defined$1;
-
 // to indexed object, toObject with fallback for non-array-like ES3 strings
 
 
 var _toIobject = function (it) {
-  return IObject(defined(it));
+  return _iobject(_defined(it));
 };
-
-var _toIobject$1 = /*#__PURE__*/Object.freeze({
-	default: _toIobject,
-	__moduleExports: _toIobject
-});
 
 // 7.1.4 ToInteger
 var ceil = Math.ceil;
@@ -409,42 +257,19 @@ var _toInteger = function (it) {
   return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
 };
 
-var _toInteger$1 = /*#__PURE__*/Object.freeze({
-	default: _toInteger,
-	__moduleExports: _toInteger
-});
-
-var toInteger = ( _toInteger$1 && _toInteger ) || _toInteger$1;
-
 // 7.1.15 ToLength
 
 var min = Math.min;
 var _toLength = function (it) {
-  return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
+  return it > 0 ? min(_toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
 };
-
-var _toLength$1 = /*#__PURE__*/Object.freeze({
-	default: _toLength,
-	__moduleExports: _toLength
-});
 
 var max = Math.max;
 var min$1 = Math.min;
 var _toAbsoluteIndex = function (index, length) {
-  index = toInteger(index);
+  index = _toInteger(index);
   return index < 0 ? max(index + length, 0) : min$1(index, length);
 };
-
-var _toAbsoluteIndex$1 = /*#__PURE__*/Object.freeze({
-	default: _toAbsoluteIndex,
-	__moduleExports: _toAbsoluteIndex
-});
-
-var toIObject = ( _toIobject$1 && _toIobject ) || _toIobject$1;
-
-var toLength = ( _toLength$1 && _toLength ) || _toLength$1;
-
-var toAbsoluteIndex = ( _toAbsoluteIndex$1 && _toAbsoluteIndex ) || _toAbsoluteIndex$1;
 
 // false -> Array#indexOf
 // true  -> Array#includes
@@ -453,9 +278,9 @@ var toAbsoluteIndex = ( _toAbsoluteIndex$1 && _toAbsoluteIndex ) || _toAbsoluteI
 
 var _arrayIncludes = function (IS_INCLUDES) {
   return function ($this, el, fromIndex) {
-    var O = toIObject($this);
-    var length = toLength(O.length);
-    var index = toAbsoluteIndex(fromIndex, length);
+    var O = _toIobject($this);
+    var length = _toLength(O.length);
+    var index = _toAbsoluteIndex(fromIndex, length);
     var value;
     // Array#includes uses SameValueZero equality algorithm
     // eslint-disable-next-line no-self-compare
@@ -470,86 +295,46 @@ var _arrayIncludes = function (IS_INCLUDES) {
   };
 };
 
-var _arrayIncludes$1 = /*#__PURE__*/Object.freeze({
-	default: _arrayIncludes,
-	__moduleExports: _arrayIncludes
-});
-
 var SHARED = '__core-js_shared__';
-var store = global$1[SHARED] || (global$1[SHARED] = {});
+var store = _global[SHARED] || (_global[SHARED] = {});
 var _shared = function (key) {
   return store[key] || (store[key] = {});
 };
 
-var _shared$1 = /*#__PURE__*/Object.freeze({
-	default: _shared,
-	__moduleExports: _shared
-});
-
-var require$$0$1 = ( _shared$1 && _shared ) || _shared$1;
-
-var shared = require$$0$1('keys');
+var shared = _shared('keys');
 
 var _sharedKey = function (key) {
-  return shared[key] || (shared[key] = uid(key));
+  return shared[key] || (shared[key] = _uid(key));
 };
 
-var _sharedKey$1 = /*#__PURE__*/Object.freeze({
-	default: _sharedKey,
-	__moduleExports: _sharedKey
-});
-
-var require$$0$2 = ( _arrayIncludes$1 && _arrayIncludes ) || _arrayIncludes$1;
-
-var require$$1$2 = ( _sharedKey$1 && _sharedKey ) || _sharedKey$1;
-
-var arrayIndexOf = require$$0$2(false);
-var IE_PROTO = require$$1$2('IE_PROTO');
+var arrayIndexOf = _arrayIncludes(false);
+var IE_PROTO = _sharedKey('IE_PROTO');
 
 var _objectKeysInternal = function (object, names) {
-  var O = toIObject(object);
+  var O = _toIobject(object);
   var i = 0;
   var result = [];
   var key;
-  for (key in O) if (key != IE_PROTO) has(O, key) && result.push(key);
+  for (key in O) if (key != IE_PROTO) _has(O, key) && result.push(key);
   // Don't enum bug & hidden keys
-  while (names.length > i) if (has(O, key = names[i++])) {
+  while (names.length > i) if (_has(O, key = names[i++])) {
     ~arrayIndexOf(result, key) || result.push(key);
   }
   return result;
 };
-
-var _objectKeysInternal$1 = /*#__PURE__*/Object.freeze({
-	default: _objectKeysInternal,
-	__moduleExports: _objectKeysInternal
-});
 
 // IE 8- don't enum bug keys
 var _enumBugKeys = (
   'constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf'
 ).split(',');
 
-var _enumBugKeys$1 = /*#__PURE__*/Object.freeze({
-	default: _enumBugKeys,
-	__moduleExports: _enumBugKeys
-});
-
-var $keys = ( _objectKeysInternal$1 && _objectKeysInternal ) || _objectKeysInternal$1;
-
-var enumBugKeys = ( _enumBugKeys$1 && _enumBugKeys ) || _enumBugKeys$1;
-
 // 19.1.2.14 / 15.2.3.14 Object.keys(O)
 
 
 
 var _objectKeys = Object.keys || function keys(O) {
-  return $keys(O, enumBugKeys);
+  return _objectKeysInternal(O, _enumBugKeys);
 };
-
-var _objectKeys$1 = /*#__PURE__*/Object.freeze({
-	default: _objectKeys,
-	__moduleExports: _objectKeys
-});
 
 var f$1 = {}.propertyIsEnumerable;
 
@@ -557,21 +342,11 @@ var _objectPie = {
 	f: f$1
 };
 
-var _objectPie$1 = /*#__PURE__*/Object.freeze({
-	default: _objectPie,
-	__moduleExports: _objectPie,
-	f: f$1
-});
-
-var getKeys = ( _objectKeys$1 && _objectKeys ) || _objectKeys$1;
-
-var require$$0$3 = ( _objectPie$1 && _objectPie ) || _objectPie$1;
-
-var isEnum = require$$0$3.f;
+var isEnum = _objectPie.f;
 var _objectToArray = function (isEntries) {
   return function (it) {
-    var O = toIObject(it);
-    var keys = getKeys(O);
+    var O = _toIobject(it);
+    var keys = _objectKeys(O);
     var length = keys.length;
     var i = 0;
     var result = [];
@@ -582,20 +357,11 @@ var _objectToArray = function (isEntries) {
   };
 };
 
-var _objectToArray$1 = /*#__PURE__*/Object.freeze({
-	default: _objectToArray,
-	__moduleExports: _objectToArray
-});
-
-var $export$1 = ( _export$1 && _export ) || _export$1;
-
-var require$$0$4 = ( _objectToArray$1 && _objectToArray ) || _objectToArray$1;
-
 // https://github.com/tc39/proposal-object-values-entries
 
-var $entries = require$$0$4(true);
+var $entries = _objectToArray(true);
 
-$export$1($export$1.S, 'Object', {
+_export(_export.S, 'Object', {
   entries: function entries(it) {
     return $entries(it);
   }
@@ -2290,15 +2056,6 @@ var old = {
 	realpath: realpath
 };
 
-var old$1 = /*#__PURE__*/Object.freeze({
-	default: old,
-	__moduleExports: old,
-	realpathSync: realpathSync,
-	realpath: realpath
-});
-
-var old$2 = ( old$1 && old ) || old$1;
-
 var fs_realpath = realpath$1;
 realpath$1.realpath = realpath$1;
 realpath$1.sync = realpathSync$1;
@@ -2333,7 +2090,7 @@ function realpath$1 (p, cache, cb) {
   }
   origRealpath(p, cache, function (er, result) {
     if (newError(er)) {
-      old$2.realpath(p, cache, cb);
+      old.realpath(p, cache, cb);
     } else {
       cb(er, result);
     }
@@ -2349,7 +2106,7 @@ function realpathSync$1 (p, cache) {
     return origRealpathSync(p, cache)
   } catch (er) {
     if (newError(er)) {
-      return old$2.realpathSync(p, cache)
+      return old.realpathSync(p, cache)
     } else {
       throw er
     }
@@ -2366,11 +2123,6 @@ function unmonkeypatch () {
   fs.realpathSync = origRealpathSync;
 }
 
-var fs_realpath$1 = /*#__PURE__*/Object.freeze({
-	default: fs_realpath,
-	__moduleExports: fs_realpath
-});
-
 var concatMap = function (xs, fn) {
     var res = [];
     for (var i = 0; i < xs.length; i++) {
@@ -2384,11 +2136,6 @@ var concatMap = function (xs, fn) {
 var isArray = Array.isArray || function (xs) {
     return Object.prototype.toString.call(xs) === '[object Array]';
 };
-
-var concatMap$1 = /*#__PURE__*/Object.freeze({
-	default: concatMap,
-	__moduleExports: concatMap
-});
 
 var balancedMatch = balanced;
 function balanced(a, b, str) {
@@ -2449,15 +2196,6 @@ function range(a, b, str) {
   return result;
 }
 
-var balancedMatch$1 = /*#__PURE__*/Object.freeze({
-	default: balancedMatch,
-	__moduleExports: balancedMatch
-});
-
-var concatMap$2 = ( concatMap$1 && concatMap ) || concatMap$1;
-
-var balanced$1 = ( balancedMatch$1 && balancedMatch ) || balancedMatch$1;
-
 var braceExpansion = expandTop;
 
 var escSlash = '\0SLASH'+Math.random()+'\0';
@@ -2497,7 +2235,7 @@ function parseCommaParts(str) {
     return [''];
 
   var parts = [];
-  var m = balanced$1('{', '}', str);
+  var m = balancedMatch('{', '}', str);
 
   if (!m)
     return str.split(',');
@@ -2553,7 +2291,7 @@ function gte(i, y) {
 function expand(str, isTop) {
   var expansions = [];
 
-  var m = balanced$1('{', '}', str);
+  var m = balancedMatch('{', '}', str);
   if (!m || /\$$/.test(m.pre)) return [str];
 
   var isNumericSequence = /^-?\d+\.\.-?\d+(?:\.\.-?\d+)?$/.test(m.body);
@@ -2638,7 +2376,7 @@ function expand(str, isTop) {
       N.push(c);
     }
   } else {
-    N = concatMap$2(n, function(el) { return expand(el, false) });
+    N = concatMap(n, function(el) { return expand(el, false) });
   }
 
   for (var j = 0; j < N.length; j++) {
@@ -2651,13 +2389,6 @@ function expand(str, isTop) {
 
   return expansions;
 }
-
-var braceExpansion$1 = /*#__PURE__*/Object.freeze({
-	default: braceExpansion,
-	__moduleExports: braceExpansion
-});
-
-var expand$1 = ( braceExpansion$1 && braceExpansion ) || braceExpansion$1;
 
 var minimatch_1 = minimatch;
 minimatch.Minimatch = Minimatch;
@@ -2913,7 +2644,7 @@ function braceExpand (pattern, options) {
     return [pattern]
   }
 
-  return expand$1(pattern)
+  return braceExpansion(pattern)
 }
 
 // parse a component of the expanded set.
@@ -3582,11 +3313,6 @@ function regExpEscape (s) {
   return s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
 }
 
-var minimatch$1 = /*#__PURE__*/Object.freeze({
-	default: minimatch_1,
-	__moduleExports: minimatch_1
-});
-
 var inherits_browser = createCommonjsModule(function (module) {
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
@@ -3613,26 +3339,14 @@ if (typeof Object.create === 'function') {
 }
 });
 
-var inherits_browser$1 = /*#__PURE__*/Object.freeze({
-	default: inherits_browser,
-	__moduleExports: inherits_browser
-});
-
-var require$$1$3 = ( inherits_browser$1 && inherits_browser ) || inherits_browser$1;
-
 var inherits = createCommonjsModule(function (module) {
 try {
   var util$$1 = util;
   if (typeof util$$1.inherits !== 'function') throw '';
   module.exports = util$$1.inherits;
 } catch (e) {
-  module.exports = require$$1$3;
+  module.exports = inherits_browser;
 }
-});
-
-var inherits$1 = /*#__PURE__*/Object.freeze({
-	default: inherits,
-	__moduleExports: inherits
 });
 
 function posix(path$$1) {
@@ -3656,17 +3370,6 @@ var win32_1 = win32;
 pathIsAbsolute.posix = posix_1;
 pathIsAbsolute.win32 = win32_1;
 
-var pathIsAbsolute$1 = /*#__PURE__*/Object.freeze({
-	default: pathIsAbsolute,
-	__moduleExports: pathIsAbsolute,
-	posix: posix_1,
-	win32: win32_1
-});
-
-var minimatch$2 = ( minimatch$1 && minimatch_1 ) || minimatch$1;
-
-var isAbsolute = ( pathIsAbsolute$1 && pathIsAbsolute ) || pathIsAbsolute$1;
-
 var alphasort_1 = alphasort;
 var alphasorti_1 = alphasorti;
 var setopts_1 = setopts;
@@ -3684,7 +3387,7 @@ function ownProp (obj, field) {
 
 
 
-var Minimatch$1 = minimatch$2.Minimatch;
+var Minimatch$1 = minimatch_1.Minimatch;
 
 function alphasorti (a, b) {
   return a.toLowerCase().localeCompare(b.toLowerCase())
@@ -3774,7 +3477,7 @@ function setopts (self, pattern, options) {
 
   // TODO: is an absolute `cwd` supposed to be resolved against `root`?
   // e.g. { cwd: '/test', root: __dirname } === path.join(__dirname, '/test')
-  self.cwdAbs = isAbsolute(self.cwd) ? self.cwd : makeAbs(self, self.cwd);
+  self.cwdAbs = pathIsAbsolute(self.cwd) ? self.cwd : makeAbs(self, self.cwd);
   if (process.platform === "win32")
     self.cwdAbs = self.cwdAbs.replace(/\\/g, "/");
   self.nomount = !!options.nomount;
@@ -3873,7 +3576,7 @@ function makeAbs (self, f) {
   var abs = f;
   if (f.charAt(0) === '/') {
     abs = path__default.join(self.root, f);
-  } else if (isAbsolute(f) || f === '') {
+  } else if (pathIsAbsolute(f) || f === '') {
     abs = f;
   } else if (self.changedCwd) {
     abs = path__default.resolve(self.cwd, f);
@@ -3920,42 +3623,12 @@ var common = {
 	childrenIgnored: childrenIgnored_1
 };
 
-var common$1 = /*#__PURE__*/Object.freeze({
-	default: common,
-	__moduleExports: common,
-	alphasort: alphasort_1,
-	alphasorti: alphasorti_1,
-	setopts: setopts_1,
-	ownProp: ownProp_1,
-	makeAbs: makeAbs_1,
-	finish: finish_1,
-	mark: mark_1,
-	isIgnored: isIgnored_1,
-	childrenIgnored: childrenIgnored_1
-});
-
-var rp = ( fs_realpath$1 && fs_realpath ) || fs_realpath$1;
-
-var common$2 = ( common$1 && common ) || common$1;
-
 var sync = globSync;
 globSync.GlobSync = GlobSync;
-
-
-
-
-var Minimatch$2 = minimatch$2.Minimatch;
-
-
-
-
-
-var alphasort$1 = common$2.alphasort;
-var alphasorti$1 = common$2.alphasorti;
-var setopts$1 = common$2.setopts;
-var ownProp$1 = common$2.ownProp;
-var childrenIgnored$1 = common$2.childrenIgnored;
-var isIgnored$1 = common$2.isIgnored;
+var setopts$1 = common.setopts;
+var ownProp$1 = common.ownProp;
+var childrenIgnored$1 = common.childrenIgnored;
+var isIgnored$1 = common.isIgnored;
 
 function globSync (pattern, options) {
   if (typeof options === 'function' || arguments.length === 3)
@@ -3998,7 +3671,7 @@ GlobSync.prototype._finish = function () {
       for (var p in matchset) {
         try {
           p = self._makeAbs(p);
-          var real = rp.realpathSync(p, self.realpathCache);
+          var real = fs_realpath.realpathSync(p, self.realpathCache);
           set[real] = true;
         } catch (er) {
           if (er.syscall === 'stat')
@@ -4009,7 +3682,7 @@ GlobSync.prototype._finish = function () {
       }
     });
   }
-  common$2.finish(this);
+  common.finish(this);
 };
 
 
@@ -4051,8 +3724,8 @@ GlobSync.prototype._process = function (pattern, index, inGlobStar) {
   var read;
   if (prefix === null)
     read = '.';
-  else if (isAbsolute(prefix) || isAbsolute(pattern.join('/'))) {
-    if (!prefix || !isAbsolute(prefix))
+  else if (pathIsAbsolute(prefix) || pathIsAbsolute(pattern.join('/'))) {
+    if (!prefix || !pathIsAbsolute(prefix))
       prefix = '/' + prefix;
     read = prefix;
   } else
@@ -4064,7 +3737,7 @@ GlobSync.prototype._process = function (pattern, index, inGlobStar) {
   if (childrenIgnored$1(this, read))
     return
 
-  var isGlobStar = remain[0] === minimatch$2.GLOBSTAR;
+  var isGlobStar = remain[0] === minimatch_1.GLOBSTAR;
   if (isGlobStar)
     this._processGlobStar(prefix, read, abs, remain, index, inGlobStar);
   else
@@ -4333,7 +4006,7 @@ GlobSync.prototype._processSimple = function (prefix, index) {
   if (!exists)
     return
 
-  if (prefix && isAbsolute(prefix) && !this.nomount) {
+  if (prefix && pathIsAbsolute(prefix) && !this.nomount) {
     var trail = /[\/\\]$/.test(prefix);
     if (prefix.charAt(0) === '/') {
       prefix = path__default.join(this.root, prefix);
@@ -4413,17 +4086,12 @@ GlobSync.prototype._stat = function (f) {
 };
 
 GlobSync.prototype._mark = function (p) {
-  return common$2.mark(this, p)
+  return common.mark(this, p)
 };
 
 GlobSync.prototype._makeAbs = function (f) {
-  return common$2.makeAbs(this, f)
+  return common.makeAbs(this, f)
 };
-
-var sync$1 = /*#__PURE__*/Object.freeze({
-	default: sync,
-	__moduleExports: sync
-});
 
 // Returns a wrapper function that returns a wrapped callback
 // The wrapper function should do some stuff, and return a
@@ -4459,15 +4127,8 @@ function wrappy (fn, cb) {
   }
 }
 
-var wrappy$1 = /*#__PURE__*/Object.freeze({
-	default: wrappy_1,
-	__moduleExports: wrappy_1
-});
-
-var wrappy$2 = ( wrappy$1 && wrappy_1 ) || wrappy$1;
-
-var once_1 = wrappy$2(once);
-var strict = wrappy$2(onceStrict);
+var once_1 = wrappy_1(once);
+var strict = wrappy_1(onceStrict);
 
 once.proto = once(function () {
   Object.defineProperty(Function.prototype, 'once', {
@@ -4509,18 +4170,10 @@ function onceStrict (fn) {
 }
 once_1.strict = strict;
 
-var once$1 = /*#__PURE__*/Object.freeze({
-	default: once_1,
-	__moduleExports: once_1,
-	strict: strict
-});
-
-var once$2 = ( once$1 && once_1 ) || once$1;
-
 var reqs = Object.create(null);
 
 
-var inflight_1 = wrappy$2(inflight);
+var inflight_1 = wrappy_1(inflight);
 
 function inflight (key, cb) {
   if (reqs[key]) {
@@ -4533,7 +4186,7 @@ function inflight (key, cb) {
 }
 
 function makeres (key) {
-  return once$2(function RES () {
+  return once_1(function RES () {
     var cbs = reqs[key];
     var len = cbs.length;
     var args = slice(arguments);
@@ -4570,17 +4223,6 @@ function slice (args) {
   for (var i = 0; i < length; i++) array[i] = args[i];
   return array
 }
-
-var inflight$1 = /*#__PURE__*/Object.freeze({
-	default: inflight_1,
-	__moduleExports: inflight_1
-});
-
-var inherits$2 = ( inherits$1 && inherits ) || inherits$1;
-
-var globSync$1 = ( sync$1 && sync ) || sync$1;
-
-var inflight$2 = ( inflight$1 && inflight_1 ) || inflight$1;
 
 // Approach:
 //
@@ -4624,25 +4266,13 @@ var inflight$2 = ( inflight$1 && inflight_1 ) || inflight$1;
 
 var glob_1 = glob;
 
-
-
-
-var Minimatch$3 = minimatch$2.Minimatch;
-
 var EE = events.EventEmitter;
+var setopts$2 = common.setopts;
+var ownProp$2 = common.ownProp;
 
 
-
-
-
-var alphasort$2 = common$2.alphasort;
-var alphasorti$2 = common$2.alphasorti;
-var setopts$2 = common$2.setopts;
-var ownProp$2 = common$2.ownProp;
-
-
-var childrenIgnored$2 = common$2.childrenIgnored;
-var isIgnored$2 = common$2.isIgnored;
+var childrenIgnored$2 = common.childrenIgnored;
+var isIgnored$2 = common.isIgnored;
 
 
 
@@ -4653,14 +4283,14 @@ function glob (pattern, options, cb) {
   if (options.sync) {
     if (cb)
       throw new TypeError('callback provided to sync glob')
-    return globSync$1(pattern, options)
+    return sync(pattern, options)
   }
 
   return new Glob$1(pattern, options, cb)
 }
 
-glob.sync = globSync$1;
-var GlobSync$1 = glob.GlobSync = globSync$1.GlobSync;
+glob.sync = sync;
+var GlobSync$1 = glob.GlobSync = sync.GlobSync;
 
 // old api surface
 glob.glob = glob;
@@ -4700,7 +4330,7 @@ glob.hasMagic = function (pattern, options_) {
 };
 
 glob.Glob = Glob$1;
-inherits$2(Glob$1, EE);
+inherits(Glob$1, EE);
 function Glob$1 (pattern, options, cb) {
   if (typeof options === 'function') {
     cb = options;
@@ -4729,7 +4359,7 @@ function Glob$1 (pattern, options, cb) {
   this.matches = new Array(n);
 
   if (typeof cb === 'function') {
-    cb = once$2(cb);
+    cb = once_1(cb);
     this.on('error', cb);
     this.on('end', function (matches) {
       cb(null, matches);
@@ -4749,16 +4379,16 @@ function Glob$1 (pattern, options, cb) {
   if (n === 0)
     return done()
 
-  var sync = true;
+  var sync$$1 = true;
   for (var i = 0; i < n; i ++) {
     this._process(this.minimatch.set[i], i, false, done);
   }
-  sync = false;
+  sync$$1 = false;
 
   function done () {
     --self._processing;
     if (self._processing <= 0) {
-      if (sync) {
+      if (sync$$1) {
         process.nextTick(function () {
           self._finish();
         });
@@ -4777,7 +4407,7 @@ Glob$1.prototype._finish = function () {
   if (this.realpath && !this._didRealpath)
     return this._realpath()
 
-  common$2.finish(this);
+  common.finish(this);
   this.emit('end', this.found);
 };
 
@@ -4819,7 +4449,7 @@ Glob$1.prototype._realpathSet = function (index, cb) {
     // one or more of the links in the realpath couldn't be
     // resolved.  just return the abs value in that case.
     p = self._makeAbs(p);
-    rp.realpath(p, self.realpathCache, function (er, real) {
+    fs_realpath.realpath(p, self.realpathCache, function (er, real) {
       if (!er)
         set[real] = true;
       else if (er.syscall === 'stat')
@@ -4836,11 +4466,11 @@ Glob$1.prototype._realpathSet = function (index, cb) {
 };
 
 Glob$1.prototype._mark = function (p) {
-  return common$2.mark(this, p)
+  return common.mark(this, p)
 };
 
 Glob$1.prototype._makeAbs = function (f) {
-  return common$2.makeAbs(this, f)
+  return common.makeAbs(this, f)
 };
 
 Glob$1.prototype.abort = function () {
@@ -4929,8 +4559,8 @@ Glob$1.prototype._process = function (pattern, index, inGlobStar, cb) {
   var read;
   if (prefix === null)
     read = '.';
-  else if (isAbsolute(prefix) || isAbsolute(pattern.join('/'))) {
-    if (!prefix || !isAbsolute(prefix))
+  else if (pathIsAbsolute(prefix) || pathIsAbsolute(pattern.join('/'))) {
+    if (!prefix || !pathIsAbsolute(prefix))
       prefix = '/' + prefix;
     read = prefix;
   } else
@@ -4942,7 +4572,7 @@ Glob$1.prototype._process = function (pattern, index, inGlobStar, cb) {
   if (childrenIgnored$2(this, read))
     return cb()
 
-  var isGlobStar = remain[0] === minimatch$2.GLOBSTAR;
+  var isGlobStar = remain[0] === minimatch_1.GLOBSTAR;
   if (isGlobStar)
     this._processGlobStar(prefix, read, abs, remain, index, inGlobStar, cb);
   else
@@ -5046,7 +4676,7 @@ Glob$1.prototype._emitMatch = function (index, e) {
     return
   }
 
-  var abs = isAbsolute(e) ? e : this._makeAbs(e);
+  var abs = pathIsAbsolute(e) ? e : this._makeAbs(e);
 
   if (this.mark)
     e = this._mark(e);
@@ -5083,7 +4713,7 @@ Glob$1.prototype._readdirInGlobStar = function (abs, cb) {
 
   var lstatkey = 'lstat\0' + abs;
   var self = this;
-  var lstatcb = inflight$2(lstatkey, lstatcb_);
+  var lstatcb = inflight_1(lstatkey, lstatcb_);
 
   if (lstatcb)
     fs.lstat(abs, lstatcb);
@@ -5109,7 +4739,7 @@ Glob$1.prototype._readdir = function (abs, inGlobStar, cb) {
   if (this.aborted)
     return
 
-  cb = inflight$2('readdir\0'+abs+'\0'+inGlobStar, cb);
+  cb = inflight_1('readdir\0'+abs+'\0'+inGlobStar, cb);
   if (!cb)
     return
 
@@ -5268,7 +4898,7 @@ Glob$1.prototype._processSimple2 = function (prefix, index, er, exists, cb) {
   if (!exists)
     return cb()
 
-  if (prefix && isAbsolute(prefix) && !this.nomount) {
+  if (prefix && pathIsAbsolute(prefix) && !this.nomount) {
     var trail = /[\/\\]$/.test(prefix);
     if (prefix.charAt(0) === '/') {
       prefix = path__default.join(this.root, prefix);
@@ -5325,7 +4955,7 @@ Glob$1.prototype._stat = function (f, cb) {
   }
 
   var self = this;
-  var statcb = inflight$2('stat\0' + abs, lstatcb_);
+  var statcb = inflight_1('stat\0' + abs, lstatcb_);
   if (statcb)
     fs.lstat(abs, statcb);
 
@@ -5582,11 +5212,6 @@ function isBuffer(val) {
   return false;
 }
 
-var kindOf$1 = /*#__PURE__*/Object.freeze({
-	default: kindOf,
-	__moduleExports: kindOf
-});
-
 /*!
  * is-extendable <https://github.com/jonschlinkert/is-extendable>
  *
@@ -5599,21 +5224,14 @@ var isExtendable = function isExtendable(val) {
     && (typeof val === 'object' || typeof val === 'function');
 };
 
-var isExtendable$1 = /*#__PURE__*/Object.freeze({
-	default: isExtendable,
-	__moduleExports: isExtendable
-});
-
-var isObject$1 = ( isExtendable$1 && isExtendable ) || isExtendable$1;
-
 var extendShallow = function extend(o/*, objects*/) {
-  if (!isObject$1(o)) { o = {}; }
+  if (!isExtendable(o)) { o = {}; }
 
   var len = arguments.length;
   for (var i = 1; i < len; i++) {
     var obj = arguments[i];
 
-    if (isObject$1(obj)) {
+    if (isExtendable(obj)) {
       assign(o, obj);
     }
   }
@@ -5636,15 +5254,6 @@ function hasOwn(obj, key) {
   return Object.prototype.hasOwnProperty.call(obj, key);
 }
 
-var extendShallow$1 = /*#__PURE__*/Object.freeze({
-	default: extendShallow,
-	__moduleExports: extendShallow
-});
-
-var typeOf = ( kindOf$1 && kindOf ) || kindOf$1;
-
-var extend$1 = ( extendShallow$1 && extendShallow ) || extendShallow$1;
-
 /**
  * Parse sections in `input` with the given `options`.
  *
@@ -5666,7 +5275,7 @@ var sectionMatter = function(input, options) {
 
   var file = toObject(input);
   var defaults = {section_delimiter: '---', parse: identity$1};
-  var opts = extend$1({}, defaults, options);
+  var opts = extendShallow({}, defaults, options);
   var delim = opts.section_delimiter;
   var lines = file.content.split(/\r?\n/);
   var sections = null;
@@ -5745,7 +5354,7 @@ function isDelimiter(line, delim) {
 }
 
 function toObject(input) {
-  if (typeOf(input) !== 'object') {
+  if (kindOf(input) !== 'object') {
     input = { content: input };
   }
 
@@ -5777,17 +5386,12 @@ function isBuffer$1(val) {
   return false;
 }
 
-var sectionMatter$1 = /*#__PURE__*/Object.freeze({
-	default: sectionMatter,
-	__moduleExports: sectionMatter
-});
-
 function isNothing(subject) {
   return (typeof subject === 'undefined') || (subject === null);
 }
 
 
-function isObject$2(subject) {
+function isObject(subject) {
   return (typeof subject === 'object') && (subject !== null);
 }
 
@@ -5800,7 +5404,7 @@ function toArray(sequence) {
 }
 
 
-function extend$2(target, source) {
+function extend$1(target, source) {
   var index, length, key, sourceKeys;
 
   if (source) {
@@ -5833,13 +5437,13 @@ function isNegativeZero(number) {
 
 
 var isNothing_1      = isNothing;
-var isObject_1       = isObject$2;
+var isObject_1       = isObject;
 var toArray_1        = toArray;
 var repeat_1         = repeat;
 var isNegativeZero_1 = isNegativeZero;
-var extend_1         = extend$2;
+var extend_1         = extend$1;
 
-var common$3 = {
+var common$1 = {
 	isNothing: isNothing_1,
 	isObject: isObject_1,
 	toArray: toArray_1,
@@ -5847,17 +5451,6 @@ var common$3 = {
 	isNegativeZero: isNegativeZero_1,
 	extend: extend_1
 };
-
-var common$4 = /*#__PURE__*/Object.freeze({
-	default: common$3,
-	__moduleExports: common$3,
-	isNothing: isNothing_1,
-	isObject: isObject_1,
-	toArray: toArray_1,
-	repeat: repeat_1,
-	isNegativeZero: isNegativeZero_1,
-	extend: extend_1
-});
 
 // YAML error class. http://stackoverflow.com/questions/8458984
 
@@ -5900,13 +5493,6 @@ YAMLException.prototype.toString = function toString(compact) {
 
 
 var exception = YAMLException;
-
-var exception$1 = /*#__PURE__*/Object.freeze({
-	default: exception,
-	__moduleExports: exception
-});
-
-var common$5 = ( common$4 && common$3 ) || common$4;
 
 function Mark(name, buffer, position, line, column) {
   this.name     = name;
@@ -5951,8 +5537,8 @@ Mark.prototype.getSnippet = function getSnippet(indent, maxLength) {
 
   snippet = this.buffer.slice(start, end);
 
-  return common$5.repeat(' ', indent) + head + snippet + tail + '\n' +
-         common$5.repeat(' ', indent + this.position - start + head.length) + '^';
+  return common$1.repeat(' ', indent) + head + snippet + tail + '\n' +
+         common$1.repeat(' ', indent + this.position - start + head.length) + '^';
 };
 
 
@@ -5978,13 +5564,6 @@ Mark.prototype.toString = function toString(compact) {
 
 
 var mark$1 = Mark;
-
-var mark$2 = /*#__PURE__*/Object.freeze({
-	default: mark$1,
-	__moduleExports: mark$1
-});
-
-var YAMLException$1 = ( exception$1 && exception ) || exception$1;
 
 var TYPE_CONSTRUCTOR_OPTIONS = [
   'kind',
@@ -6022,7 +5601,7 @@ function Type(tag, options) {
 
   Object.keys(options).forEach(function (name) {
     if (TYPE_CONSTRUCTOR_OPTIONS.indexOf(name) === -1) {
-      throw new YAMLException$1('Unknown option "' + name + '" is met in definition of "' + tag + '" YAML type.');
+      throw new exception('Unknown option "' + name + '" is met in definition of "' + tag + '" YAML type.');
     }
   });
 
@@ -6038,18 +5617,11 @@ function Type(tag, options) {
   this.styleAliases = compileStyleAliases(options['styleAliases'] || null);
 
   if (YAML_NODE_KINDS.indexOf(this.kind) === -1) {
-    throw new YAMLException$1('Unknown kind "' + this.kind + '" is specified for "' + tag + '" YAML type.');
+    throw new exception('Unknown kind "' + this.kind + '" is specified for "' + tag + '" YAML type.');
   }
 }
 
 var type = Type;
-
-var type$1 = /*#__PURE__*/Object.freeze({
-	default: type,
-	__moduleExports: type
-});
-
-var Type$1 = ( type$1 && type ) || type$1;
 
 /*eslint-disable max-len*/
 
@@ -6075,7 +5647,7 @@ function compileList(schema, name, result) {
     result.push(currentType);
   });
 
-  return result.filter(function (type, index) {
+  return result.filter(function (type$$1, index) {
     return exclude.indexOf(index) === -1;
   });
 }
@@ -6089,8 +5661,8 @@ function compileMap(/* lists... */) {
         fallback: {}
       }, index, length;
 
-  function collectType(type) {
-    result[type.kind][type.tag] = result['fallback'][type.tag] = type;
+  function collectType(type$$1) {
+    result[type$$1.kind][type$$1.tag] = result['fallback'][type$$1.tag] = type$$1;
   }
 
   for (index = 0, length = arguments.length; index < length; index += 1) {
@@ -6105,9 +5677,9 @@ function Schema(definition) {
   this.implicit = definition.implicit || [];
   this.explicit = definition.explicit || [];
 
-  this.implicit.forEach(function (type) {
-    if (type.loadKind && type.loadKind !== 'scalar') {
-      throw new YAMLException$1('There is a non-scalar type in the implicit list of a schema. Implicit resolving of such types is not supported.');
+  this.implicit.forEach(function (type$$1) {
+    if (type$$1.loadKind && type$$1.loadKind !== 'scalar') {
+      throw new exception('There is a non-scalar type in the implicit list of a schema. Implicit resolving of such types is not supported.');
     }
   });
 
@@ -6135,18 +5707,18 @@ Schema.create = function createSchema() {
       break;
 
     default:
-      throw new YAMLException$1('Wrong number of arguments for Schema.create function');
+      throw new exception('Wrong number of arguments for Schema.create function');
   }
 
-  schemas = common$5.toArray(schemas);
-  types = common$5.toArray(types);
+  schemas = common$1.toArray(schemas);
+  types = common$1.toArray(types);
 
   if (!schemas.every(function (schema) { return schema instanceof Schema; })) {
-    throw new YAMLException$1('Specified list of super schemas (or a single Schema object) contains a non-Schema object.');
+    throw new exception('Specified list of super schemas (or a single Schema object) contains a non-Schema object.');
   }
 
-  if (!types.every(function (type) { return type instanceof Type$1; })) {
-    throw new YAMLException$1('Specified list of YAML types (or a single Type object) contains a non-Type object.');
+  if (!types.every(function (type$$1) { return type$$1 instanceof type; })) {
+    throw new exception('Specified list of YAML types (or a single Type object) contains a non-Type object.');
   }
 
   return new Schema({
@@ -6158,60 +5730,27 @@ Schema.create = function createSchema() {
 
 var schema = Schema;
 
-var schema$1 = /*#__PURE__*/Object.freeze({
-	default: schema,
-	__moduleExports: schema
-});
-
-var str = new Type$1('tag:yaml.org,2002:str', {
+var str = new type('tag:yaml.org,2002:str', {
   kind: 'scalar',
   construct: function (data) { return data !== null ? data : ''; }
 });
 
-var str$1 = /*#__PURE__*/Object.freeze({
-	default: str,
-	__moduleExports: str
-});
-
-var seq = new Type$1('tag:yaml.org,2002:seq', {
+var seq = new type('tag:yaml.org,2002:seq', {
   kind: 'sequence',
   construct: function (data) { return data !== null ? data : []; }
 });
 
-var seq$1 = /*#__PURE__*/Object.freeze({
-	default: seq,
-	__moduleExports: seq
-});
-
-var map = new Type$1('tag:yaml.org,2002:map', {
+var map = new type('tag:yaml.org,2002:map', {
   kind: 'mapping',
   construct: function (data) { return data !== null ? data : {}; }
 });
 
-var map$1 = /*#__PURE__*/Object.freeze({
-	default: map,
-	__moduleExports: map
-});
-
-var Schema$1 = ( schema$1 && schema ) || schema$1;
-
-var require$$0$5 = ( str$1 && str ) || str$1;
-
-var require$$1$4 = ( seq$1 && seq ) || seq$1;
-
-var require$$2$1 = ( map$1 && map ) || map$1;
-
-var failsafe = new Schema$1({
+var failsafe = new schema({
   explicit: [
-    require$$0$5,
-    require$$1$4,
-    require$$2$1
+    str,
+    seq,
+    map
   ]
-});
-
-var failsafe$1 = /*#__PURE__*/Object.freeze({
-	default: failsafe,
-	__moduleExports: failsafe
 });
 
 function resolveYamlNull(data) {
@@ -6231,7 +5770,7 @@ function isNull(object) {
   return object === null;
 }
 
-var _null = new Type$1('tag:yaml.org,2002:null', {
+var _null = new type('tag:yaml.org,2002:null', {
   kind: 'scalar',
   resolve: resolveYamlNull,
   construct: constructYamlNull,
@@ -6243,11 +5782,6 @@ var _null = new Type$1('tag:yaml.org,2002:null', {
     camelcase: function () { return 'Null'; }
   },
   defaultStyle: 'lowercase'
-});
-
-var _null$1 = /*#__PURE__*/Object.freeze({
-	default: _null,
-	__moduleExports: _null
 });
 
 function resolveYamlBoolean(data) {
@@ -6269,7 +5803,7 @@ function isBoolean(object) {
   return Object.prototype.toString.call(object) === '[object Boolean]';
 }
 
-var bool = new Type$1('tag:yaml.org,2002:bool', {
+var bool = new type('tag:yaml.org,2002:bool', {
   kind: 'scalar',
   resolve: resolveYamlBoolean,
   construct: constructYamlBoolean,
@@ -6280,11 +5814,6 @@ var bool = new Type$1('tag:yaml.org,2002:bool', {
     camelcase: function (object) { return object ? 'True' : 'False'; }
   },
   defaultStyle: 'lowercase'
-});
-
-var bool$1 = /*#__PURE__*/Object.freeze({
-	default: bool,
-	__moduleExports: bool
 });
 
 function isHexCode(c) {
@@ -6432,10 +5961,10 @@ function constructYamlInteger(data) {
 
 function isInteger(object) {
   return (Object.prototype.toString.call(object)) === '[object Number]' &&
-         (object % 1 === 0 && !common$5.isNegativeZero(object));
+         (object % 1 === 0 && !common$1.isNegativeZero(object));
 }
 
-var int_1 = new Type$1('tag:yaml.org,2002:int', {
+var int_1 = new type('tag:yaml.org,2002:int', {
   kind: 'scalar',
   resolve: resolveYamlInteger,
   construct: constructYamlInteger,
@@ -6454,11 +5983,6 @@ var int_1 = new Type$1('tag:yaml.org,2002:int', {
     decimal:     [ 10, 'dec' ],
     hexadecimal: [ 16, 'hex' ]
   }
-});
-
-var int = /*#__PURE__*/Object.freeze({
-	default: int_1,
-	__moduleExports: int_1
 });
 
 var YAML_FLOAT_PATTERN = new RegExp(
@@ -6547,7 +6071,7 @@ function representYamlFloat(object, style) {
       case 'uppercase': return '-.INF';
       case 'camelcase': return '-.Inf';
     }
-  } else if (common$5.isNegativeZero(object)) {
+  } else if (common$1.isNegativeZero(object)) {
     return '-0.0';
   }
 
@@ -6561,10 +6085,10 @@ function representYamlFloat(object, style) {
 
 function isFloat(object) {
   return (Object.prototype.toString.call(object) === '[object Number]') &&
-         (object % 1 !== 0 || common$5.isNegativeZero(object));
+         (object % 1 !== 0 || common$1.isNegativeZero(object));
 }
 
-var float_1 = new Type$1('tag:yaml.org,2002:float', {
+var float_1 = new type('tag:yaml.org,2002:float', {
   kind: 'scalar',
   resolve: resolveYamlFloat,
   construct: constructYamlFloat,
@@ -6573,49 +6097,22 @@ var float_1 = new Type$1('tag:yaml.org,2002:float', {
   defaultStyle: 'lowercase'
 });
 
-var float = /*#__PURE__*/Object.freeze({
-	default: float_1,
-	__moduleExports: float_1
-});
-
-var require$$0$6 = ( failsafe$1 && failsafe ) || failsafe$1;
-
-var require$$1$5 = ( _null$1 && _null ) || _null$1;
-
-var require$$2$2 = ( bool$1 && bool ) || bool$1;
-
-var require$$3 = ( int && int_1 ) || int;
-
-var require$$4 = ( float && float_1 ) || float;
-
-var json = new Schema$1({
+var json = new schema({
   include: [
-    require$$0$6
+    failsafe
   ],
   implicit: [
-    require$$1$5,
-    require$$2$2,
-    require$$3,
-    require$$4
+    _null,
+    bool,
+    int_1,
+    float_1
   ]
 });
 
-var json$1 = /*#__PURE__*/Object.freeze({
-	default: json,
-	__moduleExports: json
-});
-
-var require$$0$7 = ( json$1 && json ) || json$1;
-
-var core = new Schema$1({
+var core = new schema({
   include: [
-    require$$0$7
+    json
   ]
-});
-
-var core$1 = /*#__PURE__*/Object.freeze({
-	default: core,
-	__moduleExports: core
 });
 
 var YAML_DATE_REGEXP = new RegExp(
@@ -6695,7 +6192,7 @@ function representYamlTimestamp(object /*, style*/) {
   return object.toISOString();
 }
 
-var timestamp = new Type$1('tag:yaml.org,2002:timestamp', {
+var timestamp = new type('tag:yaml.org,2002:timestamp', {
   kind: 'scalar',
   resolve: resolveYamlTimestamp,
   construct: constructYamlTimestamp,
@@ -6703,23 +6200,13 @@ var timestamp = new Type$1('tag:yaml.org,2002:timestamp', {
   represent: representYamlTimestamp
 });
 
-var timestamp$1 = /*#__PURE__*/Object.freeze({
-	default: timestamp,
-	__moduleExports: timestamp
-});
-
 function resolveYamlMerge(data) {
   return data === '<<' || data === null;
 }
 
-var merge = new Type$1('tag:yaml.org,2002:merge', {
+var merge = new type('tag:yaml.org,2002:merge', {
   kind: 'scalar',
   resolve: resolveYamlMerge
-});
-
-var merge$1 = /*#__PURE__*/Object.freeze({
-	default: merge,
-	__moduleExports: merge
 });
 
 /*eslint-disable no-bitwise*/
@@ -6851,17 +6338,12 @@ function isBinary(object) {
   return NodeBuffer && NodeBuffer.isBuffer(object);
 }
 
-var binary = new Type$1('tag:yaml.org,2002:binary', {
+var binary = new type('tag:yaml.org,2002:binary', {
   kind: 'scalar',
   resolve: resolveYamlBinary,
   construct: constructYamlBinary,
   predicate: isBinary,
   represent: representYamlBinary
-});
-
-var binary$1 = /*#__PURE__*/Object.freeze({
-	default: binary,
-	__moduleExports: binary
 });
 
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -6899,15 +6381,10 @@ function constructYamlOmap(data) {
   return data !== null ? data : [];
 }
 
-var omap = new Type$1('tag:yaml.org,2002:omap', {
+var omap = new type('tag:yaml.org,2002:omap', {
   kind: 'sequence',
   resolve: resolveYamlOmap,
   construct: constructYamlOmap
-});
-
-var omap$1 = /*#__PURE__*/Object.freeze({
-	default: omap,
-	__moduleExports: omap
 });
 
 var _toString$1 = Object.prototype.toString;
@@ -6954,15 +6431,10 @@ function constructYamlPairs(data) {
   return result;
 }
 
-var pairs = new Type$1('tag:yaml.org,2002:pairs', {
+var pairs = new type('tag:yaml.org,2002:pairs', {
   kind: 'sequence',
   resolve: resolveYamlPairs,
   construct: constructYamlPairs
-});
-
-var pairs$1 = /*#__PURE__*/Object.freeze({
-	default: pairs,
-	__moduleExports: pairs
 });
 
 var _hasOwnProperty$1 = Object.prototype.hasOwnProperty;
@@ -6985,50 +6457,26 @@ function constructYamlSet(data) {
   return data !== null ? data : {};
 }
 
-var set = new Type$1('tag:yaml.org,2002:set', {
+var set = new type('tag:yaml.org,2002:set', {
   kind: 'mapping',
   resolve: resolveYamlSet,
   construct: constructYamlSet
 });
 
-var set$1 = /*#__PURE__*/Object.freeze({
-	default: set,
-	__moduleExports: set
-});
-
-var require$$0$8 = ( core$1 && core ) || core$1;
-
-var require$$1$6 = ( timestamp$1 && timestamp ) || timestamp$1;
-
-var require$$2$3 = ( merge$1 && merge ) || merge$1;
-
-var require$$3$1 = ( binary$1 && binary ) || binary$1;
-
-var require$$4$1 = ( omap$1 && omap ) || omap$1;
-
-var require$$5 = ( pairs$1 && pairs ) || pairs$1;
-
-var require$$6 = ( set$1 && set ) || set$1;
-
-var default_safe = new Schema$1({
+var default_safe = new schema({
   include: [
-    require$$0$8
+    core
   ],
   implicit: [
-    require$$1$6,
-    require$$2$3
+    timestamp,
+    merge
   ],
   explicit: [
-    require$$3$1,
-    require$$4$1,
-    require$$5,
-    require$$6
+    binary,
+    omap,
+    pairs,
+    set
   ]
-});
-
-var default_safe$1 = /*#__PURE__*/Object.freeze({
-	default: default_safe,
-	__moduleExports: default_safe
 });
 
 function resolveJavascriptUndefined() {
@@ -7048,17 +6496,12 @@ function isUndefined(object) {
   return typeof object === 'undefined';
 }
 
-var _undefined = new Type$1('tag:yaml.org,2002:js/undefined', {
+var _undefined = new type('tag:yaml.org,2002:js/undefined', {
   kind: 'scalar',
   resolve: resolveJavascriptUndefined,
   construct: constructJavascriptUndefined,
   predicate: isUndefined,
   represent: representJavascriptUndefined
-});
-
-var _undefined$1 = /*#__PURE__*/Object.freeze({
-	default: _undefined,
-	__moduleExports: _undefined
 });
 
 function resolveJavascriptRegExp(data) {
@@ -7110,17 +6553,12 @@ function isRegExp(object) {
   return Object.prototype.toString.call(object) === '[object RegExp]';
 }
 
-var regexp = new Type$1('tag:yaml.org,2002:js/regexp', {
+var regexp = new type('tag:yaml.org,2002:js/regexp', {
   kind: 'scalar',
   resolve: resolveJavascriptRegExp,
   construct: constructJavascriptRegExp,
   predicate: isRegExp,
   represent: representJavascriptRegExp
-});
-
-var regexp$1 = /*#__PURE__*/Object.freeze({
-	default: regexp,
-	__moduleExports: regexp
 });
 
 var esprima;
@@ -7200,7 +6638,7 @@ function isFunction(object) {
   return Object.prototype.toString.call(object) === '[object Function]';
 }
 
-var _function = new Type$1('tag:yaml.org,2002:js/function', {
+var _function = new type('tag:yaml.org,2002:js/function', {
   kind: 'scalar',
   resolve: resolveJavascriptFunction,
   construct: constructJavascriptFunction,
@@ -7208,38 +6646,16 @@ var _function = new Type$1('tag:yaml.org,2002:js/function', {
   represent: representJavascriptFunction
 });
 
-var _function$1 = /*#__PURE__*/Object.freeze({
-	default: _function,
-	__moduleExports: _function
-});
-
-var require$$0$9 = ( default_safe$1 && default_safe ) || default_safe$1;
-
-var require$$1$7 = ( _undefined$1 && _undefined ) || _undefined$1;
-
-var require$$2$4 = ( regexp$1 && regexp ) || regexp$1;
-
-var require$$3$2 = ( _function$1 && _function ) || _function$1;
-
-var default_full = Schema$1.DEFAULT = new Schema$1({
+var default_full = schema.DEFAULT = new schema({
   include: [
-    require$$0$9
+    default_safe
   ],
   explicit: [
-    require$$1$7,
-    require$$2$4,
-    require$$3$2
+    _undefined,
+    regexp,
+    _function
   ]
 });
-
-var default_full$1 = /*#__PURE__*/Object.freeze({
-	default: default_full,
-	__moduleExports: default_full
-});
-
-var Mark$1 = ( mark$2 && mark$1 ) || mark$2;
-
-var DEFAULT_FULL_SCHEMA = ( default_full$1 && default_full ) || default_full$1;
 
 /*eslint-disable max-len,no-use-before-define*/
 
@@ -7372,7 +6788,7 @@ function State(input, options) {
   this.input = input;
 
   this.filename  = options['filename']  || null;
-  this.schema    = options['schema']    || DEFAULT_FULL_SCHEMA;
+  this.schema    = options['schema']    || default_full;
   this.onWarning = options['onWarning'] || null;
   this.legacy    = options['legacy']    || false;
   this.json      = options['json']      || false;
@@ -7403,9 +6819,9 @@ function State(input, options) {
 
 
 function generateError(state, message) {
-  return new YAMLException$1(
+  return new exception(
     message,
-    new Mark$1(state.filename, state.input, state.position, state.line, (state.position - state.lineStart)));
+    new mark$1(state.filename, state.input, state.position, state.line, (state.position - state.lineStart)));
 }
 
 function throwError(state, message) {
@@ -7507,7 +6923,7 @@ function captureSegment(state, start, end, checkJson) {
 function mergeMappings(state, destination, source, overridableKeys) {
   var sourceKeys, key, index, quantity;
 
-  if (!common$5.isObject(source)) {
+  if (!common$1.isObject(source)) {
     throwError(state, 'cannot merge mappings; the provided source object is unacceptable');
   }
 
@@ -7641,7 +7057,7 @@ function writeFoldedLines(state, count) {
   if (count === 1) {
     state.result += ' ';
   } else if (count > 1) {
-    state.result += common$5.repeat('\n', count - 1);
+    state.result += common$1.repeat('\n', count - 1);
   }
 }
 
@@ -8070,7 +7486,7 @@ function readBlockScalar(state, nodeIndent) {
 
       // Perform the chomping.
       if (chomping === CHOMPING_KEEP) {
-        state.result += common$5.repeat('\n', didReadContent ? 1 + emptyLines : emptyLines);
+        state.result += common$1.repeat('\n', didReadContent ? 1 + emptyLines : emptyLines);
       } else if (chomping === CHOMPING_CLIP) {
         if (didReadContent) { // i.e. only if the scalar is not empty.
           state.result += '\n';
@@ -8088,12 +7504,12 @@ function readBlockScalar(state, nodeIndent) {
       if (is_WHITE_SPACE(ch)) {
         atMoreIndented = true;
         // except for the first content line (cf. Example 8.1)
-        state.result += common$5.repeat('\n', didReadContent ? 1 + emptyLines : emptyLines);
+        state.result += common$1.repeat('\n', didReadContent ? 1 + emptyLines : emptyLines);
 
       // End of more-indented block.
       } else if (atMoreIndented) {
         atMoreIndented = false;
-        state.result += common$5.repeat('\n', emptyLines + 1);
+        state.result += common$1.repeat('\n', emptyLines + 1);
 
       // Just one line break - perceive as the same line.
       } else if (emptyLines === 0) {
@@ -8103,13 +7519,13 @@ function readBlockScalar(state, nodeIndent) {
 
       // Several line breaks - perceive as different lines.
       } else {
-        state.result += common$5.repeat('\n', emptyLines);
+        state.result += common$1.repeat('\n', emptyLines);
       }
 
     // Literal style: just add exact number of line breaks between content lines.
     } else {
       // Keep all line breaks except the header line break.
-      state.result += common$5.repeat('\n', didReadContent ? 1 + emptyLines : emptyLines);
+      state.result += common$1.repeat('\n', didReadContent ? 1 + emptyLines : emptyLines);
     }
 
     didReadContent = true;
@@ -8815,21 +8231,21 @@ function load(input, options) {
   } else if (documents.length === 1) {
     return documents[0];
   }
-  throw new YAMLException$1('expected a single document in the stream, but found more');
+  throw new exception('expected a single document in the stream, but found more');
 }
 
 
 function safeLoadAll(input, output, options) {
   if (typeof output === 'function') {
-    loadAll(input, output, common$5.extend({ schema: require$$0$9 }, options));
+    loadAll(input, output, common$1.extend({ schema: default_safe }, options));
   } else {
-    return loadAll(input, common$5.extend({ schema: require$$0$9 }, options));
+    return loadAll(input, common$1.extend({ schema: default_safe }, options));
   }
 }
 
 
 function safeLoad(input, options) {
-  return load(input, common$5.extend({ schema: require$$0$9 }, options));
+  return load(input, common$1.extend({ schema: default_safe }, options));
 }
 
 
@@ -8844,15 +8260,6 @@ var loader = {
 	safeLoadAll: safeLoadAll_1,
 	safeLoad: safeLoad_1
 };
-
-var loader$1 = /*#__PURE__*/Object.freeze({
-	default: loader,
-	__moduleExports: loader,
-	loadAll: loadAll_1,
-	load: load_1,
-	safeLoadAll: safeLoadAll_1,
-	safeLoad: safeLoad_1
-});
 
 /*eslint-disable no-use-before-define*/
 
@@ -8952,17 +8359,17 @@ function encodeHex(character) {
     handle = 'U';
     length = 8;
   } else {
-    throw new YAMLException$1('code point within a string may not be greater than 0xFFFFFFFF');
+    throw new exception('code point within a string may not be greater than 0xFFFFFFFF');
   }
 
-  return '\\' + handle + common$5.repeat('0', length - string.length) + string;
+  return '\\' + handle + common$1.repeat('0', length - string.length) + string;
 }
 
 function State$1(options) {
-  this.schema       = options['schema'] || DEFAULT_FULL_SCHEMA;
+  this.schema       = options['schema'] || default_full;
   this.indent       = Math.max(1, (options['indent'] || 2));
   this.skipInvalid  = options['skipInvalid'] || false;
-  this.flowLevel    = (common$5.isNothing(options['flowLevel']) ? -1 : options['flowLevel']);
+  this.flowLevel    = (common$1.isNothing(options['flowLevel']) ? -1 : options['flowLevel']);
   this.styleMap     = compileStyleMap(this.schema, options['styles'] || null);
   this.sortKeys     = options['sortKeys'] || false;
   this.lineWidth    = options['lineWidth'] || 80;
@@ -8982,7 +8389,7 @@ function State$1(options) {
 
 // Indents every line in a string. Empty lines (\n only) are not indented.
 function indentString(string, spaces) {
-  var ind = common$5.repeat(' ', spaces),
+  var ind = common$1.repeat(' ', spaces),
       position = 0,
       next = -1,
       result = '',
@@ -9008,7 +8415,7 @@ function indentString(string, spaces) {
 }
 
 function generateNextLine(state, level) {
-  return '\n' + common$5.repeat(' ', state.indent * level);
+  return '\n' + common$1.repeat(' ', state.indent * level);
 }
 
 function testImplicitResolving(state, str) {
@@ -9212,7 +8619,7 @@ function writeScalar(state, string, level, iskey) {
       case STYLE_DOUBLE:
         return '"' + escapeString(string, lineWidth) + '"';
       default:
-        throw new YAMLException$1('impossible error: invalid scalar style');
+        throw new exception('impossible error: invalid scalar style');
     }
   }());
 }
@@ -9444,7 +8851,7 @@ function writeBlockMapping(state, level, object, compact) {
     objectKeyList.sort(state.sortKeys);
   } else if (state.sortKeys) {
     // Something is wrong
-    throw new YAMLException$1('sortKeys must be a boolean or a function');
+    throw new exception('sortKeys must be a boolean or a function');
   }
 
   for (index = 0, length = objectKeyList.length; index < length; index += 1) {
@@ -9520,7 +8927,7 @@ function detectType(state, object, explicit) {
         } else if (_hasOwnProperty$3.call(type.represent, style)) {
           _result = type.represent[style](object, style);
         } else {
-          throw new YAMLException$1('!<' + type.tag + '> tag resolver accepts not "' + style + '" style');
+          throw new exception('!<' + type.tag + '> tag resolver accepts not "' + style + '" style');
         }
 
         state.dump = _result;
@@ -9599,7 +9006,7 @@ function writeNode(state, level, object, block, compact, iskey) {
       }
     } else {
       if (state.skipInvalid) return false;
-      throw new YAMLException$1('unacceptable kind of an object to dump ' + type);
+      throw new exception('unacceptable kind of an object to dump ' + type);
     }
 
     if (state.tag !== null && state.tag !== '?') {
@@ -9666,7 +9073,7 @@ function dump(input, options) {
 }
 
 function safeDump(input, options) {
-  return dump(input, common$5.extend({ schema: require$$0$9 }, options));
+  return dump(input, common$1.extend({ schema: default_safe }, options));
 }
 
 var dump_1     = dump;
@@ -9677,17 +9084,6 @@ var dumper = {
 	safeDump: safeDump_1
 };
 
-var dumper$1 = /*#__PURE__*/Object.freeze({
-	default: dumper,
-	__moduleExports: dumper,
-	dump: dump_1,
-	safeDump: safeDump_1
-});
-
-var loader$2 = ( loader$1 && loader ) || loader$1;
-
-var dumper$2 = ( dumper$1 && dumper ) || dumper$1;
-
 function deprecated(name) {
   return function () {
     throw new Error('Function ' + name + ' is deprecated and cannot be used.');
@@ -9695,25 +9091,25 @@ function deprecated(name) {
 }
 
 
-var Type$2                = Type$1;
-var Schema$2              = Schema$1;
-var FAILSAFE_SCHEMA     = require$$0$6;
-var JSON_SCHEMA         = require$$0$7;
-var CORE_SCHEMA         = require$$0$8;
-var DEFAULT_SAFE_SCHEMA = require$$0$9;
-var DEFAULT_FULL_SCHEMA$1 = DEFAULT_FULL_SCHEMA;
-var load$1                = loader$2.load;
-var loadAll$1             = loader$2.loadAll;
-var safeLoad$1            = loader$2.safeLoad;
-var safeLoadAll$1         = loader$2.safeLoadAll;
-var dump$1                = dumper$2.dump;
-var safeDump$1            = dumper$2.safeDump;
-var YAMLException$2       = YAMLException$1;
+var Type$1                = type;
+var Schema$1              = schema;
+var FAILSAFE_SCHEMA     = failsafe;
+var JSON_SCHEMA         = json;
+var CORE_SCHEMA         = core;
+var DEFAULT_SAFE_SCHEMA = default_safe;
+var DEFAULT_FULL_SCHEMA = default_full;
+var load$1                = loader.load;
+var loadAll$1             = loader.loadAll;
+var safeLoad$1            = loader.safeLoad;
+var safeLoadAll$1         = loader.safeLoadAll;
+var dump$1                = dumper.dump;
+var safeDump$1            = dumper.safeDump;
+var YAMLException$1       = exception;
 
 // Deprecated schema names from JS-YAML 2.0.x
-var MINIMAL_SCHEMA = require$$0$6;
-var SAFE_SCHEMA    = require$$0$9;
-var DEFAULT_SCHEMA = DEFAULT_FULL_SCHEMA;
+var MINIMAL_SCHEMA = failsafe;
+var SAFE_SCHEMA    = default_safe;
+var DEFAULT_SCHEMA = default_full;
 
 // Deprecated functions from JS-YAML 1.x.x
 var scan           = deprecated('scan');
@@ -9722,20 +9118,20 @@ var compose        = deprecated('compose');
 var addConstructor = deprecated('addConstructor');
 
 var jsYaml = {
-	Type: Type$2,
-	Schema: Schema$2,
+	Type: Type$1,
+	Schema: Schema$1,
 	FAILSAFE_SCHEMA: FAILSAFE_SCHEMA,
 	JSON_SCHEMA: JSON_SCHEMA,
 	CORE_SCHEMA: CORE_SCHEMA,
 	DEFAULT_SAFE_SCHEMA: DEFAULT_SAFE_SCHEMA,
-	DEFAULT_FULL_SCHEMA: DEFAULT_FULL_SCHEMA$1,
+	DEFAULT_FULL_SCHEMA: DEFAULT_FULL_SCHEMA,
 	load: load$1,
 	loadAll: loadAll$1,
 	safeLoad: safeLoad$1,
 	safeLoadAll: safeLoadAll$1,
 	dump: dump$1,
 	safeDump: safeDump$1,
-	YAMLException: YAMLException$2,
+	YAMLException: YAMLException$1,
 	MINIMAL_SCHEMA: MINIMAL_SCHEMA,
 	SAFE_SCHEMA: SAFE_SCHEMA,
 	DEFAULT_SCHEMA: DEFAULT_SCHEMA,
@@ -9745,42 +9141,7 @@ var jsYaml = {
 	addConstructor: addConstructor
 };
 
-var jsYaml$1 = /*#__PURE__*/Object.freeze({
-	default: jsYaml,
-	__moduleExports: jsYaml,
-	Type: Type$2,
-	Schema: Schema$2,
-	FAILSAFE_SCHEMA: FAILSAFE_SCHEMA,
-	JSON_SCHEMA: JSON_SCHEMA,
-	CORE_SCHEMA: CORE_SCHEMA,
-	DEFAULT_SAFE_SCHEMA: DEFAULT_SAFE_SCHEMA,
-	DEFAULT_FULL_SCHEMA: DEFAULT_FULL_SCHEMA$1,
-	load: load$1,
-	loadAll: loadAll$1,
-	safeLoad: safeLoad$1,
-	safeLoadAll: safeLoadAll$1,
-	dump: dump$1,
-	safeDump: safeDump$1,
-	YAMLException: YAMLException$2,
-	MINIMAL_SCHEMA: MINIMAL_SCHEMA,
-	SAFE_SCHEMA: SAFE_SCHEMA,
-	DEFAULT_SCHEMA: DEFAULT_SCHEMA,
-	scan: scan,
-	parse: parse$1,
-	compose: compose,
-	addConstructor: addConstructor
-});
-
-var yaml = ( jsYaml$1 && jsYaml ) || jsYaml$1;
-
-var jsYaml$2 = yaml;
-
-var jsYaml$3 = /*#__PURE__*/Object.freeze({
-	default: jsYaml$2,
-	__moduleExports: jsYaml$2
-});
-
-var yaml$1 = ( jsYaml$3 && jsYaml$2 ) || jsYaml$3;
+var jsYaml$1 = jsYaml;
 
 var engines_1 = createCommonjsModule(function (module, exports) {
 
@@ -9797,8 +9158,8 @@ const engines = exports = module.exports;
  */
 
 engines.yaml = {
-  parse: yaml$1.safeLoad.bind(yaml$1),
-  stringify: yaml$1.safeDump.bind(yaml$1)
+  parse: jsYaml$1.safeLoad.bind(jsYaml$1),
+  stringify: jsYaml$1.safeDump.bind(jsYaml$1)
 };
 
 /**
@@ -9838,11 +9199,6 @@ engines.javascript = {
 };
 });
 
-var engines = /*#__PURE__*/Object.freeze({
-	default: engines_1,
-	__moduleExports: engines_1
-});
-
 /*!
  * strip-bom-string <https://github.com/jonschlinkert/strip-bom-string>
  *
@@ -9857,14 +9213,9 @@ var stripBomString = function(str) {
   return str;
 };
 
-var stripBomString$1 = /*#__PURE__*/Object.freeze({
-	default: stripBomString,
-	__moduleExports: stripBomString
-});
-
 var toString$2 = Object.prototype.toString;
 
-var kindOf$2 = function kindOf(val) {
+var kindOf$1 = function kindOf(val) {
   if (val === void 0) return 'undefined';
   if (val === null) return 'null';
 
@@ -9992,15 +9343,6 @@ function isBuffer$2(val) {
   return false;
 }
 
-var kindOf$3 = /*#__PURE__*/Object.freeze({
-	default: kindOf$2,
-	__moduleExports: kindOf$2
-});
-
-var stripBom = ( stripBomString$1 && stripBomString ) || stripBomString$1;
-
-var typeOf$1 = ( kindOf$3 && kindOf$2 ) || kindOf$3;
-
 var utils = createCommonjsModule(function (module, exports) {
 
 
@@ -10019,13 +9361,13 @@ exports.define = function(obj, key, val) {
  * Returns true if `val` is a buffer
  */
 
-exports.isBuffer = val => typeOf$1(val) === 'buffer';
+exports.isBuffer = val => kindOf$1(val) === 'buffer';
 
 /**
  * Returns true if `val` is an object
  */
 
-exports.isObject = val => typeOf$1(val) === 'object';
+exports.isObject = val => kindOf$1(val) === 'object';
 
 /**
  * Cast `input` to a buffer
@@ -10040,11 +9382,11 @@ exports.toBuffer = function(input) {
  */
 
 exports.toString = function(input) {
-  if (exports.isBuffer(input)) return stripBom(String(input));
+  if (exports.isBuffer(input)) return stripBomString(String(input));
   if (typeof input !== 'string') {
     throw new TypeError('expected input to be a string or buffer');
   }
-  return stripBom(input);
+  return stripBomString(input);
 };
 
 /**
@@ -10071,39 +9413,19 @@ var utils_4 = utils.toBuffer;
 var utils_5 = utils.arrayify;
 var utils_6 = utils.startsWith;
 
-var utils$1 = /*#__PURE__*/Object.freeze({
-	default: utils,
-	__moduleExports: utils,
-	define: utils_1,
-	isBuffer: utils_2,
-	isObject: utils_3,
-	toBuffer: utils_4,
-	arrayify: utils_5,
-	startsWith: utils_6
-});
-
-var engines$1 = ( engines && engines_1 ) || engines;
-
-var utils$2 = ( utils$1 && utils ) || utils$1;
-
 var defaults = function(options) {
   const opts = Object.assign({}, options);
 
   // ensure that delimiters are an array
-  opts.delimiters = utils$2.arrayify(opts.delims || opts.delimiters || '---');
+  opts.delimiters = utils.arrayify(opts.delims || opts.delimiters || '---');
   if (opts.delimiters.length === 1) {
     opts.delimiters.push(opts.delimiters[0]);
   }
 
   opts.language = (opts.language || opts.lang || 'yaml').toLowerCase();
-  opts.engines = Object.assign({}, engines$1, opts.parsers, opts.engines);
+  opts.engines = Object.assign({}, engines_1, opts.parsers, opts.engines);
   return opts;
 };
-
-var defaults$1 = /*#__PURE__*/Object.freeze({
-	default: defaults,
-	__moduleExports: defaults
-});
 
 var engine = function(name, options) {
   let engine = options.engines[name] || options.engines[aliase(name)];
@@ -10134,18 +9456,9 @@ function aliase(name) {
   }
 }
 
-var engine$1 = /*#__PURE__*/Object.freeze({
-	default: engine,
-	__moduleExports: engine
-});
-
-var getEngine = ( engine$1 && engine ) || engine$1;
-
-var defaults$2 = ( defaults$1 && defaults ) || defaults$1;
-
 var stringify = function(file, data, options) {
   if (data == null && options == null) {
-    switch (typeOf$1(file)) {
+    switch (kindOf$1(file)) {
       case 'object':
         data = file.data;
         options = {};
@@ -10159,22 +9472,22 @@ var stringify = function(file, data, options) {
   }
 
   const str = file.content;
-  const opts = defaults$2(options);
+  const opts = defaults(options);
   if (data == null) {
     if (!opts.data) return file;
     data = opts.data;
   }
 
   const language = file.language || opts.language;
-  const engine = getEngine(language, opts);
-  if (typeof engine.stringify !== 'function') {
+  const engine$$1 = engine(language, opts);
+  if (typeof engine$$1.stringify !== 'function') {
     throw new TypeError('expected "' + language + '.stringify" to be a function');
   }
 
   data = Object.assign({}, file.data, data);
   const open = opts.delimiters[0];
   const close = opts.delimiters[1];
-  const matter = engine.stringify(data, options).trim();
+  const matter = engine$$1.stringify(data, options).trim();
   let buf = '';
 
   if (matter !== '{}') {
@@ -10194,13 +9507,8 @@ function newline(str) {
   return str.slice(-1) !== '\n' ? str + '\n' : str;
 }
 
-var stringify$1 = /*#__PURE__*/Object.freeze({
-	default: stringify,
-	__moduleExports: stringify
-});
-
 var excerpt = function(file, options) {
-  const opts = defaults$2(options);
+  const opts = defaults(options);
 
   if (file.data == null) {
     file.data = {};
@@ -10228,24 +9536,17 @@ var excerpt = function(file, options) {
   return file;
 };
 
-var excerpt$1 = /*#__PURE__*/Object.freeze({
-	default: excerpt,
-	__moduleExports: excerpt
-});
-
-var stringify$2 = ( stringify$1 && stringify ) || stringify$1;
-
 /**
  * Normalize the given value to ensure an object is returned
  * with the expected properties.
  */
 
 var toFile = function(file) {
-  if (typeOf$1(file) !== 'object') {
+  if (kindOf$1(file) !== 'object') {
     file = { content: file };
   }
 
-  if (typeOf$1(file.data) !== 'object') {
+  if (kindOf$1(file.data) !== 'object') {
     file.data = {};
   }
 
@@ -10256,49 +9557,31 @@ var toFile = function(file) {
   }
 
   // set non-enumerable properties on the file object
-  utils$2.define(file, 'orig', utils$2.toBuffer(file.content));
-  utils$2.define(file, 'language', file.language || '');
-  utils$2.define(file, 'matter', file.matter || '');
-  utils$2.define(file, 'stringify', function(data, options) {
+  utils.define(file, 'orig', utils.toBuffer(file.content));
+  utils.define(file, 'language', file.language || '');
+  utils.define(file, 'matter', file.matter || '');
+  utils.define(file, 'stringify', function(data, options) {
     if (options && options.language) {
       file.language = options.language;
     }
-    return stringify$2(file, data, options);
+    return stringify(file, data, options);
   });
 
   // strip BOM and ensure that "file.content" is a string
-  file.content = utils$2.toString(file.content);
+  file.content = utils.toString(file.content);
   file.isEmpty = false;
   file.excerpt = '';
   return file;
 };
 
-var toFile$1 = /*#__PURE__*/Object.freeze({
-	default: toFile,
-	__moduleExports: toFile
-});
-
 var parse$2 = function(language, str, options) {
-  const opts = defaults$2(options);
-  const engine = getEngine(language, opts);
-  if (typeof engine.parse !== 'function') {
+  const opts = defaults(options);
+  const engine$$1 = engine(language, opts);
+  if (typeof engine$$1.parse !== 'function') {
     throw new TypeError('expected "' + language + '.parse" to be a function');
   }
-  return engine.parse(str, opts);
+  return engine$$1.parse(str, opts);
 };
-
-var parse$3 = /*#__PURE__*/Object.freeze({
-	default: parse$2,
-	__moduleExports: parse$2
-});
-
-var sections = ( sectionMatter$1 && sectionMatter ) || sectionMatter$1;
-
-var excerpt$2 = ( excerpt$1 && excerpt ) || excerpt$1;
-
-var toFile$2 = ( toFile$1 && toFile ) || toFile$1;
-
-var parse$4 = ( parse$3 && parse$2 ) || parse$3;
 
 /**
  * Takes a string or object with `content` property, extracts
@@ -10321,7 +9604,7 @@ function matter(input, options) {
     return { data: {}, content: input, excerpt: '', orig: input };
   }
 
-  let file = toFile$2(input);
+  let file = toFile(input);
   const cached = matter.cache[file.content];
 
   if (!options) {
@@ -10345,7 +9628,7 @@ function matter(input, options) {
  */
 
 function parseMatter(file, options) {
-  const opts = defaults$2(options);
+  const opts = defaults(options);
   const open = opts.delimiters[0];
   const close = '\n' + opts.delimiters[1];
   let str = file.content;
@@ -10356,8 +9639,8 @@ function parseMatter(file, options) {
 
   // get the length of the opening delimiter
   const openLen = open.length;
-  if (!utils$2.startsWith(str, open, openLen)) {
-    excerpt$2(file, opts);
+  if (!utils.startsWith(str, open, openLen)) {
+    excerpt(file, opts);
     return file;
   }
 
@@ -10396,7 +9679,7 @@ function parseMatter(file, options) {
   } else {
 
     // create file.data by parsing the raw file.matter block
-    file.data = parse$4(file.language, file.matter, opts);
+    file.data = parse$2(file.language, file.matter, opts);
   }
 
   // update file.content
@@ -10412,10 +9695,10 @@ function parseMatter(file, options) {
     }
   }
 
-  excerpt$2(file, opts);
+  excerpt(file, opts);
 
   if (opts.sections === true || typeof opts.section === 'function') {
-    sections(file, opts.section);
+    sectionMatter(file, opts.section);
   }
   return file;
 }
@@ -10424,7 +9707,7 @@ function parseMatter(file, options) {
  * Expose engines
  */
 
-matter.engines = engines$1;
+matter.engines = engines_1;
 
 /**
  * Stringify an object to YAML or the specified language, and
@@ -10449,7 +9732,7 @@ matter.engines = engines$1;
 
 matter.stringify = function(file, data, options) {
   if (typeof file === 'string') file = matter(file, options);
-  return stringify$2(file, data, options);
+  return stringify(file, data, options);
 };
 
 /**
@@ -10481,7 +9764,7 @@ matter.read = function(filepath, options) {
  */
 
 matter.test = function(str, options) {
-  return utils$2.startsWith(str, defaults$2(options).delimiters[0]);
+  return utils.startsWith(str, defaults(options).delimiters[0]);
 };
 
 /**
@@ -10493,7 +9776,7 @@ matter.test = function(str, options) {
  */
 
 matter.language = function(str, options) {
-  const opts = defaults$2(options);
+  const opts = defaults(options);
   const open = opts.delimiters[0];
 
   if (matter.test(str)) {
@@ -12833,7 +12116,7 @@ const loadContentItems = async ({
  * The probability of a collision is extremely small (need 3*10^12 documents to have one chance in a million of a collision)
  * See http://en.wikipedia.org/wiki/Birthday_problem
  */
-function uid$1 (len) {
+function uid (len) {
   return crypto.randomBytes(Math.ceil(Math.max(8, len * 2)))
     .toString('base64')
     .replace(/[+\/]/g, '')
@@ -12842,17 +12125,11 @@ function uid$1 (len) {
 
 
 // Interface
-var uid_1 = uid$1;
+var uid_1 = uid;
 
 var customUtils = {
 	uid: uid_1
 };
-
-var customUtils$1 = /*#__PURE__*/Object.freeze({
-	default: customUtils,
-	__moduleExports: customUtils,
-	uid: uid_1
-});
 
 var underscore = createCommonjsModule(function (module, exports) {
 //     Underscore.js 1.4.4
@@ -14082,14 +13359,6 @@ var underscore = createCommonjsModule(function (module, exports) {
 });
 var underscore_1 = underscore._;
 
-var underscore$1 = /*#__PURE__*/Object.freeze({
-	default: underscore,
-	__moduleExports: underscore,
-	_: underscore_1
-});
-
-var _ = ( underscore$1 && underscore ) || underscore$1;
-
 /**
  * Handle models (i.e. docs)
  * Serialization/deserialization
@@ -14466,7 +13735,7 @@ lastStepModifierFunctions.$inc = function (obj, field, value) {
   if (typeof value !== 'number') { throw new Error(value + " must be a number"); }
 
   if (typeof obj[field] !== 'number') {
-    if (!_.has(obj, field)) {
+    if (!underscore.has(obj, field)) {
       obj[field] = value;
     } else {
       throw new Error("Don't use the $inc modifier on non-number fields");
@@ -14526,8 +13795,8 @@ Object.keys(lastStepModifierFunctions).forEach(function (modifier) {
  */
 function modify (obj, updateQuery) {
   var keys = Object.keys(updateQuery)
-    , firstChars = _.map(keys, function (item) { return item[0]; })
-    , dollarFirstChars = _.filter(firstChars, function (c) { return c === '$'; })
+    , firstChars = underscore.map(keys, function (item) { return item[0]; })
+    , dollarFirstChars = underscore.filter(firstChars, function (c) { return c === '$'; })
     , newDoc, modifiers
     ;
 
@@ -14543,7 +13812,7 @@ function modify (obj, updateQuery) {
     newDoc._id = obj._id;
   } else {
     // Apply modifiers
-    modifiers = _.uniq(keys);
+    modifiers = underscore.uniq(keys);
     newDoc = deepCopy(obj);
     modifiers.forEach(function (m) {
       var keys;
@@ -14806,10 +14075,10 @@ logicalOperators.$not = function (obj, query) {
 logicalOperators.$where = function (obj, fn) {
   var result;
 
-  if (!_.isFunction(fn)) { throw new Error("$where operator used without a function"); }
+  if (!underscore.isFunction(fn)) { throw new Error("$where operator used without a function"); }
 
   result = fn.call(obj);
-  if (!_.isBoolean(result)) { throw new Error("$where function must return boolean"); }
+  if (!underscore.isBoolean(result)) { throw new Error("$where function must return boolean"); }
 
   return result;
 };
@@ -14881,8 +14150,8 @@ function matchQueryPart (obj, queryKey, queryValue, treatObjAsValue) {
   // or only normal fields. Mixed objects are not allowed
   if (queryValue !== null && typeof queryValue === 'object' && !util.isRegExp(queryValue) && !util.isArray(queryValue)) {
     keys = Object.keys(queryValue);
-    firstChars = _.map(keys, function (item) { return item[0]; });
-    dollarFirstChars = _.filter(firstChars, function (c) { return c === '$'; });
+    firstChars = underscore.map(keys, function (item) { return item[0]; });
+    dollarFirstChars = underscore.filter(firstChars, function (c) { return c === '$'; });
 
     if (dollarFirstChars.length !== 0 && dollarFirstChars.length !== firstChars.length) {
       throw new Error("You cannot mix operators and normal fields");
@@ -14934,21 +14203,6 @@ var model = {
 	areThingsEqual: areThingsEqual_1,
 	compareThings: compareThings_1
 };
-
-var model$1 = /*#__PURE__*/Object.freeze({
-	default: model,
-	__moduleExports: model,
-	serialize: serialize_1,
-	deserialize: deserialize_1,
-	deepCopy: deepCopy_1,
-	checkObject: checkObject_1,
-	isPrimitiveType: isPrimitiveType_1,
-	modify: modify_1,
-	getDotValue: getDotValue_1,
-	match: match_1,
-	areThingsEqual: areThingsEqual_1,
-	compareThings: compareThings_1
-});
 
 var async = createCommonjsModule(function (module) {
 /*global setImmediate: false, setTimeout: false, console: false */
@@ -15911,13 +15165,6 @@ var async = createCommonjsModule(function (module) {
 }());
 });
 
-var async$1 = /*#__PURE__*/Object.freeze({
-	default: async,
-	__moduleExports: async
-});
-
-var async$2 = ( async$1 && async ) || async$1;
-
 /**
  * Responsible for sequentially executing actions on the database
  */
@@ -15929,7 +15176,7 @@ function Executor () {
   this.ready = false;
 
   // This queue will execute all commands, one-by-one in order
-  this.queue = async$2.queue(function (task, cb) {
+  this.queue = async.queue(function (task, cb) {
     var newArguments = [];
 
     // task.arguments is an array-like object on which adding a new field doesn't work, so we transform it into a real array
@@ -15996,11 +15243,6 @@ Executor.prototype.processBuffer = function () {
 // Interface
 var executor = Executor;
 
-var executor$1 = /*#__PURE__*/Object.freeze({
-	default: executor,
-	__moduleExports: executor
-});
-
 /**
  * Return an array with the numbers from 0 to n-1, in a random order
  */
@@ -16042,21 +15284,11 @@ function defaultCheckValueEquality (a, b) {
 }
 var defaultCheckValueEquality_1 = defaultCheckValueEquality;
 
-var customUtils$2 = {
+var customUtils$1 = {
 	getRandomArray: getRandomArray_1,
 	defaultCompareKeysFunction: defaultCompareKeysFunction_1,
 	defaultCheckValueEquality: defaultCheckValueEquality_1
 };
-
-var customUtils$3 = /*#__PURE__*/Object.freeze({
-	default: customUtils$2,
-	__moduleExports: customUtils$2,
-	getRandomArray: getRandomArray_1,
-	defaultCompareKeysFunction: defaultCompareKeysFunction_1,
-	defaultCheckValueEquality: defaultCheckValueEquality_1
-});
-
-var customUtils$4 = ( customUtils$3 && customUtils$2 ) || customUtils$3;
 
 /**
  * Simple binary search tree
@@ -16082,8 +15314,8 @@ function BinarySearchTree (options) {
   this.data = options.hasOwnProperty('value') ? [options.value] : [];
   this.unique = options.unique || false;
 
-  this.compareKeys = options.compareKeys || customUtils$4.defaultCompareKeysFunction;
-  this.checkValueEquality = options.checkValueEquality || customUtils$4.defaultCheckValueEquality;
+  this.compareKeys = options.compareKeys || customUtils$1.defaultCompareKeysFunction;
+  this.checkValueEquality = options.checkValueEquality || customUtils$1.defaultCheckValueEquality;
 }
 
 
@@ -16602,13 +15834,6 @@ BinarySearchTree.prototype.prettyPrint = function (printData, spacing) {
 // Interface
 var bst = BinarySearchTree;
 
-var bst$1 = /*#__PURE__*/Object.freeze({
-	default: bst,
-	__moduleExports: bst
-});
-
-var BinarySearchTree$1 = ( bst$1 && bst ) || bst$1;
-
 /**
  * Self-balancing binary search tree using the AVL implementation
  */
@@ -16645,15 +15870,15 @@ function _AVLTree (options) {
   this.data = options.hasOwnProperty('value') ? [options.value] : [];
   this.unique = options.unique || false;
 
-  this.compareKeys = options.compareKeys || customUtils$4.defaultCompareKeysFunction;
-  this.checkValueEquality = options.checkValueEquality || customUtils$4.defaultCheckValueEquality;
+  this.compareKeys = options.compareKeys || customUtils$1.defaultCompareKeysFunction;
+  this.checkValueEquality = options.checkValueEquality || customUtils$1.defaultCheckValueEquality;
 }
 
 
 /**
  * Inherit basic functions from the basic binary search tree
  */
-util.inherits(_AVLTree, BinarySearchTree$1);
+util.inherits(_AVLTree, bst);
 
 /**
  * Keep a pointer to the internal tree constructor for testing purposes
@@ -17060,33 +16285,15 @@ AVLTree.prototype.delete = function (key, value) {
 // Interface
 var avltree = AVLTree;
 
-var avltree$1 = /*#__PURE__*/Object.freeze({
-	default: avltree,
-	__moduleExports: avltree
-});
-
-var require$$1$8 = ( avltree$1 && avltree ) || avltree$1;
-
-var BinarySearchTree$2 = BinarySearchTree$1;
-var AVLTree$1 = require$$1$8;
+var BinarySearchTree$1 = bst;
+var AVLTree$1 = avltree;
 
 var binarySearchTree = {
-	BinarySearchTree: BinarySearchTree$2,
+	BinarySearchTree: BinarySearchTree$1,
 	AVLTree: AVLTree$1
 };
 
-var binarySearchTree$1 = /*#__PURE__*/Object.freeze({
-	default: binarySearchTree,
-	__moduleExports: binarySearchTree,
-	BinarySearchTree: BinarySearchTree$2,
-	AVLTree: AVLTree$1
-});
-
-var require$$0$10 = ( binarySearchTree$1 && binarySearchTree ) || binarySearchTree$1;
-
-var model$2 = ( model$1 && model ) || model$1;
-
-var BinarySearchTree$3 = require$$0$10.AVLTree
+var BinarySearchTree$2 = binarySearchTree.AVLTree
   ;
 
 /**
@@ -17123,7 +16330,7 @@ function Index (options) {
   this.unique = options.unique || false;
   this.sparse = options.sparse || false;
 
-  this.treeOptions = { unique: this.unique, compareKeys: model$2.compareThings, checkValueEquality: checkValueEquality };
+  this.treeOptions = { unique: this.unique, compareKeys: model.compareThings, checkValueEquality: checkValueEquality };
 
   this.reset();   // No data in the beginning
 }
@@ -17135,7 +16342,7 @@ function Index (options) {
  *                                                 If an error is thrown during insertion, the index is not modified
  */
 Index.prototype.reset = function (newData) {
-  this.tree = new BinarySearchTree$3(this.treeOptions);
+  this.tree = new BinarySearchTree$2(this.treeOptions);
 
   if (newData) { this.insert(newData); }
 };
@@ -17152,7 +16359,7 @@ Index.prototype.insert = function (doc) {
 
   if (util.isArray(doc)) { this.insertMultipleDocs(doc); return; }
 
-  key = model$2.getDotValue(doc, this.fieldName);
+  key = model.getDotValue(doc, this.fieldName);
 
   // We don't index documents that don't contain the field if the index is sparse
   if (key === undefined && this.sparse) { return; }
@@ -17161,7 +16368,7 @@ Index.prototype.insert = function (doc) {
     this.tree.insert(key, doc);
   } else {
     // If an insert fails due to a unique constraint, roll back all inserts before it
-    keys = _.uniq(key, projectForUnique);
+    keys = underscore.uniq(key, projectForUnique);
 
     for (i = 0; i < keys.length; i += 1) {
       try {
@@ -17224,14 +16431,14 @@ Index.prototype.remove = function (doc) {
 
   if (util.isArray(doc)) { doc.forEach(function (d) { self.remove(d); }); return; }
 
-  key = model$2.getDotValue(doc, this.fieldName);
+  key = model.getDotValue(doc, this.fieldName);
 
   if (key === undefined && this.sparse) { return; }
 
   if (!util.isArray(key)) {
     this.tree.delete(key, doc);
   } else {
-    _.uniq(key, projectForUnique).forEach(function (_key) {
+    underscore.uniq(key, projectForUnique).forEach(function (_key) {
       self.tree.delete(_key, doc);
     });
   }
@@ -17377,11 +16584,6 @@ Index.prototype.getAll = function () {
 // Interface
 var indexes = Index;
 
-var indexes$1 = /*#__PURE__*/Object.freeze({
-	default: indexes,
-	__moduleExports: indexes
-});
-
 var _0777 = parseInt('0777', 8);
 
 var mkdirp = mkdirP.mkdirp = mkdirP.mkdirP = mkdirP;
@@ -17479,13 +16681,6 @@ mkdirP.sync = function sync (p, opts, made) {
     return made;
 };
 
-var mkdirp$1 = /*#__PURE__*/Object.freeze({
-	default: mkdirp,
-	__moduleExports: mkdirp
-});
-
-var mkdirp$2 = ( mkdirp$1 && mkdirp ) || mkdirp$1;
-
 /**
  * Way data is stored for this database
  * For a Node.js/Node Webkit database it's the file system
@@ -17504,7 +16699,7 @@ storage.writeFile = fs.writeFile;
 storage.unlink = fs.unlink;
 storage.appendFile = fs.appendFile;
 storage.readFile = fs.readFile;
-storage.mkdirp = mkdirp$2;
+storage.mkdirp = mkdirp;
 
 
 /**
@@ -17567,8 +16762,8 @@ storage.crashSafeWriteFile = function (filename, data, cb) {
   var callback = cb || function () {}
     , tempFilename = filename + '~';
 
-  async$2.waterfall([
-    async$2.apply(storage.flushToStorage, { filename: path__default.dirname(filename), isDir: true })
+  async.waterfall([
+    async.apply(storage.flushToStorage, { filename: path__default.dirname(filename), isDir: true })
   , function (cb) {
       storage.exists(filename, function (exists) {
         if (exists) {
@@ -17581,11 +16776,11 @@ storage.crashSafeWriteFile = function (filename, data, cb) {
   , function (cb) {
       storage.writeFile(tempFilename, data, function (err) { return cb(err); });
     }
-  , async$2.apply(storage.flushToStorage, tempFilename)
+  , async.apply(storage.flushToStorage, tempFilename)
   , function (cb) {
       storage.rename(tempFilename, filename, function (err) { return cb(err); });
     }
-  , async$2.apply(storage.flushToStorage, { filename: path__default.dirname(filename), isDir: true })
+  , async.apply(storage.flushToStorage, { filename: path__default.dirname(filename), isDir: true })
   ], function (err) { return callback(err); });
 };
 
@@ -17618,17 +16813,6 @@ storage.ensureDatafileIntegrity = function (filename, callback) {
 
 // Interface
 var storage_1 = storage;
-
-var storage$1 = /*#__PURE__*/Object.freeze({
-	default: storage_1,
-	__moduleExports: storage_1
-});
-
-var storage$2 = ( storage$1 && storage_1 ) || storage$1;
-
-var customUtils$5 = ( customUtils$1 && customUtils ) || customUtils$1;
-
-var Index$1 = ( indexes$1 && indexes ) || indexes$1;
 
 /**
  * Handle every persistence-related task
@@ -17669,7 +16853,7 @@ function Persistence (options) {
   this.beforeDeserialization = options.beforeDeserialization || function (s) { return s; };
   for (i = 1; i < 30; i += 1) {
     for (j = 0; j < 10; j += 1) {
-      randomString = customUtils$5.uid(i);
+      randomString = customUtils.uid(i);
       if (this.beforeDeserialization(this.afterSerialization(randomString)) !== randomString) {
         throw new Error("beforeDeserialization is not the reverse of afterSerialization, cautiously refusing to start NeDB to prevent dataloss");
       }
@@ -17697,7 +16881,7 @@ Persistence.ensureDirectoryExists = function (dir, cb) {
   var callback = cb || function () {}
     ;
 
-  storage$2.mkdirp(dir, function (err) { return callback(err); });
+  storage_1.mkdirp(dir, function (err) { return callback(err); });
 };
 
 
@@ -17751,15 +16935,15 @@ Persistence.prototype.persistCachedDatabase = function (cb) {
   if (this.inMemoryOnly) { return callback(null); }
 
   this.db.getAllData().forEach(function (doc) {
-    toPersist += self.afterSerialization(model$2.serialize(doc)) + '\n';
+    toPersist += self.afterSerialization(model.serialize(doc)) + '\n';
   });
   Object.keys(this.db.indexes).forEach(function (fieldName) {
     if (fieldName != "_id") {   // The special _id index is managed by datastore.js, the others need to be persisted
-      toPersist += self.afterSerialization(model$2.serialize({ $$indexCreated: { fieldName: fieldName, unique: self.db.indexes[fieldName].unique, sparse: self.db.indexes[fieldName].sparse }})) + '\n';
+      toPersist += self.afterSerialization(model.serialize({ $$indexCreated: { fieldName: fieldName, unique: self.db.indexes[fieldName].unique, sparse: self.db.indexes[fieldName].sparse }})) + '\n';
     }
   });
 
-  storage$2.crashSafeWriteFile(this.filename, toPersist, function (err) {
+  storage_1.crashSafeWriteFile(this.filename, toPersist, function (err) {
     if (err) { return callback(err); }
     self.db.emit('compaction.done');
     return callback(null);
@@ -17817,12 +17001,12 @@ Persistence.prototype.persistNewState = function (newDocs, cb) {
   if (self.inMemoryOnly) { return callback(null); }
 
   newDocs.forEach(function (doc) {
-    toPersist += self.afterSerialization(model$2.serialize(doc)) + '\n';
+    toPersist += self.afterSerialization(model.serialize(doc)) + '\n';
   });
 
   if (toPersist.length === 0) { return callback(null); }
 
-  storage$2.appendFile(self.filename, toPersist, 'utf8', function (err) {
+  storage_1.appendFile(self.filename, toPersist, 'utf8', function (err) {
     return callback(err);
   });
 };
@@ -17837,7 +17021,7 @@ Persistence.prototype.treatRawData = function (rawData) {
     , dataById = {}
     , tdata = []
     , i
-    , indexes = {}
+    , indexes$$1 = {}
     , corruptItems = -1   // Last line of every data file is usually blank so not really corrupt
     ;
 
@@ -17845,7 +17029,7 @@ Persistence.prototype.treatRawData = function (rawData) {
     var doc;
 
     try {
-      doc = model$2.deserialize(this.beforeDeserialization(data[i]));
+      doc = model.deserialize(this.beforeDeserialization(data[i]));
       if (doc._id) {
         if (doc.$$deleted === true) {
           delete dataById[doc._id];
@@ -17853,9 +17037,9 @@ Persistence.prototype.treatRawData = function (rawData) {
           dataById[doc._id] = doc;
         }
       } else if (doc.$$indexCreated && doc.$$indexCreated.fieldName != undefined) {
-        indexes[doc.$$indexCreated.fieldName] = doc.$$indexCreated;
+        indexes$$1[doc.$$indexCreated.fieldName] = doc.$$indexCreated;
       } else if (typeof doc.$$indexRemoved === "string") {
-        delete indexes[doc.$$indexRemoved];
+        delete indexes$$1[doc.$$indexRemoved];
       }
     } catch (e) {
       corruptItems += 1;
@@ -17871,7 +17055,7 @@ Persistence.prototype.treatRawData = function (rawData) {
     tdata.push(dataById[k]);
   });
 
-  return { data: tdata, indexes: indexes };
+  return { data: tdata, indexes: indexes$$1 };
 };
 
 
@@ -17895,11 +17079,11 @@ Persistence.prototype.loadDatabase = function (cb) {
   // In-memory only datastore
   if (self.inMemoryOnly) { return callback(null); }
 
-  async$2.waterfall([
+  async.waterfall([
     function (cb) {
       Persistence.ensureDirectoryExists(path__default.dirname(self.filename), function (err) {
-        storage$2.ensureDatafileIntegrity(self.filename, function (err) {
-          storage$2.readFile(self.filename, 'utf8', function (err, rawData) {
+        storage_1.ensureDatafileIntegrity(self.filename, function (err) {
+          storage_1.readFile(self.filename, 'utf8', function (err, rawData) {
             if (err) { return cb(err); }
 
             try {
@@ -17910,7 +17094,7 @@ Persistence.prototype.loadDatabase = function (cb) {
 
             // Recreate all indexes in the datafile
             Object.keys(treatedData.indexes).forEach(function (key) {
-              self.db.indexes[key] = new Index$1(treatedData.indexes[key]);
+              self.db.indexes[key] = new indexes(treatedData.indexes[key]);
             });
 
             // Fill cached database (i.e. all indexes) with data
@@ -17937,11 +17121,6 @@ Persistence.prototype.loadDatabase = function (cb) {
 
 // Interface
 var persistence = Persistence;
-
-var persistence$1 = /*#__PURE__*/Object.freeze({
-	default: persistence,
-	__moduleExports: persistence
-});
 
 /**
  * Manage access to data, be it to find, update or remove it
@@ -18015,7 +17194,7 @@ Cursor.prototype.project = function (candidates) {
   }
 
   keepId = this._projection._id === 0 ? false : true;
-  this._projection = _.omit(this._projection, '_id');
+  this._projection = underscore.omit(this._projection, '_id');
 
   // Check for consistency
   keys = Object.keys(this._projection);
@@ -18030,14 +17209,14 @@ Cursor.prototype.project = function (candidates) {
     if (action === 1) {   // pick-type projection
       toPush = { $set: {} };
       keys.forEach(function (k) {
-        toPush.$set[k] = model$2.getDotValue(candidate, k);
+        toPush.$set[k] = model.getDotValue(candidate, k);
         if (toPush.$set[k] === undefined) { delete toPush.$set[k]; }
       });
-      toPush = model$2.modify({}, toPush);
+      toPush = model.modify({}, toPush);
     } else {   // omit-type projection
       toPush = { $unset: {} };
       keys.forEach(function (k) { toPush.$unset[k] = true; });
-      toPush = model$2.modify(candidate, toPush);
+      toPush = model.modify(candidate, toPush);
     }
     if (keepId) {
       toPush._id = candidate._id;
@@ -18077,7 +17256,7 @@ Cursor.prototype._exec = function(_callback) {
 
     try {
       for (i = 0; i < candidates.length; i += 1) {
-        if (model$2.match(candidates[i], self.query)) {
+        if (model.match(candidates[i], self.query)) {
           // If a sort is defined, wait for the results to be sorted before applying limit and skip
           if (!self._sort) {
             if (self._skip && self._skip > skipped) {
@@ -18110,7 +17289,7 @@ Cursor.prototype._exec = function(_callback) {
         var criterion, compare, i;
         for (i = 0; i < criteria.length; i++) {
           criterion = criteria[i];
-          compare = criterion.direction * model$2.compareThings(model$2.getDotValue(a, criterion.key), model$2.getDotValue(b, criterion.key), self.db.compareStrings);
+          compare = criterion.direction * model.compareThings(model.getDotValue(a, criterion.key), model.getDotValue(b, criterion.key), self.db.compareStrings);
           if (compare !== 0) {
             return compare;
           }
@@ -18145,17 +17324,6 @@ Cursor.prototype.exec = function () {
 
 // Interface
 var cursor = Cursor;
-
-var cursor$1 = /*#__PURE__*/Object.freeze({
-	default: cursor,
-	__moduleExports: cursor
-});
-
-var Executor$1 = ( executor$1 && executor ) || executor$1;
-
-var Persistence$1 = ( persistence$1 && persistence ) || persistence$1;
-
-var Cursor$1 = ( cursor$1 && cursor ) || cursor$1;
 
 /**
  * Create a new collection
@@ -18200,7 +17368,7 @@ function Datastore (options) {
   this.compareStrings = options.compareStrings;
 
   // Persistence handling
-  this.persistence = new Persistence$1({ db: this, nodeWebkitAppName: options.nodeWebkitAppName
+  this.persistence = new persistence({ db: this, nodeWebkitAppName: options.nodeWebkitAppName
                                       , afterSerialization: options.afterSerialization
                                       , beforeDeserialization: options.beforeDeserialization
                                       , corruptAlertThreshold: options.corruptAlertThreshold
@@ -18208,14 +17376,14 @@ function Datastore (options) {
 
   // This new executor is ready if we don't use persistence
   // If we do, it will only be ready once loadDatabase is called
-  this.executor = new Executor$1();
+  this.executor = new executor();
   if (this.inMemoryOnly) { this.executor.ready = true; }
 
   // Indexed by field name, dot notation can be used
   // _id is always indexed and since _ids are generated randomly the underlying
   // binary is always well-balanced
   this.indexes = {};
-  this.indexes._id = new Index$1({ fieldName: '_id', unique: true });
+  this.indexes._id = new indexes({ fieldName: '_id', unique: true });
   this.ttlIndexes = {};
 
   // Queue a load of the database right away and call the onload handler
@@ -18279,7 +17447,7 @@ Datastore.prototype.ensureIndex = function (options, cb) {
   }
   if (this.indexes[options.fieldName]) { return callback(null); }
 
-  this.indexes[options.fieldName] = new Index$1(options);
+  this.indexes[options.fieldName] = new indexes(options);
   if (options.expireAfterSeconds !== undefined) { this.ttlIndexes[options.fieldName] = options.expireAfterSeconds; }   // With this implementation index creation is not necessary to ensure TTL but we stick with MongoDB's API here
 
   try {
@@ -18409,7 +17577,7 @@ Datastore.prototype.getCandidates = function (query, dontExpireStaleDocs, callba
     dontExpireStaleDocs = false;
   }
 
-  async$2.waterfall([
+  async.waterfall([
   // STEP 1: get candidates list by checking indexes from most to least frequent usecase
   function (cb) {
     // For a basic match
@@ -18419,7 +17587,7 @@ Datastore.prototype.getCandidates = function (query, dontExpireStaleDocs, callba
         usableQueryKeys.push(k);
       }
     });
-    usableQueryKeys = _.intersection(usableQueryKeys, indexNames);
+    usableQueryKeys = underscore.intersection(usableQueryKeys, indexNames);
     if (usableQueryKeys.length > 0) {
       return cb(null, self.indexes[usableQueryKeys[0]].getMatching(query[usableQueryKeys[0]]));
     }
@@ -18431,7 +17599,7 @@ Datastore.prototype.getCandidates = function (query, dontExpireStaleDocs, callba
         usableQueryKeys.push(k);
       }
     });
-    usableQueryKeys = _.intersection(usableQueryKeys, indexNames);
+    usableQueryKeys = underscore.intersection(usableQueryKeys, indexNames);
     if (usableQueryKeys.length > 0) {
       return cb(null, self.indexes[usableQueryKeys[0]].getMatching(query[usableQueryKeys[0]].$in));
     }
@@ -18443,7 +17611,7 @@ Datastore.prototype.getCandidates = function (query, dontExpireStaleDocs, callba
         usableQueryKeys.push(k);
       }
     });
-    usableQueryKeys = _.intersection(usableQueryKeys, indexNames);
+    usableQueryKeys = underscore.intersection(usableQueryKeys, indexNames);
     if (usableQueryKeys.length > 0) {
       return cb(null, self.indexes[usableQueryKeys[0]].getBetweenBounds(query[usableQueryKeys[0]]));
     }
@@ -18467,7 +17635,7 @@ Datastore.prototype.getCandidates = function (query, dontExpireStaleDocs, callba
       if (valid) { validDocs.push(doc); } else { expiredDocsIds.push(doc._id); }
     });
 
-    async$2.eachSeries(expiredDocsIds, function (_id, cb) {
+    async.eachSeries(expiredDocsIds, function (_id, cb) {
       self._remove({ _id: _id }, {}, function (err) {
         if (err) { return callback(err); }
         return cb();
@@ -18499,7 +17667,7 @@ Datastore.prototype._insert = function (newDoc, cb) {
 
   this.persistence.persistNewState(util.isArray(preparedDoc) ? preparedDoc : [preparedDoc], function (err) {
     if (err) { return callback(err); }
-    return callback(null, model$2.deepCopy(preparedDoc));
+    return callback(null, model.deepCopy(preparedDoc));
   });
 };
 
@@ -18507,7 +17675,7 @@ Datastore.prototype._insert = function (newDoc, cb) {
  * Create a new _id that's not already in use
  */
 Datastore.prototype.createNewId = function () {
-  var tentativeId = customUtils$5.uid(16);
+  var tentativeId = customUtils.uid(16);
   // Try as many times as needed to get an unused _id. As explained in customUtils, the probability of this ever happening is extremely small, so this is O(1)
   if (this.indexes._id.getMatching(tentativeId).length > 0) {
     tentativeId = this.createNewId();
@@ -18527,12 +17695,12 @@ Datastore.prototype.prepareDocumentForInsertion = function (newDoc) {
     preparedDoc = [];
     newDoc.forEach(function (doc) { preparedDoc.push(self.prepareDocumentForInsertion(doc)); });
   } else {
-    preparedDoc = model$2.deepCopy(newDoc);
+    preparedDoc = model.deepCopy(newDoc);
     if (preparedDoc._id === undefined) { preparedDoc._id = this.createNewId(); }
     var now = new Date();
     if (this.timestampData && preparedDoc.createdAt === undefined) { preparedDoc.createdAt = now; }
     if (this.timestampData && preparedDoc.updatedAt === undefined) { preparedDoc.updatedAt = now; }
-    model$2.checkObject(preparedDoc);
+    model.checkObject(preparedDoc);
   }
 
   return preparedDoc;
@@ -18587,15 +17755,15 @@ Datastore.prototype.insert = function () {
  * @param {Object} query MongoDB-style query
  */
 Datastore.prototype.count = function(query, callback) {
-  var cursor = new Cursor$1(this, query, function(err, docs, callback) {
+  var cursor$$1 = new cursor(this, query, function(err, docs, callback) {
     if (err) { return callback(err); }
     return callback(null, docs.length);
   });
 
   if (typeof callback === 'function') {
-    cursor.exec(callback);
+    cursor$$1.exec(callback);
   } else {
-    return cursor;
+    return cursor$$1;
   }
 };
 
@@ -18620,22 +17788,22 @@ Datastore.prototype.find = function (query, projection, callback) {
       break;
   }
 
-  var cursor = new Cursor$1(this, query, function(err, docs, callback) {
+  var cursor$$1 = new cursor(this, query, function(err, docs, callback) {
     var res = [], i;
 
     if (err) { return callback(err); }
 
     for (i = 0; i < docs.length; i += 1) {
-      res.push(model$2.deepCopy(docs[i]));
+      res.push(model.deepCopy(docs[i]));
     }
     return callback(null, res);
   });
 
-  cursor.projection(projection);
+  cursor$$1.projection(projection);
   if (typeof callback === 'function') {
-    cursor.exec(callback);
+    cursor$$1.exec(callback);
   } else {
-    return cursor;
+    return cursor$$1;
   }
 };
 
@@ -18659,20 +17827,20 @@ Datastore.prototype.findOne = function (query, projection, callback) {
       break;
   }
 
-  var cursor = new Cursor$1(this, query, function(err, docs, callback) {
+  var cursor$$1 = new cursor(this, query, function(err, docs, callback) {
     if (err) { return callback(err); }
     if (docs.length === 1) {
-      return callback(null, model$2.deepCopy(docs[0]));
+      return callback(null, model.deepCopy(docs[0]));
     } else {
       return callback(null, null);
     }
   });
 
-  cursor.projection(projection).limit(1);
+  cursor$$1.projection(projection).limit(1);
   if (typeof callback === 'function') {
-    cursor.exec(callback);
+    cursor$$1.exec(callback);
   } else {
-    return cursor;
+    return cursor$$1;
   }
 };
 
@@ -18715,13 +17883,13 @@ Datastore.prototype._update = function (query, updateQuery, options, cb) {
   multi = options.multi !== undefined ? options.multi : false;
   upsert = options.upsert !== undefined ? options.upsert : false;
 
-  async$2.waterfall([
+  async.waterfall([
   function (cb) {   // If upsert option is set, check whether we need to insert the doc
     if (!upsert) { return cb(); }
 
     // Need to use an internal function not tied to the executor to avoid deadlock
-    var cursor = new Cursor$1(self, query);
-    cursor.limit(1)._exec(function (err, docs) {
+    var cursor$$1 = new cursor(self, query);
+    cursor$$1.limit(1)._exec(function (err, docs) {
       if (err) { return callback(err); }
       if (docs.length === 1) {
         return cb();
@@ -18729,14 +17897,14 @@ Datastore.prototype._update = function (query, updateQuery, options, cb) {
         var toBeInserted;
 
         try {
-          model$2.checkObject(updateQuery);
+          model.checkObject(updateQuery);
           // updateQuery is a simple object with no modifier, use it as the document to insert
           toBeInserted = updateQuery;
         } catch (e) {
           // updateQuery contains modifiers, use the find query as the base,
           // strip it from all operators and update it according to updateQuery
           try {
-            toBeInserted = model$2.modify(model$2.deepCopy(query, true), updateQuery);
+            toBeInserted = model.modify(model.deepCopy(query, true), updateQuery);
           } catch (err) {
             return callback(err);
           }
@@ -18759,10 +17927,10 @@ Datastore.prototype._update = function (query, updateQuery, options, cb) {
       // the in-memory indexes are affected)
       try {
         for (i = 0; i < candidates.length; i += 1) {
-          if (model$2.match(candidates[i], query) && (multi || numReplaced === 0)) {
+          if (model.match(candidates[i], query) && (multi || numReplaced === 0)) {
             numReplaced += 1;
             if (self.timestampData) { createdAt = candidates[i].createdAt; }
-            modifiedDoc = model$2.modify(candidates[i], updateQuery);
+            modifiedDoc = model.modify(candidates[i], updateQuery);
             if (self.timestampData) {
               modifiedDoc.createdAt = createdAt;
               modifiedDoc.updatedAt = new Date();
@@ -18782,14 +17950,14 @@ Datastore.prototype._update = function (query, updateQuery, options, cb) {
       }
 
       // Update the datafile
-      var updatedDocs = _.pluck(modifications, 'newDoc');
+      var updatedDocs = underscore.pluck(modifications, 'newDoc');
       self.persistence.persistNewState(updatedDocs, function (err) {
         if (err) { return callback(err); }
         if (!options.returnUpdatedDocs) {
           return callback(null, numReplaced);
         } else {
           var updatedDocsDC = [];
-          updatedDocs.forEach(function (doc) { updatedDocsDC.push(model$2.deepCopy(doc)); });
+          updatedDocs.forEach(function (doc) { updatedDocsDC.push(model.deepCopy(doc)); });
           if (! multi) { updatedDocsDC = updatedDocsDC[0]; }
           return callback(null, numReplaced, updatedDocsDC);
         }
@@ -18827,7 +17995,7 @@ Datastore.prototype._remove = function (query, options, cb) {
 
     try {
       candidates.forEach(function (d) {
-        if (model$2.match(d, query) && (multi || numRemoved === 0)) {
+        if (model.match(d, query) && (multi || numRemoved === 0)) {
           numRemoved += 1;
           removedDocs.push({ $$deleted: true, _id: d._id });
           self.removeFromIndexes(d);
@@ -18850,14 +18018,7 @@ Datastore.prototype.remove = function () {
 
 var datastore = Datastore;
 
-var datastore$1 = /*#__PURE__*/Object.freeze({
-	default: datastore,
-	__moduleExports: datastore
-});
-
-var Datastore$1 = ( datastore$1 && datastore ) || datastore$1;
-
-var nedb = Datastore$1;
+var nedb = datastore;
 
 // TODO: Think of a better name then mapper & mapFunc. Name is temp
 /**
