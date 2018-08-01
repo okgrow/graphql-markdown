@@ -2,7 +2,7 @@ import express from 'express';
 import graphqlHTTP from 'express-graphql';
 import { makeExecutableSchema } from 'graphql-tools';
 
-import { loadMarkdownIntoDb } from '../../dist/index.cjs';
+import { runGraphqlMarkdown } from '../../src/index';
 
 // Simple example of mapping the relative images stored with our .md
 // files to the URL path that we will access/serve them from.
@@ -12,7 +12,7 @@ const serveImagesFromServer = ({ imgPath, contentRoot }) =>
 // Create our options for processing the markdown & images.
 const options = {
   contentRoot: `${__dirname}/content`,
-  imageFunc: serveImagesFromServer,
+  imageResolver: serveImagesFromServer,
 };
 
 const app = express();
@@ -20,18 +20,18 @@ const app = express();
 (async () => {
   try {
     const {
-      graphqlMarkdownTypeDefs,
-      graphqlMarkdownResolvers,
-      numberOfFilesInserted,
-    } = await loadMarkdownIntoDb(options);
+      typeDefs,
+      resolvers,
+      fileCount,
+    } = await runGraphqlMarkdown(options);
 
     console.log(
-      `Memory DB completed!\n${numberOfFilesInserted} ContentItems loaded!`,
+      `Memory DB completed!\n${fileCount} ContentItems loaded!`,
     );
 
     const schema = makeExecutableSchema({
-      typeDefs: graphqlMarkdownTypeDefs,
-      resolvers: graphqlMarkdownResolvers,
+      typeDefs: typeDefs,
+      resolvers: resolvers,
     });
 
     app.use(
@@ -46,6 +46,6 @@ const app = express();
     app.listen(4000);
     console.log('Server Started! http://localhost:4000/graphiql');
   } catch (error) {
-    console.error('[loadMarkdownIntoDb]', error);
+    console.error('[runGraphqlMarkdown]', error);
   }
 })();

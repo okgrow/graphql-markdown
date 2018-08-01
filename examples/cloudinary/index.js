@@ -2,14 +2,14 @@ import express from 'express';
 import graphqlHTTP from 'express-graphql';
 import { makeExecutableSchema } from 'graphql-tools';
 
-import { loadMarkdownIntoDb } from '../../dist/index.cjs';
+import { runGraphqlMarkdown } from '../../dist/index.cjs';
 
 // TODO: add function that uses cloudinaryUploader to upload images to Cloudinary.
 
 // Create our options for processing the markdown & images.
 const options = {
   contentRoot: `${__dirname}/content`,
-  imageFunc: ({ imgPath, contentRoot }) => imgPath, // TODO: use cloudinaryUploader function
+  imageResolver: ({ imgPath, contentRoot }) => imgPath, // TODO: use cloudinaryUploader function
 };
 
 const app = express();
@@ -19,8 +19,8 @@ const app = express();
     const {
       graphqlMarkdownTypeDefs,
       graphqlMarkdownResolvers,
-      numberOfFilesInserted,
-    } = await loadMarkdownIntoDb(options);
+      fileCount,
+    } = await runGraphqlMarkdown(options);
 
     const schema = makeExecutableSchema({
       typeDefs: graphqlMarkdownTypeDefs,
@@ -35,11 +35,11 @@ const app = express();
       }),
     );
 
-    console.log(`Memory DB completed!\n${numberOfFilesInserted} ContentItems loaded!`);
+    console.log(`Memory DB completed!\n${fileCount} ContentItems loaded!`);
     // Start the server after all data has loaded.
     app.listen(4000);
     console.log('Server Started! http://localhost:4000/graphql');
   } catch (error) {
-    console.error('[loadMarkdownIntoDb]', error);
+    console.error('[runGraphqlMarkdown]', error);
   }
 })();

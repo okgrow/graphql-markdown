@@ -5060,16 +5060,20 @@ const markedPromise = mdContent => new Promise((resolve, reject) => {
  * e.g - { fullPathName: "cdn.com/foo.png", ... }
  * @param {Object} param
  * @param {string} param.contentRoot - Path to where all markdown files are stored.
- * @param {Object} param.imageFunc - function provided by user to create imgPaths.
+ * @param {Object} param.imageResolver - function provided by user to create imgPaths.
  * @param {string} param.imageFormats - list of imageFormats to support and search for.
  * Expected format is "(ext|ext|ext)" e.g - "(png|svg|jpg)"
  * @returns {Object} imageMap e.g - { fullPathName: "cdn.com/foo.png", ... }
  */
-const createImagesMap = async ({ contentRoot, imageFunc, imageFormats }) => {
+const createImagesMap = async ({
+  contentRoot,
+  imageResolver,
+  imageFormats
+}) => {
   const imagesMap = {};
   const imageList = getListOfAllImageFiles(contentRoot, imageFormats);
   await Promise.all(imageList.map(async imgPath => {
-    const newImage = await imageFunc({ imgPath, contentRoot });
+    const newImage = await imageResolver({ imgPath, contentRoot });
     imagesMap[imgPath] = newImage;
   }));
   return imagesMap;
@@ -11907,7 +11911,7 @@ const getMarkdownObject = async ({
  * Read all .md files and process them into contentItems ready to be stored.
  * @param {Object} param
  * @param {string} param.contentRoot - Path to where all markdown files are stored.
- * @param {Function} param.imageFunc - function provided by user to create imgPaths.
+ * @param {Function} param.imageResolver - function provided by user to create imgPaths.
  * @param {string} param.imageFormats - list of imageFormats to support and search for.
  * Expected format is "(ext|ext|ext)" e.g - "(png|svg|jpg)"
  * @param {Function} param.replaceContents - function provided by user to manipulate
@@ -11916,15 +11920,15 @@ const getMarkdownObject = async ({
  */
 const loadContentItems = async ({
   contentRoot,
-  imageFunc,
+  imageResolver,
   imageFormats,
   replaceContents,
   debugMode = false,
-  codeHighlighter,
+  syntaxHighlighter,
   // TODO: Setup generateGroupIdByFolder logic and Update readme/setOptions
   generateGroupIdByFolder = false
 }) => {
-  const isFunction = codeHighlighter && typeof codeHighlighter === 'function';
+  const isFunction = syntaxHighlighter && typeof syntaxHighlighter === 'function';
 
   // TODO: Discuss if we allow default settings to be modified by passing the options at startup?
   marked.setOptions(_extends({
@@ -11936,17 +11940,17 @@ const loadContentItems = async ({
     smartLists: true,
     smartypants: true,
     langPrefix: ''
-  }, isFunction ? { highlight: codeHighlighter } : null));
+  }, isFunction ? { highlight: syntaxHighlighter } : null));
 
   try {
     const imageMap = await createImagesMap({
       contentRoot,
-      imageFunc,
+      imageResolver,
       imageFormats
     });
 
     const mdFiles = getListOfMdFiles(contentRoot);
-    // TODO: Make logic more clear? verify new Promise is now redundent?
+    // TODO: Make logic more clear?
     const contentItems = await Promise.all(mdFiles.map(async filename => {
       const markdownObject = getMarkdownObject({
         filename,
@@ -18115,7 +18119,7 @@ const DEFAULT_SUPPORTED_IMAGE_FORMATS = '(png|jpg|jpeg|svg|gif|webp|bmp)';
 /**
  * Load markdown into nedb
  * @param {Object} param
- * @param {Function} param.imageFunc - function provided by user to create imgPaths.
+ * @param {Function} param.imageResolver - function provided by user to create imgPaths.
  * @param {string} param.contentRoot - Path to where all markdown files are stored.
  * @param {string} param.imageFormats - list of imageFormats to support and search for.
  * Expected format is "(ext|ext|ext)" e.g - "(png|svg|jpg)"
@@ -18123,25 +18127,25 @@ const DEFAULT_SUPPORTED_IMAGE_FORMATS = '(png|jpg|jpeg|svg|gif|webp|bmp)';
  * the contents of the .md file before processing.
  * @returns {number} number of ContentItems inserted into the db.
  */
-const loadMarkdownIntoDb = async ({
-  imageFunc,
+const runGraphqlMarkdown = async ({
+  imageResolver,
   contentRoot,
   imageFormats,
   replaceContents,
-  codeHighlighter
+  syntaxHighlighter
 }) => {
   if (!contentRoot) {
     throw new Error('You must provide the full path to root of your content!');
   }
 
-  const isFunction = imageFunc && typeof imageFunc === 'function';
+  const isFunction = imageResolver && typeof imageResolver === 'function';
 
   const defaultOptions = _extends({
     contentRoot
-  }, isFunction ? { imageFunc } : { imageFunc: createBase64Image }, {
+  }, isFunction ? { imageResolver } : { imageResolver: createBase64Image }, {
     replaceContents,
     imageFormats: imageFormats || DEFAULT_SUPPORTED_IMAGE_FORMATS,
-    codeHighlighter
+    syntaxHighlighter
   });
 
   // Create all contentItems by reading all .md files and their images.
@@ -18161,12 +18165,12 @@ const loadMarkdownIntoDb = async ({
 
   // Return the number of files inserted
   return {
-    graphqlMarkdownTypeDefs,
-    graphqlMarkdownResolvers: contentItemResolvers,
-    numberOfFilesInserted: itemsInserted.length
+    typeDefs: graphqlMarkdownTypeDefs,
+    resolvers: contentItemResolvers,
+    fileCount: itemsInserted.length
   };
 };
 
 // Import these two es7 features until we drop Node 4 support
 
-export { find, insert, findOne, dataStore, loadMarkdownIntoDb };
+export { find, insert, findOne, dataStore, runGraphqlMarkdown };

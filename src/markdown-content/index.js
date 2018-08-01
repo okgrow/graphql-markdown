@@ -9,7 +9,7 @@ const DEFAULT_SUPPORTED_IMAGE_FORMATS = '(png|jpg|jpeg|svg|gif|webp|bmp)';
 /**
  * Load markdown into nedb
  * @param {Object} param
- * @param {Function} param.imageFunc - function provided by user to create imgPaths.
+ * @param {Function} param.imageResolver - function provided by user to create imgPaths.
  * @param {string} param.contentRoot - Path to where all markdown files are stored.
  * @param {string} param.imageFormats - list of imageFormats to support and search for.
  * Expected format is "(ext|ext|ext)" e.g - "(png|svg|jpg)"
@@ -17,25 +17,25 @@ const DEFAULT_SUPPORTED_IMAGE_FORMATS = '(png|jpg|jpeg|svg|gif|webp|bmp)';
  * the contents of the .md file before processing.
  * @returns {number} number of ContentItems inserted into the db.
  */
-const loadMarkdownIntoDb = async ({
-  imageFunc,
+const runGraphqlMarkdown = async ({
+  imageResolver,
   contentRoot,
   imageFormats,
   replaceContents,
-  codeHighlighter,
+  syntaxHighlighter,
 }) => {
   if (!contentRoot) {
     throw new Error('You must provide the full path to root of your content!');
   }
 
-  const isFunction = imageFunc && typeof imageFunc === 'function';
+  const isFunction = imageResolver && typeof imageResolver === 'function';
 
   const defaultOptions = {
     contentRoot,
-    ...(isFunction ? { imageFunc } : { imageFunc: createBase64Image }),
+    ...(isFunction ? { imageResolver } : { imageResolver: createBase64Image }),
     replaceContents,
     imageFormats: imageFormats || DEFAULT_SUPPORTED_IMAGE_FORMATS,
-    codeHighlighter,
+    syntaxHighlighter,
   };
 
   // Create all contentItems by reading all .md files and their images.
@@ -57,10 +57,10 @@ const loadMarkdownIntoDb = async ({
 
   // Return the number of files inserted
   return {
-    graphqlMarkdownTypeDefs,
-    graphqlMarkdownResolvers: contentItemResolvers,
-    numberOfFilesInserted: itemsInserted.length,
+    typeDefs: graphqlMarkdownTypeDefs,
+    resolvers: contentItemResolvers,
+    fileCount: itemsInserted.length,
   };
 };
 
-export default loadMarkdownIntoDb;
+export default runGraphqlMarkdown;

@@ -7,12 +7,12 @@ describe('When creating an imagesMap for all our images stored relatively to our
   test('generates the imageMap, it returns the mapping of image URIs.', async () => {
     expect.assertions(1);
 
-    const imageFunc = ({ imgPath, contentRoot }) =>
+    const imageResolver = ({ imgPath, contentRoot }) =>
       `/images${imgPath.slice(contentRoot.length)}`;
 
     const result = await createImagesMap({
       contentRoot: CONTENT_ROOT,
-      imageFunc,
+      imageResolver,
       imageFormats: '(png|jpg|jpeg|svg|gif|webp|bmp)',
     });
 
