@@ -2,7 +2,7 @@ import express from 'express';
 import graphqlHTTP from 'express-graphql';
 import { makeExecutableSchema } from 'graphql-tools';
 
-import { runGraphqlMarkdown } from '../../src/index';
+import { runGraphqlMarkdown } from '../../dist/index.esm.js';
 
 // Simple example of mapping the relative images stored with our .md
 // files to the URL path that we will access/serve them from.
