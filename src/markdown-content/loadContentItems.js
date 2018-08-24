@@ -8,7 +8,7 @@ import { processContentItems } from './detectGqlTypesFromMd';
  * Read all .md files and process them into contentItems ready to be stored.
  * @param {Object} param
  * @param {string} param.contentRoot - Path to where all markdown files are stored.
- * @param {Function} param.imageFunc - function provided by user to create imgPaths.
+ * @param {Function} param.imageResolver - function provided by user to create imgPaths.
  * @param {string} param.imageFormats - list of imageFormats to support and search for.
  * Expected format is "(ext|ext|ext)" e.g - "(png|svg|jpg)"
  * @param {Function} param.replaceContents - function provided by user to manipulate
@@ -17,15 +17,15 @@ import { processContentItems } from './detectGqlTypesFromMd';
  */
 const loadContentItems = async ({
   contentRoot,
-  imageFunc,
+  imageResolver,
   imageFormats,
   replaceContents,
   debugMode = false,
-  codeHighlighter,
+  syntaxHighlighter,
   // TODO: Setup generateGroupIdByFolder logic and Update readme/setOptions
   generateGroupIdByFolder = false,
 }) => {
-  const isFunction = codeHighlighter && typeof codeHighlighter === 'function';
+  const isFunction = syntaxHighlighter && typeof syntaxHighlighter === 'function';
 
   // TODO: Discuss if we allow default settings to be modified by passing the options at startup?
   Marked.setOptions({
@@ -37,18 +37,18 @@ const loadContentItems = async ({
     smartLists: true,
     smartypants: true,
     langPrefix: '',
-    ...(isFunction ? { highlight: codeHighlighter } : null),
+    ...(isFunction ? { highlight: syntaxHighlighter } : null),
   });
 
   try {
     const imageMap = await createImagesMap({
       contentRoot,
-      imageFunc,
+      imageResolver,
       imageFormats,
     });
 
     const mdFiles = getListOfMdFiles(contentRoot);
-    // TODO: Make logic more clear? verify new Promise is now redundent?
+    // TODO: Make logic more clear?
     const contentItems = await Promise.all(
       mdFiles.map(async filename => {
         const markdownObject = getMarkdownObject({

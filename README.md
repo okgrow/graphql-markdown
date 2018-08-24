@@ -9,11 +9,11 @@
 
 > Write markdown, generate GraphQL TypesDefs & Resolvers, query via GraphQL, and serve as html.🔥
 
-TODO: Replace me with a gif of the pkg in action.
+<p align="center">
+  <img  height="300" src="./happy-mascot.png">
+</p>
 
-GraphQL Markdown is a simple library that
-
-Simply put we parse your `.md`, converting the `.md` into `html` and automatically generating `GraphQL FieldDefinitions` from the markdown's `frontMatter`.🔥
+GraphQL Markdown is a simple library that parses and converts your `.md` files into `html` and automatically generates `GraphQL FieldDefinitions` from its [frontMatter](https://github.com/jonschlinkert/gray-matter) content which can then be queried via a GraphQL server.🔥
 
 After generating the `FieldDefinitions`, we save the processed data to an in-memory db. We export the generated `TypeDefs` and `Resolvers` to enable you to have complete control over creating your own GraphQL Schema.🎉
 
@@ -23,15 +23,15 @@ A simple GraphQL API for querying your processed content is provided. Which incl
 ## Table of Contents
 
 * [Quick Start](#quick-start)
+  * [Basic Example](#basic-example)
   * [Querying Your Data](#querying-your-data)
-  * [Server Setup](#server-setup)
-    * [Example 1 - Promise usage](#example-1-promise-usage)
-    * [Example 2 - Async/Await](#example-2-async/await-usage)
+  * [Detailed Example](#detailed-exmaple)
   * [Markdown Files](#markdown-files)
     * [FrontMatter section](#frontmatter-section)
     * [Markdown section](#markdown-section)
     * [Putting it all together](#putting-it-all-together)
     * [Seeing it in Action](#seeing-it-in-action)
+* [Advanced Example](#advanced-example)
 * [Testing](#testing)
 * [Examples](#examples)
 * [Maintainers](#maintainers)
@@ -49,9 +49,130 @@ npm install --save https://github.com/okgrow/graphql-markdown
 yarn add https://github.com/okgrow/graphql-markdown
 ```
 
+### Basic example
+
+```md
+---
+id: myFirstMdFile
+groupId: homePage
+---
+
+# Hello World!
+
+Welcome to this pale blue dot!
+```
+
+```js
+import express from 'express';
+import graphqlHTTP from 'express-graphql';
+import { makeExecutableSchema } from 'graphql-tools';
+
+import { runGraphqlMarkdown } from '@okgrow/graphql-markdown';
+
+// Create our options for processing the markdown & images.
+const options = {
+  contentRoot: `${__dirname}/content`,
+};
+
+const app = express();
+
+(async () => {
+  try {
+    const {
+      typeDefs,
+      resolvers,
+      fileCount, // num of files processed
+    } = await runGraphqlMarkdown(options);
+
+    console.log(
+      `Loaded \n${fileCount} ContentItems into our in memory DB!`,
+    );
+
+    const schema = makeExecutableSchema({
+      typeDefs: typeDefs,
+      resolvers: resolvers,
+    });
+
+    app.use(
+      '/graphiql',
+      graphqlHTTP({
+        schema,
+        graphiql: true,
+      }),
+    );
+
+    // Start the server after all data has loaded.
+    app.listen(4000);
+    console.log('Server Started! http://localhost:4000/graphiql');
+  } catch (error) {
+    console.error('[runGraphqlMarkdown]', error);
+  }
+})();
+```
+
+### Options
+
+Below are all the options you may pass to `runGraphqlMarkdown`.
+
+```js
+const options = {
+  contentRoot: `fullpath/to/root/of/content`,               // required
+  imageResolver: ({ imgPath, contentRoot }) => {...},       // optional
+  replaceContents: ({ contentRoot, rawContents }) => {...}, // optional
+  imageFormats: '(png|svg)',                                // optional
+  debugMode: true,                                          // optional
+  syntaxHighlighter: (code) => {...},                       // optional
+};
+```
+
+#### contentRoot (Required)
+
+The fullpath of where your `.md` content is located.
+
+#### imageResolver (Optional)
+
+`imageResolver` expects a function that will return the URI for the image. By default images are converted to base64 if no function is assigned to imageResolver.
+
+**NOTE:** You shouldn't use base64 in production as it increases the size of images significantly.
+
+```js
+// Simple example of a imageResolver function.
+const serveImagesFromServer = ({ imgPath, contentRoot }) =>
+  `/images${imgPath.slice(contentRoot.length)}`;
+```
+
+#### replaceContents (Optional)
+
+`replaceContents` is an optional function that if provided will be called against your `.md` content in order to replace the static content at run time. See below example for usage & signature.
+
+```js
+const replaceWords = ({ contentRoot, rawContents }) =>
+  rawContents.replace(new RegExp('deployment-server', 'g'), `${isProduction ? 'production' : 'development'}`);
+```
+
+#### imageFormats (Optional)
+
+Image formats that we should process. If not provided we will use the `DEFAULT_SUPPORTED_IMAGE_FORMATS`.
+
+`imageFormats` expects a string in the following format '(ext|ext|ext|..etc)', e.g `'(png|svg)'`.
+
+#### debugMode (Optional)
+
+To enable additional logging during development. Default is `false`.
+
+#### syntaxHighlighter (Optional)
+
+`syntaxHighlighter` can be used to provide `runGraphqlMarkdown` with a function to syntax highlight your content. Simple example below using `highlight.js`.
+
+```js
+import hljs from 'highlight.js'; // Only install/use if you want to highlight code.
+
+const yourCodeHighlighter = (code) => hljs.highlightAuto(code).value;
+```
+
 ### Querying Your Data
 
-Graphql Markdown provides a few different approaches to querying the data extracted from your `.md` files.
+GraphQL Markdown provides a few different approaches to querying the data extracted from your `.md` files.
 
 * 💪&nbsp; A powerful & all purpose query: Search by logical `AND`, `OR` conditions on any fields!!! 🎉
 
@@ -89,103 +210,7 @@ input Pagination {
 }
 ```
 
-### Server Setup
 
-```js
-// server/index.js
-import hljs from 'highlight.js'; // Only install/used if you want to highlight code.
-import { makeExecutableSchema } from 'graphql-tools';
-import { loadMarkdownIntoDb } from '@okgrow/graphql-markdown';
-
-const isProduction = process.env.NODE_ENV === 'production';
-
-// Simple example of imageFunc.
-const serveImagesFromServer = ({ imgPath, contentRoot }) =>
-  `/images${imgPath.slice(contentRoot.length)}`;
-
-const replaceWords = ({ contentRoot, rawContents }) =>
-  rawContents.replace(new RegExp('deployment-server', 'g'), `${isProduction ? 'production' : 'development'}`);
-
-// NOTE: Simple example of highlighting code by using highlight.js. You can use
-// any highlighter you like that conforms to the below function signature.
-const yourCodeHighlighter = (code) => hljs.highlightAuto(code).value;
-
-// Create our options for loading the markdown into our in memory db.
-// NOTE: By default images are converted to base64 if no function is passed to imageFunc.
-// NOTE: You shouldn't use base64 in production as it increases the size of images significantly.
-// NOTE: imageFormats is optional, if not provided it will use the DEFAULT_SUPPORTED_IMAGE_FORMATS.
-// imageFormats expects a string in the following format '(ext|ext|ext|..etc)'
-const options = {
-  contentRoot: `fullpath/to/root/of/content`,             // required
-  imageFunc: isProduction ? serveImagesFromServer : null, // optional
-  replaceContents: replaceWords,                          // optional
-  imageFormats: '(png|svg)',                              // optional
-  debugMode: true,                                        // optional
-  codeHighlighter: yourCodeHighlighter,                   // optional
-  },
-};
-
-// Continue on by selecting Example 1 - Promise or Example 2 - Async/Await
-```
-
-
-#### Example 1 - Promise usage
-
-```js
-// Continuation of server/index.js
-//*** Example 1 - Promise ***/
-
-// Find all markdown files, process and load them into memory and
-// return the TypeDefs & Resolvers for the graphql-markdown pkg.
-loadMarkdownIntoDb(options).then({
-  graphqlMarkdownTypeDefs,
-  graphqlMarkdownResolvers,
-  numberOfFilesInserted,
-} => {
-  console.log(`DB ready!\n${numberOfFilesInserted} ContentItems loaded!`);
-  // Create our GraphQL Schema
-  const schema = makeExecutableSchema({
-    typeDefs: graphqlMarkdownTypeDefs,
-    resolvers: graphqlMarkdownResolvers,
-  });
-
-  // Now start your GraphQL Server using the schema you just created.
-  // If your unsure how to do this check out the examples dir.
-
-}).catch(error => {
-  console.error('[loadMarkdownIntoDb]', error);
-});
-```
-
-#### Example 2 - Async/Await usage
-
-```js
-// Continuation of server/index.js
-/*** Example 2 - Async/Await ***/
-(async () => {
-  try {
-    // Find all markdown files, process and load them into memory and
-    // return the TypeDefs & Resolvers for the graphql-markdown pkg.
-    const {
-      graphqlMarkdownTypeDefs,
-      graphqlMarkdownResolvers,
-      numberOfFilesInserted,
-    } = await loadMarkdownIntoDb(options);
-    console.log(`DB ready!\n${numberOfFilesInserted} ContentItems loaded!`);
-
-    const schema = makeExecutableSchema({
-      typeDefs: graphqlMarkdownTypeDefs,
-      resolvers: graphqlMarkdownResolvers,
-    });
-
-    // Now start your GraphQL Server using the schema you just created.
-    // If your unsure how to do this check out the examples dir.
-
-  } catch (error) {
-    console.error('[loadMarkdownIntoDb]', error);
-  }
-})();
-```
 
 ## Markdown files
 
@@ -306,6 +331,68 @@ Run the simple-example found in `examples/simple`, and copy/paste the below snip
   }
 }
 ```
+## Advanced Example
+
+This example will be showing all the possible options and features of this package.
+
+```js
+// server/index.js
+import hljs from 'highlight.js'; // Only install/use if you want to highlight code.
+import { makeExecutableSchema } from 'graphql-tools';
+import { runGraphqlMarkdown } from '@okgrow/graphql-markdown';
+
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Simple example of imageResolver.
+const serveImagesFromServer = ({ imgPath, contentRoot }) =>
+  `/images${imgPath.slice(contentRoot.length)}`;
+
+const replaceWords = ({ contentRoot, rawContents }) =>
+  rawContents.replace(new RegExp('deployment-server', 'g'), `${isProduction ? 'production' : 'development'}`);
+
+// NOTE: Simple example of highlighting code by using highlight.js. You can use
+// any highlighter you like that conforms to the below function signature.
+const yourCodeHighlighter = (code) => hljs.highlightAuto(code).value;
+
+// Create our options for loading the markdown into our in memory db.
+// NOTE: By default images are converted to base64 if no function is passed to imageResolver.
+// NOTE: You shouldn't use base64 in production as it increases the size of images significantly.
+// NOTE: imageFormats is optional, if not provided it will use the DEFAULT_SUPPORTED_IMAGE_FORMATS.
+// imageFormats expects a string in the following format '(ext|ext|ext|..etc)'
+const options = {
+  contentRoot: `fullpath/to/root/of/content`,             // required
+  imageResolver: isProduction ? serveImagesFromServer : null, // optional
+  replaceContents: replaceWords,                          // optional
+  imageFormats: '(png|svg)',                              // optional
+  debugMode: true,                                        // optional
+  syntaxHighlighter: yourCodeHighlighter,                   // optional
+  },
+};
+
+(async () => {
+  try {
+    // Find all markdown files, process and load them into memory and
+    // return the TypeDefs & Resolvers for the graphql-markdown pkg.
+    const {
+      typeDefs,
+      resolvers,
+      fileCount,
+    } = await runGraphqlMarkdown(options);
+    console.log(`DB ready!\n${fileCount} ContentItems loaded!`);
+
+    const schema = makeExecutableSchema({
+      typeDefs,
+      resolvers,
+    });
+
+    // Now start your GraphQL Server using the schema you just created.
+    // If your unsure how to do this check out the examples dir.
+
+  } catch (error) {
+    console.error('[runGraphqlMarkdown]', error);
+  }
+})();
+```
 
 ## Testing
 
@@ -331,6 +418,7 @@ Check out the examples folder to see how it all works. Please note:
 This is an open source package. We hope to deal with contributions in a timely manner, but that's not always the case. The main maintainers are:
 
 [@cfnelson](https://github.com/cfnelson)
+
 [@okgrow](https://github.com/okgrow)
 
 Feel free to ping if there are open issues or pull requests which are taking a while to be dealt with!

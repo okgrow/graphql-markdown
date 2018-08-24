@@ -8,14 +8,14 @@
     "format": "prettier-eslint --write \"src/**/*.js\""
   },
   "dependencies": {
-    "esm": "^3.0.23",
+    "esm": "^3.0.77",
     "express": "^4.16.3",
     "express-graphql": "^0.6.12",
     "graphql": "^0.13.2",
-    "graphql-tools": "^2.24.0"
+    "graphql-tools": "^3.1.1"
   },
   "devDependencies": {
-    "prettier": "^1.12.1",
+    "prettier": "^1.14.2",
     "prettier-eslint-cli": "^4.7.1"
   },
   "esm": {
