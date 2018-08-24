@@ -1,5 +1,5 @@
 {
-  "name": "graphql-markdown",
+  "name": "@okgrow/graphql-markdown",
   "version": "0.0.1",
   "license": "MIT",
   "description": "Write markdown, serve as html, query via GraphQL.🔥",
