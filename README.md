@@ -9,7 +9,9 @@
 
 > Write markdown, generate GraphQL TypesDefs & Resolvers, query via GraphQL, and serve as html.🔥
 
-TODO: Replace me with a logo of the pkg in action.
+<p align="center">
+  <img  height="300" src="./happy-mascot.png">
+</p>
 
 GraphQL Markdown is a simple library that parses and converts your `.md` files into `html` and automatically generates `GraphQL FieldDefinitions` from its [frontMatter](https://github.com/jonschlinkert/gray-matter) content which can then be queried via a GraphQL server.🔥
 
