@@ -1,16 +1,14 @@
 # GraphQL Markdown
 
-[![Build Status](ADD_SHIELDS.IO_URL)](ADD_URL)
-[![Coverage Status](ADD_SHIELDS.IO_URL)](ADD_URL)
-[![NPM Version](ADD_SHIELDS.IO_URL)](ADD_URL)
-[![NPM Downloads](ADD_SHIELDS.IO_URL)](ADD_URL)
-[![Dependencies](ADD_SHIELDS.IO_URL)]()
-[![Dev Dependencies](ADD_SHIELDS.IO_URL)]()
+[![Build Status](https://semaphoreci.com/api/v1/okgrow/graphql-markdown/branches/master/shields_badge.svg)](https://semaphoreci.com/okgrow/graphql-markdown)
+[![NPM Version](https://img.shields.io/npm/v/%40okgrow%2Fgraphql-markdown.svg?style=flat-square)](https://www.npmjs.com/package/@okgrow/graphql-markdown)
+[![NPM Downloads](https://img.shields.io/npm/dm/%40okgrow%2F.svg?style=flat-square)](https://www.npmjs.com/package/@okgrow/graphql-markdown)
+
 
 > Write markdown, generate GraphQL TypesDefs & Resolvers, query via GraphQL, and serve as html.🔥
 
 <p align="center">
-  <img  height="300" src="./happy-mascot.png">
+  <img  height="300" src="https://raw.githubusercontent.com/okgrow/graphql-markdown/master/happy-mascot.png">
 </p>
 
 GraphQL Markdown is a simple library that parses and converts your `.md` files into `html` and automatically generates `GraphQL FieldDefinitions` from its [frontMatter](https://github.com/jonschlinkert/gray-matter) content which can then be queried via a GraphQL server.🔥
