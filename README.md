@@ -434,4 +434,4 @@ Please note that all interactions in @okgrow's repos should follow our [Code of 
 
 ## License
 
-Released under the [MIT license](https://github.com/okgrow/graphql-markdown/blob/master/License.md) © 2017 OK GROW!.
+Released under the [MIT license](https://github.com/okgrow/graphql-markdown/blob/master/LICENCE) © 2017 OK GROW!.
