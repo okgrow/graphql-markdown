@@ -17,6 +17,9 @@ After generating the `FieldDefinitions`, we save the processed data to an in-mem
 
 A simple GraphQL API for querying your processed content is provided. Which includes a way to `sort`, `limit`, and `skip` your results enabling a basic form of pagination. 🍾
 
+**NOTE:** We are looking for feedback & suggestions on how to improve and further develop this pkg.
+
+Please feel free to open an issue!
 
 ## Table of Contents
 
@@ -37,8 +40,6 @@ A simple GraphQL API for querying your processed content is provided. Which incl
 * [License](#license)
 
 ## Quick Start
-
-**NOTE:** This package is still in development and is not yet published to the npm repository.
 
 ```sh
 # With npm
@@ -433,4 +434,4 @@ Please note that all interactions in @okgrow's repos should follow our [Code of 
 
 ## License
 
-Released under the [MIT license](https://github.com/okgrow/analytics/blob/master/License.md) © 2017 OK GROW!.
+Released under the [MIT license](https://github.com/okgrow/graphql-markdown/blob/master/License.md) © 2017 OK GROW!.
