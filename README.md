@@ -4,6 +4,7 @@
 [![NPM Version](https://img.shields.io/npm/v/%40okgrow%2Fgraphql-markdown.svg?style=flat-square)](https://www.npmjs.com/package/@okgrow/graphql-markdown)
 [![NPM Downloads](https://img.shields.io/npm/dm/%40okgrow%2F.svg?style=flat-square)](https://www.npmjs.com/package/@okgrow/graphql-markdown)
 
+**NOTE:** This pkg is **no longer being actively maintained**, if you'd like to maintain this pkg please express interest by opening an issue.
 
 > Write markdown, generate GraphQL TypesDefs & Resolvers, query via GraphQL, and serve as html.🔥
 
